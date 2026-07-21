@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:profile-adapter:1",
+  "title": "Koquetel profile/capability probe and adapter descriptor (SCH-07, SCH-08)",
+  "description": "Realizes FR-01 (non-mutating discovery) and FR-06/NFR-08 (adapters, fail-closed). Root validates a ProfileProbe.",
+  "$ref": "#/$defs/ProfileProbe",
+  "$defs": {
+    "ProfileProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Read-only discovery output; producing it never mutates the host (FR-01).",
+      "required": ["schemaVersion", "probeId", "generatedAt", "host", "profile", "capabilities", "clients"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "probeId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "generatedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "host": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["os", "arch"],
+          "properties": {
+            "os": { "type": "string", "x-classification": "metadata" },
+            "arch": { "type": "string", "x-classification": "metadata" },
+            "kernel": { "type": "string", "x-classification": "metadata" },
+            "user": { "type": "string", "x-classification": "sensitive", "x-retention": "session-30d", "x-exportable": "policy" }
+          }
+        },
+        "profile": { "enum": ["essential", "balanced", "autonomous"], "x-classification": "public" },
+        "capabilities": {
+          "type": "array",
+          "description": "typed capability probe (sandbox backends, services, binaries) — validates semantics, not string presence (AR-07).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "present"],
+            "properties": {
+              "name": { "type": "string", "x-classification": "public" },
+              "present": { "type": "boolean", "x-classification": "metadata" },
+              "version": { "type": "string", "x-classification": "metadata" },
+              "backend": { "type": "string", "x-classification": "metadata" },
+              "detail": { "type": "string", "x-classification": "metadata" }
+            }
+          }
+        },
+        "clients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["clientId", "present"],
+            "properties": {
+              "clientId": { "type": "string", "x-classification": "public" },
+              "present": { "type": "boolean", "x-classification": "metadata" },
+              "version": { "type": "string", "x-classification": "metadata" },
+              "integrationSurfaces": { "type": "array", "items": { "type": "string", "x-classification": "public" } },
+              "testedRange": { "type": "string", "x-classification": "public" }
+            }
+          }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "detail"],
+            "properties": {
+              "kind": { "enum": ["managed-conflict", "version-unsupported", "capability-missing"], "x-classification": "public" },
+              "detail": { "type": "string", "x-classification": "sensitive", "x-retention": "session-30d", "x-exportable": "policy" }
+            }
+          }
+        }
+      }
+    },
+    "AdapterDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Declares an adapter's tested surface; unknown mutating schema fails closed (NFR-08, FM-04).",
+      "required": ["schemaVersion", "adapterId", "kind", "target", "version", "testedVersionRange", "mutating", "failClosedOnUnknownSchema", "healthState"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "adapterId": { "type": "string", "x-classification": "identifier" },
+        "kind": { "enum": ["client", "memory", "router", "sandbox", "secrets", "telemetry", "tool-transport"], "x-classification": "public" },
+        "target": { "type": "string", "description": "concrete client/backend, e.g. 'claude-code' or 'ai-memory'.", "x-classification": "public" },
+        "version": { "type": "string", "x-classification": "public" },
+        "testedVersionRange": { "type": "string", "description": "declared supported range; outside it, adapter fails closed.", "x-classification": "public" },
+        "capabilities": { "type": "array", "items": { "type": "string", "x-classification": "public" } },
+        "mutating": { "type": "boolean", "x-classification": "public" },
+        "failClosedOnUnknownSchema": { "const": true, "description": "NFR-08 invariant: an untested mutating schema yields no write and an E-1001/E-6002 diagnostic.", "x-classification": "public" },
+        "projectionFormat": { "enum": ["json", "toml", "yaml", "ini", "markdown", "none"], "x-classification": "public" },
+        "healthState": { "enum": ["healthy", "degraded", "unavailable", "unknown", "incompatible"], "x-classification": "metadata" }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "routeId": "01J8Z0CNFGQH7VK3M2P9XR4T5M",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "taskClass": "code-edit",
+  "requiredCapabilities": ["tools", "long-context"],
+  "privacyClass": "local-only",
+  "selectedProvider": "local-openai-compatible",
+  "selectedModel": "local-large",
+  "candidates": [
+    { "provider": "local-openai-compatible", "model": "local-large", "healthState": "healthy", "score": 0.81 },
+    { "provider": "cloud-provider-a", "model": "cloud-large", "healthState": "healthy", "score": 0.88, "rejectedReason": "privacyClass local-only forbids remote route" }
+  ],
+  "budgetRef": "01J8Z0CNFEQH7VK3M2P9XR4T5J",
+  "fallbackChain": ["local-openai-compatible/local-medium"],
+  "decidedAt": "2026-07-21T18:00:00Z"
+}

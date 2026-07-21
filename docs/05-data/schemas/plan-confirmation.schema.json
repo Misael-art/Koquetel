@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:plan-confirmation:1",
+  "title": "Koquetel plan and hash-bound confirmation (SCH-01, SCH-02)",
+  "description": "Realizes FR-02 (deterministic plan before mutation) and SR-04 (plan-bound consent). Root validates a Plan; Confirmation is $defs/Confirmation.",
+  "$ref": "#/$defs/Plan",
+  "$defs": {
+    "Plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "planId", "planHash", "operation", "scope", "initiatingActor", "createdAt", "expiresAt", "requiredConfirmationClass", "ownedTargets", "steps", "verificationPlan", "rollbackPlan"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "planId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "planHash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256 over the normalized plan; the only value a confirmation may bind.", "x-classification": "identifier" },
+        "operation": { "enum": ["init", "install", "update", "repair", "remove", "sync"], "x-classification": "public" },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "id"],
+          "properties": {
+            "type": { "enum": ["installation", "project", "worktree"], "x-classification": "public" },
+            "id": { "type": "string", "x-classification": "identifier" },
+            "path": { "type": "string", "description": "absolute host path", "x-classification": "host-scoped", "x-retention": "audit-180d", "x-exportable": "policy" }
+          }
+        },
+        "initiatingActor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "id"],
+          "properties": {
+            "type": { "enum": ["user", "automation", "delegation"], "x-classification": "public" },
+            "id": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "plan validity end; a stale plan yields E-2001.", "x-classification": "metadata" },
+        "requiredConfirmationClass": { "$ref": "#/$defs/CapabilityClass" },
+        "sourceCommit": { "type": "string", "description": "release provenance where applicable (NFR-01).", "x-classification": "public" },
+        "ownedTargets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "action"],
+            "properties": {
+              "path": { "type": "string", "x-classification": "host-scoped", "x-retention": "audit-180d", "x-exportable": "policy" },
+              "action": { "enum": ["create", "modify", "preserve", "remove"], "x-classification": "public" },
+              "preFingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "pre-mutation digest; mismatch invalidates the plan (FM-03).", "x-classification": "identifier" }
+            }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stepId", "intent", "capability", "compensation"],
+            "properties": {
+              "stepId": { "type": "string", "x-classification": "identifier" },
+              "intent": { "type": "string", "x-classification": "metadata" },
+              "precondition": { "type": "string", "x-classification": "metadata" },
+              "capability": { "$ref": "#/$defs/CapabilityClass" },
+              "compensation": { "type": "string", "description": "how the step is undone; required so recovery is deterministic.", "x-classification": "metadata" },
+              "requiresConfirmation": { "type": "boolean", "x-classification": "public" }
+            }
+          }
+        },
+        "remoteDestinations": {
+          "type": "array",
+          "description": "every remote target is attributable to a backend (SR-14).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["backendId", "purpose", "dataClassification"],
+            "properties": {
+              "backendId": { "type": "string", "x-classification": "identifier" },
+              "purpose": { "type": "string", "x-classification": "metadata" },
+              "dataClassification": { "enum": ["public", "metadata", "sensitive", "content"], "x-classification": "public" }
+            }
+          }
+        },
+        "estimatedBudget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tokens": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "cost": { "type": "number", "minimum": 0, "x-classification": "metadata" },
+            "currency": { "type": "string", "x-classification": "public" }
+          }
+        },
+        "verificationPlan": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "x-classification": "metadata" }
+        },
+        "rollbackPlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strategy"],
+          "properties": {
+            "strategy": { "enum": ["atomic-rename-swap", "restore-backup", "compensating-steps", "not-required"], "x-classification": "public" },
+            "backupRefs": { "type": "array", "items": { "type": "string", "x-classification": "identifier" } }
+          }
+        }
+      }
+    },
+    "Confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "confirmationId", "planId", "planHash", "actor", "grantedCapabilityClass", "issuedAt", "expiresAt", "singleUse"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "confirmationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "planId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "planHash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "MUST equal the bound plan's planHash (SR-04).", "x-classification": "identifier" },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "id"],
+          "properties": {
+            "type": { "const": "user", "description": "only an authenticated user delegation grants authority (SR-01).", "x-classification": "public" },
+            "id": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" }
+          }
+        },
+        "grantedCapabilityClass": { "$ref": "#/$defs/CapabilityClass" },
+        "target": { "type": "string", "x-classification": "host-scoped", "x-retention": "audit-180d", "x-exportable": "policy" },
+        "issuedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "expiresAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "singleUse": { "type": "boolean", "description": "true unless issued as an explicit delegation.", "x-classification": "public" },
+        "delegationId": { "type": "string", "description": "set when consent is a bounded delegation instead of single-use.", "x-classification": "identifier" },
+        "attestationRef": { "type": "string", "description": "reference to a local attestation; never a raw secret (SR-05).", "x-classification": "secret-ref", "x-retention": "audit-180d", "x-exportable": "no" }
+      }
+    },
+    "CapabilityClass": {
+      "enum": ["observe", "workspace-write", "external-write", "host-admin", "destructive"],
+      "x-classification": "public"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "transactionId": "01J8Z0CNF8QH7VK3M2P9XR4T5C",
+  "operation": "install",
+  "scope": { "type": "installation", "id": "inst-example" },
+  "initiatingActor": "local:dev",
+  "planHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "requiredConfirmationClass": "workspace-write",
+  "steps": [
+    { "stepId": "s1", "intent": "activate config", "compensation": "restore backup" }
+  ],
+  "ownedPaths": [
+    { "path": "/home/dev/.config/koquetel/state.db", "managed": true, "preDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
+  ],
+  "state": "done",
+  "timestamps": { "createdAt": "2026-07-21T18:00:00Z", "updatedAt": "2026-07-21T18:00:05Z" }
+}

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:transaction:1",
+  "title": "Koquetel transaction, journal, recovery and ownership (SCH-03..SCH-06)",
+  "description": "Realizes FR-03/FR-04, NFR-02/NFR-03, SR-08/SR-10. Root validates a TransactionRecord.",
+  "$ref": "#/$defs/TransactionRecord",
+  "$defs": {
+    "TransactionRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "transactionId", "operation", "scope", "initiatingActor", "planHash", "requiredConfirmationClass", "steps", "ownedPaths", "state", "timestamps"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "operation": { "enum": ["init", "install", "update", "repair", "remove", "sync"], "x-classification": "public" },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "id"],
+          "properties": {
+            "type": { "enum": ["installation", "project", "worktree"], "x-classification": "public" },
+            "id": { "type": "string", "x-classification": "identifier" }
+          }
+        },
+        "initiatingActor": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
+        "sourceVersion": { "type": "string", "x-classification": "public" },
+        "targetVersion": { "type": "string", "x-classification": "public" },
+        "sourceCommit": { "type": "string", "description": "NFR-01 provenance where applicable.", "x-classification": "public" },
+        "planHash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+        "requiredConfirmationClass": { "enum": ["observe", "workspace-write", "external-write", "host-admin", "destructive"], "x-classification": "public" },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stepId", "intent", "compensation"],
+            "properties": {
+              "stepId": { "type": "string", "x-classification": "identifier" },
+              "precondition": { "type": "string", "x-classification": "metadata" },
+              "intent": { "type": "string", "x-classification": "metadata" },
+              "result": { "enum": ["pending", "applied", "verified", "compensated", "failed"], "x-classification": "metadata" },
+              "compensation": { "type": "string", "x-classification": "metadata" }
+            }
+          }
+        },
+        "ownedPaths": { "type": "array", "items": { "$ref": "#/$defs/OwnershipFingerprint" } },
+        "backupRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ref", "integrityDigest"],
+            "properties": {
+              "ref": { "type": "string", "x-classification": "identifier" },
+              "integrityDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "backup content hash; verified before and after restore (AR-06).", "x-classification": "identifier" }
+            }
+          }
+        },
+        "verificationEvidence": { "type": "array", "items": { "type": "string", "x-classification": "metadata" } },
+        "state": {
+          "enum": ["discovered", "planned", "confirmed", "staged", "applied", "verified", "committed", "compensating", "rolled_back", "recovery_required", "interrupted"],
+          "description": "matches the transaction state machine; killed process leaves 'interrupted'.",
+          "x-classification": "metadata"
+        },
+        "timestamps": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["createdAt", "updatedAt"],
+          "properties": {
+            "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "updatedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "terminalAt": { "type": "string", "format": "date-time", "x-classification": "metadata" }
+          }
+        }
+      }
+    },
+    "JournalEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Append-only journal line. entryDigest + sequence make recovery line-atomic and torn-tail tolerant (AR-09, SR-10).",
+      "required": ["schemaVersion", "transactionId", "sequence", "entryType", "timestamp", "payloadDigest", "entryDigest"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "sequence": { "type": "integer", "minimum": 0, "description": "monotonic within a transaction; gaps or non-monotonicity flag a torn tail.", "x-classification": "metadata" },
+        "entryType": { "enum": ["intent", "result", "compensation", "terminal"], "x-classification": "public" },
+        "stepId": { "type": "string", "x-classification": "identifier" },
+        "timestamp": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "payloadDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+        "prevEntryDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "chains entries so tampering or truncation is detectable (SR-10).", "x-classification": "identifier" },
+        "entryDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "digest of this line; a final line failing this check is isolated as incomplete, never fatal to earlier lines.", "x-classification": "identifier" }
+      }
+    },
+    "RecoveryRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "transactionId", "startedAt", "trigger", "action", "outcome", "idempotencyKey"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "startedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "trigger": { "enum": ["interrupted", "verification-failed", "activation-failed", "operator-requested"], "x-classification": "metadata" },
+        "action": { "enum": ["replay", "compensate", "stop-for-operator"], "description": "recovery never guesses between conflicting user and managed state; it stops with evidence.", "x-classification": "metadata" },
+        "outcome": { "enum": ["rolled_back", "completed", "recovery_required"], "x-classification": "metadata" },
+        "evidenceRefs": { "type": "array", "items": { "type": "string", "x-classification": "metadata" } },
+        "idempotencyKey": { "type": "string", "description": "repeating recovery with the same key is a no-op (NFR-02, transaction invariant).", "x-classification": "identifier" }
+      }
+    },
+    "OwnershipFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Proof that a path is Koquetel-owned before any compensation touches it (SR-08, FM-20).",
+      "required": ["path", "managed", "preDigest"],
+      "properties": {
+        "path": { "type": "string", "description": "absolute, realpath-resolved, symlink-checked (SR-08).", "x-classification": "host-scoped", "x-retention": "audit-180d", "x-exportable": "policy" },
+        "managed": { "type": "boolean", "description": "true only when an ownership marker is present; location alone is not ownership.", "x-classification": "metadata" },
+        "ownershipMarker": { "type": "string", "x-classification": "metadata" },
+        "preDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+        "postDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" }
+      }
+    }
+  }
+}

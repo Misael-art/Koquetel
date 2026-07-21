@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "delegationId": "01J8Z0CNFCQH7VK3M2P9XR4T5G",
+  "parentDelegationId": "01J8Z0CNFDQH7VK3M2P9XR4T5H",
+  "issuer": "local:dev",
+  "childAgentId": "agent.reviewer",
+  "grantedCapabilities": ["observe", "workspace-read"],
+  "memoryScopes": ["project", "task"],
+  "budgetRef": "01J8Z0CNFEQH7VK3M2P9XR4T5J",
+  "issuedAt": "2026-07-21T18:00:00Z",
+  "expiresAt": "2026-07-21T18:30:00Z",
+  "revoked": false
+}

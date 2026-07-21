@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "probeId": "01J8Z0CNFAQH7VK3M2P9XR4T5E",
+  "generatedAt": "2026-07-21T18:00:00Z",
+  "host": { "os": "linux", "arch": "x86_64", "kernel": "6.18", "user": "dev" },
+  "profile": "balanced",
+  "capabilities": [
+    { "name": "podman-rootless", "present": true, "version": "5.0.0", "backend": "podman" },
+    { "name": "docker", "present": false, "detail": "no engine socket found" }
+  ],
+  "clients": [
+    { "clientId": "claude-code", "present": true, "version": "1.2.3", "integrationSurfaces": ["hooks", "mcp"], "testedRange": ">=1.0 <2.0" }
+  ],
+  "conflicts": []
+}

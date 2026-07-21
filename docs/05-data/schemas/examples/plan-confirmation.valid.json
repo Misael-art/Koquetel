@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "planId": "01J8Z0CNF6QH7VK3M2P9XR4T5A",
+  "planHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "operation": "install",
+  "scope": { "type": "project", "id": "proj-example", "path": "/home/dev/repo" },
+  "initiatingActor": { "type": "user", "id": "local:dev" },
+  "createdAt": "2026-07-21T18:00:00Z",
+  "expiresAt": "2026-07-21T18:10:00Z",
+  "requiredConfirmationClass": "workspace-write",
+  "sourceCommit": "75bae36",
+  "ownedTargets": [
+    { "path": "/home/dev/repo/.koquetel/config.json", "action": "create" }
+  ],
+  "steps": [
+    { "stepId": "s1", "intent": "write managed config", "precondition": "no existing managed block", "capability": "workspace-write", "compensation": "remove created file", "requiresConfirmation": false }
+  ],
+  "remoteDestinations": [],
+  "verificationPlan": ["config parses and validates against adapter schema"],
+  "rollbackPlan": { "strategy": "restore-backup", "backupRefs": [] }
+}

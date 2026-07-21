@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "eventId": "01J8Z0CNFFQH7VK3M2P9XR4T5K",
+  "sequence": 42,
+  "installationId": "inst-example",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "timestamp": "2026-07-21T18:00:00Z",
+  "actor": "local:dev",
+  "category": "authority",
+  "action": "policy.decide",
+  "result": "denied",
+  "redactedOutcome": "capability host-admin denied by rule policy.default.deny-admin",
+  "prevEventDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "eventDigest": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+}

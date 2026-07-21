@@ -33,7 +33,10 @@ Use and preserve these namespaces:
 - `FI-xx`: failure-injection test; `RT-xx`: rollback test;
 - `E-xxxx`: stable error; `R-xx`: risk; `M-xx`: milestone;
 - `G-xx`: known gap; `Q-xx`: owner decision; `A-xx`: assumption;
-- `ADR-xxxx`: architectural decision.
+- `ADR-xxxx`: architectural decision;
+- `IT-xx`: source-project independence test; `AR-xx`: anti-requirement;
+- `GA-xx`: synthesis gap; `SCH-xx`: normative schema;
+- `SC-xx`: schema-contract test; `PT-xx`: prototype gate.
 
 Identifiers are never renumbered after publication. Retired identifiers remain
 listed as retired. Every normative `MUST`, `SHALL`, or `NEVER` statement needs an

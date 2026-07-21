@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "probeId": "01J8Z0CNFAQH7VK3M2P9XR4T5E",
+  "generatedAt": "2026-07-21T18:00:00Z",
+  "host": { "os": "linux", "arch": "x86_64" },
+  "profile": "maximum",
+  "capabilities": [
+    { "name": "podman-rootless", "present": true }
+  ],
+  "clients": [
+    { "clientId": "claude-code", "present": true }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:memory:1",
+  "title": "Koquetel memory envelope and export (SCH-09, SCH-10)",
+  "description": "Realizes FR-10/FR-11/FR-13, SR-11, ADR-0004. The envelope is Koquetel-owned even when content lives in an external backend. Root validates a MemoryEnvelope.",
+  "$ref": "#/$defs/MemoryEnvelope",
+  "$defs": {
+    "MemoryEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "memoryId", "contentDigest", "kind", "scope", "source", "timestamps", "validationState", "sensitivity", "remoteProcessingPolicy"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "memoryId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "description": "immutable id.", "x-classification": "identifier" },
+        "contentDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+        "kind": { "enum": ["session", "episodic", "semantic", "procedural", "artifact", "policy-reference"], "x-classification": "public" },
+        "scope": { "enum": ["installation", "user", "project", "worktree", "task", "agent"], "description": "enforced before semantic ranking (SR-11).", "x-classification": "public" },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "actor", "originatingCorrelationId"],
+          "properties": {
+            "type": { "enum": ["user", "agent", "tool", "import", "deterministic"], "x-classification": "public" },
+            "reference": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" },
+            "actor": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" },
+            "originatingCorrelationId": { "type": "string", "x-classification": "identifier" }
+          }
+        },
+        "timestamps": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["created"],
+          "properties": {
+            "created": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "observed": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "reviewed": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "expires": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+            "superseded": { "type": "string", "format": "date-time", "x-classification": "metadata" }
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1, "x-classification": "metadata" },
+        "validationState": {
+          "enum": ["candidate", "validated", "quarantined", "superseded", "expired", "deleted-tombstone"],
+          "description": "only 'validated' is eligible for automatic current context unless policy allows candidates.",
+          "x-classification": "metadata"
+        },
+        "sensitivity": { "enum": ["public", "metadata", "sensitive", "content"], "x-classification": "public" },
+        "remoteProcessingPolicy": { "enum": ["allowed", "denied", "policy"], "description": "whether this record may cross a network boundary (SR-14).", "x-classification": "public" },
+        "backendLocators": {
+          "type": "array",
+          "description": "never the only place governance metadata lives (ADR-0004).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["backendId", "locator"],
+            "properties": {
+              "backendId": { "type": "string", "x-classification": "identifier" },
+              "locator": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" }
+            }
+          }
+        },
+        "embeddingProvenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "model": { "type": "string", "x-classification": "metadata" },
+            "dimension": { "type": "integer", "minimum": 1, "x-classification": "metadata" }
+          }
+        },
+        "relationships": {
+          "type": "array",
+          "description": "conflict/provenance graph: supersede, contradict, derive (FM-06 handling).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["relation", "memoryId"],
+            "properties": {
+              "relation": { "enum": ["supersedes", "contradicts", "derives-from"], "x-classification": "public" },
+              "memoryId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" }
+            }
+          }
+        },
+        "contentRef": {
+          "type": "string",
+          "description": "reference to content-store blob. Secrets are prohibited as memory content (DATA-MODEL retention).",
+          "x-classification": "content",
+          "x-retention": "procedure-review",
+          "x-exportable": "explicit"
+        }
+      }
+    },
+    "MemoryExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Versioned, self-describing archive manifest; usable after replacing the backend (FR-05, GA-09).",
+      "required": ["schemaVersion", "exportId", "createdAt", "exportFormatVersion", "scope", "recordCount", "includedContent", "integrityDigest"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "exportId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "exportFormatVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "scope": { "enum": ["installation", "user", "project", "worktree", "task", "agent"], "x-classification": "public" },
+        "selectedKinds": { "type": "array", "items": { "enum": ["session", "episodic", "semantic", "procedural", "artifact", "policy-reference"], "x-classification": "public" } },
+        "recordCount": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+        "includedContent": { "type": "boolean", "description": "true only when the user explicitly selected content (x-exportable: explicit).", "x-classification": "public" },
+        "backendOmissions": {
+          "type": "array",
+          "description": "records the backend could not include or physically delete; reported, not hidden (FM-20).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["backendId", "reason"],
+            "properties": {
+              "backendId": { "type": "string", "x-classification": "identifier" },
+              "reason": { "type": "string", "x-classification": "metadata" }
+            }
+          }
+        },
+        "integrityDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" }
+      }
+    }
+  }
+}

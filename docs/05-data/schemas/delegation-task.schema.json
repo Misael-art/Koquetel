@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:delegation-task:1",
+  "title": "Koquetel agent delegation, budget and task checkpoint (SCH-14..SCH-16)",
+  "description": "Realizes FR-24/SR-16 (attenuation), FR-15 (budget ceilings) and FR-23 (restartable workflows). Root validates a Delegation.",
+  "$ref": "#/$defs/Delegation",
+  "$defs": {
+    "Delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "An expiring authority grant. A child delegation is provably no broader than its parent (SR-16, AC-12).",
+      "required": ["schemaVersion", "delegationId", "issuer", "childAgentId", "grantedCapabilities", "memoryScopes", "budgetRef", "issuedAt", "expiresAt", "revoked"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "delegationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "parentDelegationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "description": "absent for a root delegation; when present, this grant is a subset of the parent.", "x-classification": "identifier" },
+        "issuer": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
+        "childAgentId": { "type": "string", "x-classification": "identifier" },
+        "grantedCapabilities": {
+          "type": "array",
+          "items": { "enum": ["observe", "workspace-read", "workspace-write", "network", "external-write", "host-admin", "destructive"], "x-classification": "public" }
+        },
+        "memoryScopes": {
+          "type": "array",
+          "items": { "enum": ["installation", "user", "project", "worktree", "task", "agent"], "x-classification": "public" }
+        },
+        "budgetRef": { "type": "string", "x-classification": "identifier" },
+        "issuedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "delegation is time-bounded; expiry yields E-3003.", "x-classification": "metadata" },
+        "revoked": { "type": "boolean", "x-classification": "metadata" }
+      }
+    },
+    "Budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Enforced before a request creates an uncontrolled cost loop (FR-15, FM-08).",
+      "required": ["schemaVersion", "budgetId", "scope", "limits", "ceilingAction"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "budgetId": { "type": "string", "x-classification": "identifier" },
+        "scope": { "enum": ["installation", "user", "project", "task", "delegation"], "x-classification": "public" },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "tokens": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "cost": { "type": "number", "minimum": 0, "x-classification": "metadata" },
+            "retries": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "hops": { "type": "integer", "minimum": 0, "description": "routing hop ceiling; prevents routing loops (FM-08).", "x-classification": "metadata" },
+            "wallClockSeconds": { "type": "integer", "minimum": 0, "x-classification": "metadata" }
+          }
+        },
+        "consumed": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tokens": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "cost": { "type": "number", "minimum": 0, "x-classification": "metadata" },
+            "retries": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "hops": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+            "wallClockSeconds": { "type": "integer", "minimum": 0, "x-classification": "metadata" }
+          }
+        },
+        "currency": { "type": "string", "x-classification": "public" },
+        "ceilingAction": { "enum": ["stop", "checkpoint-and-stop"], "description": "reaching a ceiling terminates within bound and retains resumable state (AC-09).", "x-classification": "public" }
+      }
+    },
+    "TaskCheckpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A restart point for a workflow so a killed task converges to old-or-completed state (FR-23, NFR-03).",
+      "required": ["schemaVersion", "checkpointId", "taskId", "correlationId", "stepIndex", "phase", "createdAt", "resumable", "stateDigest"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "checkpointId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "taskId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+        "correlationId": { "type": "string", "x-classification": "identifier" },
+        "stepIndex": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+        "phase": { "type": "string", "description": "stable phase id (INTERACTION-CONTRACTS accessibility).", "x-classification": "public" },
+        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "resumable": { "type": "boolean", "x-classification": "metadata" },
+        "stateDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+        "deadline": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "retryPolicyRef": { "type": "string", "x-classification": "identifier" }
+      }
+    }
+  }
+}

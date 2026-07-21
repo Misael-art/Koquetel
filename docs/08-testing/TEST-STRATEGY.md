@@ -7,7 +7,11 @@ Last reviewed: 2026-07-21
 
 1. Domain property tests for policy, budgets, state machines and path safety.
 2. Adapter contract tests against version-pinned fixtures.
-3. Golden tests for CLI/API/events/config projections.
+3. Golden tests for CLI/API/events/config projections, including the schema
+   contract family `SC-01..SC-10` (`docs/05-data/schemas/SCHEMA-REGISTRY.md`):
+   every valid example validates, every invalid example is rejected for its one
+   documented reason, unknown-major records fail closed, and every sensitive field
+   declares classification, retention and export permission.
 4. Integration tests using temporary homes and fake providers/backends.
 5. Sandbox containment and hostile-repository security tests.
 6. Kill-point transaction and rollback tests.

@@ -43,3 +43,28 @@ Append-only evidence log.
   parity and post-migration severance.
 - Reworded research matrices to distinguish evidence sources from technical bases
   or dependency choices.
+
+## 2026-07-21 — F1 normative schemas
+
+- Added `docs/05-data/schemas/` with `SCHEMA-REGISTRY.md` and eight JSON Schema
+  files (draft 2020-12) covering the twenty logical contracts `SCH-01..SCH-20`:
+  plan/confirmation, transaction/journal/recovery/ownership, profile-probe/adapter,
+  memory-envelope/export, tool-manifest/capability-request/policy-decision,
+  delegation/budget/task-checkpoint, event/support-bundle, model-route/usage.
+- Each field carries `x-classification`; sensitive fields also carry `x-retention`
+  and `x-exportable`, per the classification legend in the registry §4.
+- Fields were drawn from existing contracts (transaction record, memory envelope,
+  API envelope, error catalog, anti-requirements), not invented; every schema maps
+  to requirements, threats/failure modes, acceptance and an `SC-xx` test in §5.
+- `$id` uses `urn:koquetel:*` (no network host) to keep schema identity resolvable
+  offline, consistent with P-13/NFR-13.
+- Added 16 `examples/*.{valid,invalid}.json` (one pair per file) plus two inline
+  cross-field invalid cases (confirmation hash mismatch, journal torn tail).
+- Verified all 24 JSON files are well-formed. `jsonschema` is not installed, so the
+  `SC-01..SC-10` golden tests remain specified, not executed; a dependency-free
+  structural checker is added under F4.
+- Registered namespaces `SCH-xx`, `SC-xx`, `PT-xx` in `AGENTS.md` and back-filled
+  the previously published-but-unregistered `IT-xx`, `AR-xx`, `GA-xx`. Additions
+  only; no identifier renumbered.
+- Cross-referenced schemas from `DATA-MODEL.md` and the `SC` family from
+  `TEST-STRATEGY.md`. No production code, package or host change was made.

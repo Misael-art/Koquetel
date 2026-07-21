@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "planId": "01J8Z0CNF6QH7VK3M2P9XR4T5A",
+  "planHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "operation": "install",
+  "scope": { "type": "project", "id": "proj-example" },
+  "initiatingActor": { "type": "user", "id": "local:dev" },
+  "createdAt": "2026-07-21T18:00:00Z",
+  "expiresAt": "2026-07-21T18:10:00Z",
+  "requiredConfirmationClass": "auto-approve",
+  "ownedTargets": [],
+  "steps": [
+    { "stepId": "s1", "intent": "write managed config", "capability": "workspace-write", "compensation": "remove created file" }
+  ],
+  "verificationPlan": ["config parses"],
+  "rollbackPlan": { "strategy": "restore-backup" }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "memoryId": "01J8Z0CNF9QH7VK3M2P9XR4T5D",
+  "contentDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kind": "procedural",
+  "scope": "project",
+  "source": { "type": "agent", "reference": "session/abc", "actor": "claude-code", "originatingCorrelationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F" },
+  "timestamps": { "created": "2026-07-21T18:00:00Z", "observed": "2026-07-21T18:00:00Z" },
+  "confidence": 0.92,
+  "validationState": "validated",
+  "sensitivity": "metadata",
+  "remoteProcessingPolicy": "denied",
+  "backendLocators": [
+    { "backendId": "ai-memory", "locator": "page/1234" }
+  ],
+  "relationships": []
+}

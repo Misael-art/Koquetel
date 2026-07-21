@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "routeId": "01J8Z0CNFGQH7VK3M2P9XR4T5M",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "taskClass": "code-edit",
+  "privacyClass": "anywhere",
+  "selectedProvider": "local-openai-compatible",
+  "selectedModel": "local-large",
+  "budgetRef": "01J8Z0CNFEQH7VK3M2P9XR4T5J",
+  "decidedAt": "2026-07-21T18:00:00Z"
+}

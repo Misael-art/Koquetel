@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "transactionId": "01J8Z0CNF8QH7VK3M2P9XR4T5C",
+  "operation": "install",
+  "scope": { "type": "installation", "id": "inst-example" },
+  "initiatingActor": "local:dev",
+  "targetVersion": "0.0.0-foundation",
+  "planHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "requiredConfirmationClass": "workspace-write",
+  "steps": [
+    { "stepId": "s1", "precondition": "staged artifact verified", "intent": "activate config by atomic rename", "result": "verified", "compensation": "restore prior config from backup bk-1" }
+  ],
+  "ownedPaths": [
+    { "path": "/home/dev/.config/koquetel/state.db", "managed": true, "ownershipMarker": "X-Koquetel-Managed=true", "preDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "postDigest": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" }
+  ],
+  "backupRefs": [
+    { "ref": "bk-1", "integrityDigest": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" }
+  ],
+  "verificationEvidence": ["doctor smoke test passed"],
+  "state": "committed",
+  "timestamps": { "createdAt": "2026-07-21T18:00:00Z", "updatedAt": "2026-07-21T18:00:05Z", "terminalAt": "2026-07-21T18:00:05Z" }
+}
