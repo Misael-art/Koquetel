@@ -68,3 +68,27 @@ Append-only evidence log.
   only; no identifier renumbered.
 - Cross-referenced schemas from `DATA-MODEL.md` and the `SC` family from
   `TEST-STRATEGY.md`. No production code, package or host change was made.
+
+## 2026-07-21 — F2 external audit (ai-memory, EA-01)
+
+- Cloned `akitaonrails/ai-memory` read-only into the session scratchpad and
+  checked out the observation pin `2a85950`; remote HEAD matched the pin.
+- Verified root `LICENSE` MIT © 2026 Fabio Akita. Inventoried 480 tracked files;
+  found a Rust + SQLite (`rusqlite`/`refinery`) Cargo workspace, not the assumed
+  service shape — relevant to ADR-0002.
+- Read `store/src/migrations.rs` (144) and `maintenance.rs` (48) fully with
+  SHA-256; read the store-open/pragma region of `lib.rs` and the purge/delete
+  surface of `writer.rs`.
+- Recorded positive patterns with lines: WAL + tuned pragmas (`lib.rs:91-93`),
+  single-writer-actor + reader pool (`lib.rs:69-73,102-103`; `writer.rs:667-685`),
+  fail-closed schema-ahead guard with tests (`migrations.rs:31-42,61-113`),
+  deletion transparency via `PurgeSummary` and non-empty guard (`writer.rs:660-700`).
+- Recorded adoption constraints for Koquetel: `synchronous=NORMAL` is not
+  governance-grade durability (`lib.rs:92`); cross-process write concurrency is
+  unproven (DEFERRED transactions, `busy_timeout` only, no `BEGIN IMMEDIATE`);
+  export is transcript-scoped. Mapped each to G-04/PT-03/FR-05.
+- Added `docs/02-research/EXTERNAL-AUDITS.md` (audit template + status table + EA-01),
+  narrowed G-03 and G-04 honestly (still open — runtime prototype required), updated
+  the source register and robustness-score interpretation.
+- Verified PhaseZero and SteamZero were not modified; the clone lives only in the
+  scratchpad. No dependency on either source was introduced.

@@ -29,6 +29,11 @@ SteamZero provides stronger research evidence for execution architecture.
 PhaseZero provides stronger research evidence for catalog and client coverage.
 Neither becomes a Koquetel dependency, submodule, runtime service or installed
 prerequisite. Koquetel independently synthesizes the accepted behaviors while
-correcting AR-01 through AR-10. External specialized projects remain unscored
-until equivalent structural audits are complete; assigning scores from README
-claims would violate MP-2.
+correcting AR-01 through AR-10. External specialized projects remain unscored on
+this lifecycle-oriented scale until equivalent structural audits are complete;
+assigning scores from README claims would violate MP-2. ai-memory now has a
+focused implementation audit ([`EXTERNAL-AUDITS.md`](EXTERNAL-AUDITS.md) EA-01) on
+memory-relevant dimensions (durability tier, concurrency model, schema-ahead
+guard, export/removal scope); it is deliberately not folded into this
+lifecycle-tool table, whose criteria (backup/rollback, uninstall/recovery) do not
+map cleanly onto a memory content/search service.
