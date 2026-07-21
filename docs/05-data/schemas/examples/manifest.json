@@ -1,0 +1,36 @@
+{
+  "_comment": "Maps each SCH-01..SCH-20 entity to its schema, JSON-pointer, valid/invalid examples and the single rule its invalid example violates (path=property chain, keyword=JSON Schema keyword). Consumed by tools/schema_suite/run_suite.py.",
+  "entities": [
+    { "sch": "SCH-01", "name": "Plan", "sc": "SC-01", "schema": "plan-confirmation.schema.json", "pointer": "", "valid": "plan-confirmation.valid.json", "invalid": "plan-confirmation.invalid.json", "rule": { "path": ["requiredConfirmationClass"], "keyword": "enum" } },
+    { "sch": "SCH-02", "name": "Confirmation", "sc": "SC-01", "schema": "plan-confirmation.schema.json", "pointer": "/$defs/Confirmation", "valid": "confirmation.valid.json", "invalid": "confirmation.invalid.json", "rule": { "path": ["actor", "type"], "keyword": "const" } },
+    { "sch": "SCH-03", "name": "TransactionRecord", "sc": "SC-02", "schema": "transaction.schema.json", "pointer": "", "valid": "transaction.valid.json", "invalid": "transaction.invalid.json", "rule": { "path": ["state"], "keyword": "enum" } },
+    { "sch": "SCH-04", "name": "JournalEntry", "sc": "SC-02", "schema": "transaction.schema.json", "pointer": "/$defs/JournalEntry", "valid": "journal-entry.valid.json", "invalid": "journal-entry.invalid.json", "rule": { "path": ["entryType"], "keyword": "enum" } },
+    { "sch": "SCH-05", "name": "RecoveryRecord", "sc": "SC-02", "schema": "transaction.schema.json", "pointer": "/$defs/RecoveryRecord", "valid": "recovery-record.valid.json", "invalid": "recovery-record.invalid.json", "rule": { "path": ["action"], "keyword": "enum" } },
+    { "sch": "SCH-06", "name": "OwnershipFingerprint", "sc": "SC-02", "schema": "transaction.schema.json", "pointer": "/$defs/OwnershipFingerprint", "valid": "ownership-fingerprint.valid.json", "invalid": "ownership-fingerprint.invalid.json", "rule": { "path": ["preDigest"], "keyword": "pattern" } },
+    { "sch": "SCH-07", "name": "ProfileProbe", "sc": "SC-03", "schema": "profile-adapter.schema.json", "pointer": "", "valid": "profile-adapter.valid.json", "invalid": "profile-adapter.invalid.json", "rule": { "path": ["profile"], "keyword": "enum" } },
+    { "sch": "SCH-08", "name": "AdapterDescriptor", "sc": "SC-03", "schema": "profile-adapter.schema.json", "pointer": "/$defs/AdapterDescriptor", "valid": "adapter-descriptor.valid.json", "invalid": "adapter-descriptor.invalid.json", "rule": { "path": ["failClosedOnUnknownSchema"], "keyword": "const" } },
+    { "sch": "SCH-09", "name": "MemoryEnvelope", "sc": "SC-04", "schema": "memory.schema.json", "pointer": "", "valid": "memory.valid.json", "invalid": "memory.invalid.json", "rule": { "path": ["confidence"], "keyword": "maximum" } },
+    { "sch": "SCH-10", "name": "MemoryExport", "sc": "SC-04", "schema": "memory.schema.json", "pointer": "/$defs/MemoryExport", "valid": "memory-export.valid.json", "invalid": "memory-export.invalid.json", "rule": { "path": ["scope"], "keyword": "enum" } },
+    { "sch": "SCH-11", "name": "ToolManifest", "sc": "SC-05", "schema": "tool-policy.schema.json", "pointer": "", "valid": "tool-policy.valid.json", "invalid": "tool-policy.invalid.json", "rule": { "path": ["transport"], "keyword": "enum" } },
+    { "sch": "SCH-12", "name": "CapabilityRequest", "sc": "SC-05", "schema": "tool-policy.schema.json", "pointer": "/$defs/CapabilityRequest", "valid": "capability-request.valid.json", "invalid": "capability-request.invalid.json", "rule": { "path": ["requestedCapability"], "keyword": "enum" } },
+    { "sch": "SCH-13", "name": "PolicyDecision", "sc": "SC-05", "schema": "tool-policy.schema.json", "pointer": "/$defs/PolicyDecision", "valid": "policy-decision.valid.json", "invalid": "policy-decision.invalid.json", "rule": { "path": ["decision"], "keyword": "enum" } },
+    { "sch": "SCH-14", "name": "Delegation", "sc": "SC-06", "schema": "delegation-task.schema.json", "pointer": "", "valid": "delegation-task.valid.json", "invalid": "delegation-task.invalid.json", "rule": { "path": ["grantedCapabilities"], "keyword": "enum" } },
+    { "sch": "SCH-15", "name": "Budget", "sc": "SC-06", "schema": "delegation-task.schema.json", "pointer": "/$defs/Budget", "valid": "budget.valid.json", "invalid": "budget.invalid.json", "rule": { "path": ["ceilingAction"], "keyword": "enum" } },
+    { "sch": "SCH-16", "name": "TaskCheckpoint", "sc": "SC-06", "schema": "delegation-task.schema.json", "pointer": "/$defs/TaskCheckpoint", "valid": "task-checkpoint.valid.json", "invalid": "task-checkpoint.invalid.json", "rule": { "path": ["stateDigest"], "keyword": "pattern" } },
+    { "sch": "SCH-17", "name": "EventRecord", "sc": "SC-07", "schema": "event-support.schema.json", "pointer": "", "valid": "event-support.valid.json", "invalid": "event-support.invalid.json", "rule": { "path": ["category"], "keyword": "enum" } },
+    { "sch": "SCH-18", "name": "SupportBundleManifest", "sc": "SC-07", "schema": "event-support.schema.json", "pointer": "/$defs/SupportBundleManifest", "valid": "support-bundle.valid.json", "invalid": "support-bundle.invalid.json", "rule": { "path": ["generatedOffline"], "keyword": "const" } },
+    { "sch": "SCH-19", "name": "ModelRoute", "sc": "SC-08", "schema": "model-routing.schema.json", "pointer": "", "valid": "model-routing.valid.json", "invalid": "model-routing.invalid.json", "rule": { "path": ["privacyClass"], "keyword": "enum" } },
+    { "sch": "SCH-20", "name": "UsageRecord", "sc": "SC-08", "schema": "model-routing.schema.json", "pointer": "/$defs/UsageRecord", "valid": "usage-record.valid.json", "invalid": "usage-record.invalid.json", "rule": { "path": ["contentRecorded"], "keyword": "const" } }
+  ],
+  "sc09": {
+    "strictSchema": "event-support.schema.json",
+    "tolerantSchema": "tolerant-read/event.tolerant.schema.json",
+    "knownV1": "event-support.valid.json",
+    "unknownField": "event.tolerant.valid.json",
+    "major2": "event.major2.json"
+  },
+  "semantic": {
+    "planValid": "plan-confirmation.valid.json",
+    "confirmationValid": "confirmation.valid.json"
+  }
+}

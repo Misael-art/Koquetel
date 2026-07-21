@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "usageId": "01J8Z0CNFQQH7VK3M2P9XR4T5V",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "clientId": "claude-code",
+  "provider": "local-openai-compatible",
+  "model": "local-large",
+  "outcome": "accepted",
+  "contentRecorded": true,
+  "recordedAt": "2026-07-21T18:00:03Z"
+}

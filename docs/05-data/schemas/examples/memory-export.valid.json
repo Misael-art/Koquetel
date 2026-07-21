@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "exportId": "01J8Z0CNFHQH7VK3M2P9XR4T5N",
+  "createdAt": "2026-07-21T18:10:00Z",
+  "exportFormatVersion": 1,
+  "scope": "project",
+  "selectedKinds": ["semantic", "procedural"],
+  "recordCount": 128,
+  "includedContent": false,
+  "backendOmissions": [
+    { "backendId": "ai-memory", "reason": "WAL residue not physically vacuumed at export time" }
+  ],
+  "integrityDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

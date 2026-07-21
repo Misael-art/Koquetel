@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "requestId": "01J8Z0CNFJQH7VK3M2P9XR4T5P",
+  "toolId": "tool.fs.write",
+  "invokedBy": { "type": "model", "id": "claude-code" },
+  "requestedCapability": "workspace-write",
+  "target": "/home/dev/repo/src",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "requesterText": "please write the file"
+}

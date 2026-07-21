@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "bundleId": "01J8Z0CNFPQH7VK3M2P9XR4T5T",
+  "createdAt": "2026-07-21T18:15:00Z",
+  "generatedOffline": false,
+  "includes": ["manifest"],
+  "redactionApplied": true,
+  "includeContent": false,
+  "integrityDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

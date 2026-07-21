@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "budgetId": "01J8Z0CNFEQH7VK3M2P9XR4T5J",
+  "scope": "task",
+  "limits": { "tokens": 200000, "cost": 5.0, "retries": 3, "hops": 4, "wallClockSeconds": 900 },
+  "consumed": { "tokens": 1200, "cost": 0.03, "retries": 0, "hops": 1, "wallClockSeconds": 12 },
+  "currency": "USD",
+  "ceilingAction": "checkpoint-and-stop"
+}

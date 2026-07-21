@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "01J8Z0CNFMQH7VK3M2P9XR4T5R",
+  "taskId": "01J8Z0CNFNQH7VK3M2P9XR4T5S",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "stepIndex": 3,
+  "phase": "verify",
+  "createdAt": "2026-07-21T18:00:20Z",
+  "resumable": true,
+  "stateDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "deadline": "2026-07-21T18:30:00Z",
+  "retryPolicyRef": "retry.default"
+}

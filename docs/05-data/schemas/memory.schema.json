@@ -8,64 +8,207 @@
     "MemoryEnvelope": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schemaVersion", "memoryId", "contentDigest", "kind", "scope", "source", "timestamps", "validationState", "sensitivity", "remoteProcessingPolicy"],
+      "required": [
+        "schemaVersion",
+        "memoryId",
+        "contentDigest",
+        "kind",
+        "scope",
+        "source",
+        "timestamps",
+        "validationState",
+        "sensitivity",
+        "remoteProcessingPolicy"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "memoryId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "description": "immutable id.", "x-classification": "identifier" },
-        "contentDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
-        "kind": { "enum": ["session", "episodic", "semantic", "procedural", "artifact", "policy-reference"], "x-classification": "public" },
-        "scope": { "enum": ["installation", "user", "project", "worktree", "task", "agent"], "description": "enforced before semantic ranking (SR-11).", "x-classification": "public" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "memoryId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "description": "immutable id.",
+          "x-classification": "identifier"
+        },
+        "contentDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "x-classification": "identifier"
+        },
+        "kind": {
+          "enum": [
+            "session",
+            "episodic",
+            "semantic",
+            "procedural",
+            "artifact",
+            "policy-reference"
+          ],
+          "x-classification": "public"
+        },
+        "scope": {
+          "enum": [
+            "installation",
+            "user",
+            "project",
+            "worktree",
+            "task",
+            "agent"
+          ],
+          "description": "enforced before semantic ranking (SR-11).",
+          "x-classification": "public"
+        },
         "source": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["type", "actor", "originatingCorrelationId"],
+          "required": [
+            "type",
+            "actor",
+            "originatingCorrelationId"
+          ],
           "properties": {
-            "type": { "enum": ["user", "agent", "tool", "import", "deterministic"], "x-classification": "public" },
-            "reference": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" },
-            "actor": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" },
-            "originatingCorrelationId": { "type": "string", "x-classification": "identifier" }
-          }
+            "type": {
+              "enum": [
+                "user",
+                "agent",
+                "tool",
+                "import",
+                "deterministic"
+              ],
+              "x-classification": "public"
+            },
+            "reference": {
+              "type": "string",
+              "x-classification": "sensitive",
+              "x-retention": "procedure-review",
+              "x-exportable": "policy"
+            },
+            "actor": {
+              "type": "string",
+              "x-classification": "sensitive",
+              "x-retention": "procedure-review",
+              "x-exportable": "policy"
+            },
+            "originatingCorrelationId": {
+              "type": "string",
+              "x-classification": "identifier"
+            }
+          },
+          "x-classification": "metadata"
         },
         "timestamps": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["created"],
+          "required": [
+            "created"
+          ],
           "properties": {
-            "created": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-            "observed": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-            "reviewed": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-            "expires": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-            "superseded": { "type": "string", "format": "date-time", "x-classification": "metadata" }
-          }
+            "created": {
+              "type": "string",
+              "format": "date-time",
+              "x-classification": "metadata"
+            },
+            "observed": {
+              "type": "string",
+              "format": "date-time",
+              "x-classification": "metadata"
+            },
+            "reviewed": {
+              "type": "string",
+              "format": "date-time",
+              "x-classification": "metadata"
+            },
+            "expires": {
+              "type": "string",
+              "format": "date-time",
+              "x-classification": "metadata"
+            },
+            "superseded": {
+              "type": "string",
+              "format": "date-time",
+              "x-classification": "metadata"
+            }
+          },
+          "x-classification": "metadata"
         },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1, "x-classification": "metadata" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "x-classification": "metadata"
+        },
         "validationState": {
-          "enum": ["candidate", "validated", "quarantined", "superseded", "expired", "deleted-tombstone"],
+          "enum": [
+            "candidate",
+            "validated",
+            "quarantined",
+            "superseded",
+            "expired",
+            "deleted-tombstone"
+          ],
           "description": "only 'validated' is eligible for automatic current context unless policy allows candidates.",
           "x-classification": "metadata"
         },
-        "sensitivity": { "enum": ["public", "metadata", "sensitive", "content"], "x-classification": "public" },
-        "remoteProcessingPolicy": { "enum": ["allowed", "denied", "policy"], "description": "whether this record may cross a network boundary (SR-14).", "x-classification": "public" },
+        "sensitivity": {
+          "enum": [
+            "public",
+            "metadata",
+            "sensitive",
+            "content"
+          ],
+          "x-classification": "public"
+        },
+        "remoteProcessingPolicy": {
+          "enum": [
+            "allowed",
+            "denied",
+            "policy"
+          ],
+          "description": "whether this record may cross a network boundary (SR-14).",
+          "x-classification": "public"
+        },
         "backendLocators": {
           "type": "array",
           "description": "never the only place governance metadata lives (ADR-0004).",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["backendId", "locator"],
+            "required": [
+              "backendId",
+              "locator"
+            ],
             "properties": {
-              "backendId": { "type": "string", "x-classification": "identifier" },
-              "locator": { "type": "string", "x-classification": "sensitive", "x-retention": "procedure-review", "x-exportable": "policy" }
+              "backendId": {
+                "type": "string",
+                "x-classification": "identifier"
+              },
+              "locator": {
+                "type": "string",
+                "x-classification": "sensitive",
+                "x-retention": "procedure-review",
+                "x-exportable": "policy"
+              }
             }
-          }
+          },
+          "x-classification": "metadata"
         },
         "embeddingProvenance": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "model": { "type": "string", "x-classification": "metadata" },
-            "dimension": { "type": "integer", "minimum": 1, "x-classification": "metadata" }
-          }
+            "model": {
+              "type": "string",
+              "x-classification": "metadata"
+            },
+            "dimension": {
+              "type": "integer",
+              "minimum": 1,
+              "x-classification": "metadata"
+            }
+          },
+          "x-classification": "metadata"
         },
         "relationships": {
           "type": "array",
@@ -73,12 +216,27 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["relation", "memoryId"],
+            "required": [
+              "relation",
+              "memoryId"
+            ],
             "properties": {
-              "relation": { "enum": ["supersedes", "contradicts", "derives-from"], "x-classification": "public" },
-              "memoryId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" }
+              "relation": {
+                "enum": [
+                  "supersedes",
+                  "contradicts",
+                  "derives-from"
+                ],
+                "x-classification": "public"
+              },
+              "memoryId": {
+                "type": "string",
+                "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+                "x-classification": "identifier"
+              }
             }
-          }
+          },
+          "x-classification": "metadata"
         },
         "contentRef": {
           "type": "string",
@@ -93,30 +251,101 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Versioned, self-describing archive manifest; usable after replacing the backend (FR-05, GA-09).",
-      "required": ["schemaVersion", "exportId", "createdAt", "exportFormatVersion", "scope", "recordCount", "includedContent", "integrityDigest"],
+      "required": [
+        "schemaVersion",
+        "exportId",
+        "createdAt",
+        "exportFormatVersion",
+        "scope",
+        "recordCount",
+        "includedContent",
+        "integrityDigest"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "exportId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-        "exportFormatVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
-        "scope": { "enum": ["installation", "user", "project", "worktree", "task", "agent"], "x-classification": "public" },
-        "selectedKinds": { "type": "array", "items": { "enum": ["session", "episodic", "semantic", "procedural", "artifact", "policy-reference"], "x-classification": "public" } },
-        "recordCount": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "includedContent": { "type": "boolean", "description": "true only when the user explicitly selected content (x-exportable: explicit).", "x-classification": "public" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "exportId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        },
+        "exportFormatVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "x-classification": "public"
+        },
+        "scope": {
+          "enum": [
+            "installation",
+            "user",
+            "project",
+            "worktree",
+            "task",
+            "agent"
+          ],
+          "x-classification": "public"
+        },
+        "selectedKinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "session",
+              "episodic",
+              "semantic",
+              "procedural",
+              "artifact",
+              "policy-reference"
+            ],
+            "x-classification": "public"
+          },
+          "x-classification": "metadata"
+        },
+        "recordCount": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "includedContent": {
+          "type": "boolean",
+          "description": "true only when the user explicitly selected content (x-exportable: explicit).",
+          "x-classification": "public"
+        },
         "backendOmissions": {
           "type": "array",
           "description": "records the backend could not include or physically delete; reported, not hidden (FM-20).",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["backendId", "reason"],
+            "required": [
+              "backendId",
+              "reason"
+            ],
             "properties": {
-              "backendId": { "type": "string", "x-classification": "identifier" },
-              "reason": { "type": "string", "x-classification": "metadata" }
+              "backendId": {
+                "type": "string",
+                "x-classification": "identifier"
+              },
+              "reason": {
+                "type": "string",
+                "x-classification": "metadata"
+              }
             }
-          }
+          },
+          "x-classification": "metadata"
         },
-        "integrityDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" }
+        "integrityDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "x-classification": "identifier"
+        }
       }
     }
   }

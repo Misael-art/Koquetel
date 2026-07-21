@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "eventId": "01J8Z0CNFFQH7VK3M2P9XR4T5K",
+  "sequence": 44,
+  "installationId": "inst-example",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "timestamp": "2026-07-21T18:06:00Z",
+  "category": "telemetry",
+  "action": "exporter.flush",
+  "result": "ok",
+  "eventDigest": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+}

@@ -9,46 +9,187 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Append-only audit metadata with monotonic sequence and chained digest within an installation (SR-10).",
-      "required": ["schemaVersion", "eventId", "sequence", "installationId", "correlationId", "timestamp", "category", "action", "result", "eventDigest"],
+      "required": [
+        "schemaVersion",
+        "eventId",
+        "sequence",
+        "installationId",
+        "correlationId",
+        "timestamp",
+        "category",
+        "action",
+        "result",
+        "eventDigest"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "eventId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "sequence": { "type": "integer", "minimum": 0, "description": "monotonic within an installation (SR-10).", "x-classification": "metadata" },
-        "installationId": { "type": "string", "x-classification": "identifier" },
-        "correlationId": { "type": "string", "x-classification": "identifier" },
-        "causeCorrelationId": { "type": "string", "x-classification": "identifier" },
-        "timestamp": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-        "actor": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
-        "category": { "enum": ["mutation", "authority", "memory", "routing", "tool", "lifecycle", "telemetry"], "x-classification": "public" },
-        "action": { "type": "string", "x-classification": "metadata" },
-        "result": { "enum": ["ok", "denied", "failed", "degraded"], "x-classification": "metadata" },
-        "redactedOutcome": { "type": "string", "description": "structured, redaction-passed summary; raw content excluded by default (SR-06, NFR-06).", "x-classification": "metadata" },
-        "prevEventDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
-        "eventDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
-        "otelTraceId": { "type": "string", "pattern": "^[0-9a-f]{32}$", "description": "optional OpenTelemetry GenAI correlation; presence never enables content capture.", "x-classification": "identifier" },
-        "otelSpanId": { "type": "string", "pattern": "^[0-9a-f]{16}$", "x-classification": "identifier" }
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "eventId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "monotonic within an installation (SR-10).",
+          "x-classification": "metadata"
+        },
+        "installationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "correlationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "causeCorrelationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        },
+        "actor": {
+          "type": "string",
+          "x-classification": "sensitive",
+          "x-retention": "audit-180d",
+          "x-exportable": "policy"
+        },
+        "category": {
+          "enum": [
+            "mutation",
+            "authority",
+            "memory",
+            "routing",
+            "tool",
+            "lifecycle",
+            "telemetry"
+          ],
+          "x-classification": "public"
+        },
+        "action": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "result": {
+          "enum": [
+            "ok",
+            "denied",
+            "failed",
+            "degraded"
+          ],
+          "x-classification": "metadata"
+        },
+        "redactedOutcome": {
+          "type": "string",
+          "description": "structured, redaction-passed summary; raw content excluded by default (SR-06, NFR-06).",
+          "x-classification": "metadata"
+        },
+        "prevEventDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "x-classification": "identifier"
+        },
+        "eventDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "x-classification": "identifier"
+        },
+        "otelTraceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$",
+          "description": "optional OpenTelemetry GenAI correlation; presence never enables content capture.",
+          "x-classification": "identifier"
+        },
+        "otelSpanId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{16}$",
+          "x-classification": "identifier"
+        }
       }
     },
     "SupportBundleManifest": {
       "type": "object",
       "additionalProperties": false,
       "description": "Describes a diagnostic bundle produced without a model or cloud (FR-26). Content is excluded unless explicitly requested and previewed (FR-22).",
-      "required": ["schemaVersion", "bundleId", "createdAt", "generatedOffline", "includes", "redactionApplied", "includeContent", "integrityDigest"],
+      "required": [
+        "schemaVersion",
+        "bundleId",
+        "createdAt",
+        "generatedOffline",
+        "includes",
+        "redactionApplied",
+        "includeContent",
+        "integrityDigest"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "bundleId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
-        "generatedOffline": { "const": true, "description": "the bundle path must complete using local state only (FR-26, AC-13).", "x-classification": "public" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "bundleId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        },
+        "generatedOffline": {
+          "const": true,
+          "description": "the bundle path must complete using local state only (FR-26, AC-13).",
+          "x-classification": "public"
+        },
         "includes": {
           "type": "array",
           "minItems": 1,
-          "items": { "enum": ["manifest", "redacted-state", "recent-events", "transactions", "adapter-health", "policy", "diagnostics"], "x-classification": "public" }
+          "items": {
+            "enum": [
+              "manifest",
+              "redacted-state",
+              "recent-events",
+              "transactions",
+              "adapter-health",
+              "policy",
+              "diagnostics"
+            ],
+            "x-classification": "public"
+          },
+          "x-classification": "metadata"
         },
-        "redactionApplied": { "const": true, "description": "structured and entropy/pattern redaction ran before persistence (SR-06).", "x-classification": "public" },
-        "includeContent": { "type": "boolean", "description": "default false; true requires explicit request and preview (FR-22, x-exportable: explicit).", "x-classification": "public" },
-        "contentPreviewAcknowledged": { "type": "boolean", "x-classification": "public" },
-        "secretsRedactedCount": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "integrityDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" }
+        "redactionApplied": {
+          "const": true,
+          "description": "structured and entropy/pattern redaction ran before persistence (SR-06).",
+          "x-classification": "public"
+        },
+        "includeContent": {
+          "type": "boolean",
+          "description": "default false; true requires explicit request and preview (FR-22, x-exportable: explicit).",
+          "x-classification": "public"
+        },
+        "contentPreviewAcknowledged": {
+          "type": "boolean",
+          "x-classification": "public"
+        },
+        "secretsRedactedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "integrityDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "x-classification": "identifier"
+        }
       }
     }
   }

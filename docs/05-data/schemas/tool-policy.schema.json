@@ -9,84 +9,302 @@
       "type": "object",
       "additionalProperties": false,
       "description": "A pinned, integrity-verified tool version. A changed manifest after admission denies invocation (FM-09).",
-      "required": ["schemaVersion", "toolId", "name", "version", "source", "integrity", "transport", "inputSchemaRef", "requestedCapabilities", "manifestDigest", "admissionState"],
+      "required": [
+        "schemaVersion",
+        "toolId",
+        "name",
+        "version",
+        "source",
+        "integrity",
+        "transport",
+        "inputSchemaRef",
+        "requestedCapabilities",
+        "manifestDigest",
+        "admissionState"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "toolId": { "type": "string", "x-classification": "identifier" },
-        "name": { "type": "string", "x-classification": "public" },
-        "version": { "type": "string", "x-classification": "public" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "toolId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "name": {
+          "type": "string",
+          "x-classification": "public"
+        },
+        "version": {
+          "type": "string",
+          "x-classification": "public"
+        },
         "source": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["origin"],
+          "required": [
+            "origin"
+          ],
           "properties": {
-            "origin": { "enum": ["registry", "mcp-server", "builtin", "local-path"], "x-classification": "public" },
-            "url": { "type": "string", "x-classification": "metadata" }
-          }
+            "origin": {
+              "enum": [
+                "registry",
+                "mcp-server",
+                "builtin",
+                "local-path"
+              ],
+              "x-classification": "public"
+            },
+            "url": {
+              "type": "string",
+              "x-classification": "metadata"
+            }
+          },
+          "x-classification": "metadata"
         },
         "integrity": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["algorithm", "digest"],
+          "required": [
+            "algorithm",
+            "digest"
+          ],
           "properties": {
-            "algorithm": { "enum": ["sha256", "sha512"], "x-classification": "public" },
-            "digest": { "type": "string", "pattern": "^[0-9a-f]{64,128}$", "description": "pinned artifact digest; mismatch rejects before invocation (SR-09).", "x-classification": "identifier" }
-          }
+            "algorithm": {
+              "enum": [
+                "sha256",
+                "sha512"
+              ],
+              "x-classification": "public"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64,128}$",
+              "description": "pinned artifact digest; mismatch rejects before invocation (SR-09).",
+              "x-classification": "identifier"
+            }
+          },
+          "x-classification": "metadata"
         },
-        "transport": { "enum": ["mcp", "process", "builtin"], "description": "MCP is one transport, not an authority boundary (ADR-0005).", "x-classification": "public" },
-        "inputSchemaRef": { "type": "string", "x-classification": "public" },
-        "outputSchemaRef": { "type": "string", "x-classification": "public" },
+        "transport": {
+          "enum": [
+            "mcp",
+            "process",
+            "builtin"
+          ],
+          "description": "MCP is one transport, not an authority boundary (ADR-0005).",
+          "x-classification": "public"
+        },
+        "inputSchemaRef": {
+          "type": "string",
+          "x-classification": "public"
+        },
+        "outputSchemaRef": {
+          "type": "string",
+          "x-classification": "public"
+        },
         "requestedCapabilities": {
           "type": "array",
           "minItems": 0,
-          "items": { "enum": ["observe", "workspace-read", "workspace-write", "network", "external-write", "host-admin", "destructive"], "x-classification": "public" }
+          "items": {
+            "enum": [
+              "observe",
+              "workspace-read",
+              "workspace-write",
+              "network",
+              "external-write",
+              "host-admin",
+              "destructive"
+            ],
+            "x-classification": "public"
+          },
+          "x-classification": "metadata"
         },
-        "manifestDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "digest of the whole manifest; re-checked at each invocation (FM-09).", "x-classification": "identifier" },
-        "healthState": { "enum": ["healthy", "degraded", "unavailable", "unknown"], "x-classification": "metadata" },
-        "admissionState": { "enum": ["admitted", "revoked", "pending"], "description": "admission is not permission to run; each call still needs a PolicyDecision.", "x-classification": "metadata" }
+        "manifestDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "digest of the whole manifest; re-checked at each invocation (FM-09).",
+          "x-classification": "identifier"
+        },
+        "healthState": {
+          "enum": [
+            "healthy",
+            "degraded",
+            "unavailable",
+            "unknown"
+          ],
+          "x-classification": "metadata"
+        },
+        "admissionState": {
+          "enum": [
+            "admitted",
+            "revoked",
+            "pending"
+          ],
+          "description": "admission is not permission to run; each call still needs a PolicyDecision.",
+          "x-classification": "metadata"
+        }
       }
     },
     "CapabilityRequest": {
       "type": "object",
       "additionalProperties": false,
       "description": "A request to invoke a capability. The requester's text is untrusted (SR-01) and is recorded, not obeyed.",
-      "required": ["schemaVersion", "requestId", "toolId", "invokedBy", "requestedCapability", "correlationId"],
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "toolId",
+        "invokedBy",
+        "requestedCapability",
+        "correlationId"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "requestId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "toolId": { "type": "string", "x-classification": "identifier" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "toolId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
         "invokedBy": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["type", "id"],
+          "required": [
+            "type",
+            "id"
+          ],
           "properties": {
-            "type": { "enum": ["model", "agent", "user", "delegation"], "x-classification": "public" },
-            "id": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" }
-          }
+            "type": {
+              "enum": [
+                "model",
+                "agent",
+                "user",
+                "delegation"
+              ],
+              "x-classification": "public"
+            },
+            "id": {
+              "type": "string",
+              "x-classification": "sensitive",
+              "x-retention": "audit-180d",
+              "x-exportable": "policy"
+            }
+          },
+          "x-classification": "metadata"
         },
-        "requestedCapability": { "enum": ["observe", "workspace-read", "workspace-write", "network", "external-write", "host-admin", "destructive"], "x-classification": "public" },
-        "target": { "type": "string", "x-classification": "host-scoped", "x-retention": "audit-180d", "x-exportable": "policy" },
-        "correlationId": { "type": "string", "x-classification": "identifier" },
-        "requesterText": { "type": "string", "description": "verbatim model/tool text; untrusted, never a grant of authority (SR-01).", "x-classification": "content", "x-retention": "session-30d", "x-exportable": "explicit" }
+        "requestedCapability": {
+          "enum": [
+            "observe",
+            "workspace-read",
+            "workspace-write",
+            "network",
+            "external-write",
+            "host-admin",
+            "destructive"
+          ],
+          "x-classification": "public"
+        },
+        "target": {
+          "type": "string",
+          "x-classification": "host-scoped",
+          "x-retention": "audit-180d",
+          "x-exportable": "policy"
+        },
+        "correlationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "requesterText": {
+          "type": "string",
+          "description": "verbatim model/tool text; untrusted, never a grant of authority (SR-01).",
+          "x-classification": "content",
+          "x-retention": "session-30d",
+          "x-exportable": "explicit"
+        }
       }
     },
     "PolicyDecision": {
       "type": "object",
       "additionalProperties": false,
       "description": "The Policy Engine's verdict, independent of requester text (SR-01) and fully attributable (NFR-09).",
-      "required": ["schemaVersion", "decisionId", "requestId", "correlationId", "decision", "reasonCode", "actor", "timestamp"],
+      "required": [
+        "schemaVersion",
+        "decisionId",
+        "requestId",
+        "correlationId",
+        "decision",
+        "reasonCode",
+        "actor",
+        "timestamp"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "decisionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "requestId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "correlationId": { "type": "string", "x-classification": "identifier" },
-        "decision": { "enum": ["allow", "deny", "confirm-required"], "x-classification": "metadata" },
-        "reasonCode": { "type": "string", "description": "stable error/policy code, e.g. E-3001, E-3002, E-3003.", "x-classification": "public" },
-        "matchedRule": { "type": "string", "x-classification": "metadata" },
-        "evaluatedFactors": { "type": "array", "items": { "type": "string", "x-classification": "metadata" } },
-        "actor": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
-        "delegationId": { "type": "string", "x-classification": "identifier" },
-        "timestamp": { "type": "string", "format": "date-time", "x-classification": "metadata" }
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "decisionId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "correlationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "decision": {
+          "enum": [
+            "allow",
+            "deny",
+            "confirm-required"
+          ],
+          "x-classification": "metadata"
+        },
+        "reasonCode": {
+          "type": "string",
+          "description": "stable error/policy code, e.g. E-3001, E-3002, E-3003.",
+          "x-classification": "public"
+        },
+        "matchedRule": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "evaluatedFactors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-classification": "metadata"
+          },
+          "x-classification": "metadata"
+        },
+        "actor": {
+          "type": "string",
+          "x-classification": "sensitive",
+          "x-retention": "audit-180d",
+          "x-exportable": "policy"
+        },
+        "delegationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        }
       }
     }
   }

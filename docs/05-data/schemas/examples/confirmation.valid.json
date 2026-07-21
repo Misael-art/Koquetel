@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "confirmationId": "01J8Z0CNF7QH7VK3M2P9XR4T5B",
+  "planId": "01J8Z0CNF6QH7VK3M2P9XR4T5A",
+  "planHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "actor": { "type": "user", "id": "local:dev" },
+  "grantedCapabilityClass": "workspace-write",
+  "issuedAt": "2026-07-21T18:00:00Z",
+  "expiresAt": "2026-07-21T18:05:00Z",
+  "singleUse": true
+}

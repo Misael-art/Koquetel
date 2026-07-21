@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "budgetId": "01J8Z0CNFEQH7VK3M2P9XR4T5J",
+  "scope": "task",
+  "limits": { "tokens": 200000 },
+  "ceilingAction": "continue"
+}

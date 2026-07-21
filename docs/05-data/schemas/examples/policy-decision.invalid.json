@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "01J8Z0CNFKQH7VK3M2P9XR4T5Q",
+  "requestId": "01J8Z0CNFJQH7VK3M2P9XR4T5P",
+  "correlationId": "01J8Z0CNFBQH7VK3M2P9XR4T5F",
+  "decision": "maybe",
+  "reasonCode": "E-3002",
+  "actor": "local:dev",
+  "timestamp": "2026-07-21T18:00:01Z"
+}

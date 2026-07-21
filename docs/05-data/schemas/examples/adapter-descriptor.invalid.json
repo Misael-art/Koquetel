@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "adapterId": "adapter.client.claude-code",
+  "kind": "client",
+  "target": "claude-code",
+  "version": "1.0.0",
+  "testedVersionRange": ">=1.0 <2.0",
+  "mutating": true,
+  "failClosedOnUnknownSchema": false,
+  "healthState": "healthy"
+}

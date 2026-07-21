@@ -110,6 +110,12 @@ Classification legend:
 values: `yes`, `policy` (governed by Q-05 posture), `explicit` (user must select),
 `no` (never exported in raw form). Completeness is proven by test `SC-10`.
 
+**Composite/container fields** (objects and arrays) also declare `x-classification`
+and carry `metadata` (structural): the container itself holds no sensitivity; the
+actual sensitivity is expressed on its leaf fields, which carry their own
+classification, retention and export permission. `SC-10` walks the whole tree —
+composite fields included — so a missing classification anywhere fails the test.
+
 Invariants enforced by classification:
 
 - No field is `x-classification: secret-ref` with `x-exportable` other than `no`.

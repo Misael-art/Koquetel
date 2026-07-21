@@ -9,59 +9,220 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Routing decision by task class, capability, privacy, health, budget and policy (FR-14).",
-      "required": ["schemaVersion", "routeId", "correlationId", "taskClass", "privacyClass", "selectedProvider", "selectedModel", "budgetRef", "decidedAt"],
+      "required": [
+        "schemaVersion",
+        "routeId",
+        "correlationId",
+        "taskClass",
+        "privacyClass",
+        "selectedProvider",
+        "selectedModel",
+        "budgetRef",
+        "decidedAt"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "routeId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "correlationId": { "type": "string", "x-classification": "identifier" },
-        "taskClass": { "type": "string", "x-classification": "metadata" },
-        "requiredCapabilities": { "type": "array", "items": { "type": "string", "x-classification": "public" } },
-        "privacyClass": { "enum": ["local-only", "cloud-allowed", "policy"], "description": "when no route satisfies it, execution fails with E-5003.", "x-classification": "public" },
-        "selectedProvider": { "type": "string", "x-classification": "metadata" },
-        "selectedModel": { "type": "string", "x-classification": "metadata" },
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "routeId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "correlationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "taskClass": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "requiredCapabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-classification": "public"
+          },
+          "x-classification": "metadata"
+        },
+        "privacyClass": {
+          "enum": [
+            "local-only",
+            "cloud-allowed",
+            "policy"
+          ],
+          "description": "when no route satisfies it, execution fails with E-5003.",
+          "x-classification": "public"
+        },
+        "selectedProvider": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "selectedModel": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
         "candidates": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["provider", "model", "healthState"],
+            "required": [
+              "provider",
+              "model",
+              "healthState"
+            ],
             "properties": {
-              "provider": { "type": "string", "x-classification": "metadata" },
-              "model": { "type": "string", "x-classification": "metadata" },
-              "healthState": { "enum": ["healthy", "degraded", "unavailable"], "x-classification": "metadata" },
-              "score": { "type": "number", "x-classification": "metadata" },
-              "rejectedReason": { "type": "string", "x-classification": "metadata" }
+              "provider": {
+                "type": "string",
+                "x-classification": "metadata"
+              },
+              "model": {
+                "type": "string",
+                "x-classification": "metadata"
+              },
+              "healthState": {
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unavailable"
+                ],
+                "x-classification": "metadata"
+              },
+              "score": {
+                "type": "number",
+                "x-classification": "metadata"
+              },
+              "rejectedReason": {
+                "type": "string",
+                "x-classification": "metadata"
+              }
             }
-          }
+          },
+          "x-classification": "metadata"
         },
-        "budgetRef": { "type": "string", "x-classification": "identifier" },
-        "fallbackChain": { "type": "array", "items": { "type": "string", "x-classification": "metadata" } },
-        "decidedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" }
+        "budgetRef": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "fallbackChain": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-classification": "metadata"
+          },
+          "x-classification": "metadata"
+        },
+        "decidedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        }
       }
     },
     "UsageRecord": {
       "type": "object",
       "additionalProperties": false,
       "description": "Attributes tokens/cost/latency/cache/outcome to task, client, model and provider without recording content by default (FR-16, NFR-06).",
-      "required": ["schemaVersion", "usageId", "correlationId", "clientId", "provider", "model", "outcome", "contentRecorded", "recordedAt"],
+      "required": [
+        "schemaVersion",
+        "usageId",
+        "correlationId",
+        "clientId",
+        "provider",
+        "model",
+        "outcome",
+        "contentRecorded",
+        "recordedAt"
+      ],
       "properties": {
-        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
-        "usageId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "correlationId": { "type": "string", "x-classification": "identifier" },
-        "taskId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
-        "clientId": { "type": "string", "x-classification": "identifier" },
-        "provider": { "type": "string", "x-classification": "metadata" },
-        "model": { "type": "string", "x-classification": "metadata" },
-        "tokensInput": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "tokensOutput": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "cachedTokens": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "latencyMs": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "cost": { "type": "number", "minimum": 0, "x-classification": "metadata" },
-        "currency": { "type": "string", "x-classification": "public" },
-        "outcome": { "enum": ["accepted", "rejected", "error", "partial"], "description": "economy only counts when accepted quality holds (P-08, AC-08).", "x-classification": "metadata" },
-        "retries": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
-        "contentRecorded": { "const": false, "description": "content telemetry is off by default (NFR-06); a content-bearing variant is a separate, explicitly-keyed record.", "x-classification": "public" },
-        "recordedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" }
+        "schemaVersion": {
+          "const": 1,
+          "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).",
+          "x-classification": "public"
+        },
+        "usageId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "correlationId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "taskId": {
+          "type": "string",
+          "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+          "x-classification": "identifier"
+        },
+        "clientId": {
+          "type": "string",
+          "x-classification": "identifier"
+        },
+        "provider": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "model": {
+          "type": "string",
+          "x-classification": "metadata"
+        },
+        "tokensInput": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "tokensOutput": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "cachedTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "latencyMs": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "cost": {
+          "type": "number",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "currency": {
+          "type": "string",
+          "x-classification": "public"
+        },
+        "outcome": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "error",
+            "partial"
+          ],
+          "description": "economy only counts when accepted quality holds (P-08, AC-08).",
+          "x-classification": "metadata"
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0,
+          "x-classification": "metadata"
+        },
+        "contentRecorded": {
+          "const": false,
+          "description": "content telemetry is off by default (NFR-06); a content-bearing variant is a separate, explicitly-keyed record.",
+          "x-classification": "public"
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-classification": "metadata"
+        }
       }
     }
   }

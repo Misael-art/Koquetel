@@ -1,39 +1,35 @@
 #!/usr/bin/env python3
 """Foundation documentation linter for Koquetel.
 
-NON-PRODUCT, READ-ONLY foundation tooling. It only reads Markdown and JSON under
-the repository and reports inconsistencies; it never mutates files, the host, or
-any release artifact, and it is not part of the product runtime (it does not
-conflict with ADR-0002). It has no third-party dependencies (Python stdlib only).
+NON-PRODUCT, READ-ONLY foundation tooling (stdlib only). It reads Markdown and
+JSON under the repo and reports inconsistencies; it never mutates files, the host,
+or a release artifact, and is not part of the product runtime.
 
-Checks (see docs/FOUNDATION-GOVERNANCE.md and the F4 lint requirement):
-  1. duplicate ID definitions inside an ID's owning file;
-  2. broken references: an ID used somewhere but absent from its owning file,
-     and Markdown links to local files that do not exist;
-  3. requirements without a test: FR/NFR/SR/AC ids missing a traceability row or
-     whose traceability row cites no test family;
+Checks:
+  1. every referenced ID has EXACTLY ONE canonical definition in its owning file
+     (0 = broken/undefined reference, >1 = duplicate);
+  2. broken references: local Markdown links to missing files AND missing anchors;
+  3. every FR/NFR/SR/AC has its OWN traceability row (keyed on the first cell), and
+     that row has risk, failure-mode/justification, acceptance, verification, status;
   4. accepted owner decisions still listed as open in OPEN-QUESTIONS;
-  5. (bonus) every schema example JSON is well-formed and each *.valid.json
-     carries a schemaVersion field.
+  5. published readiness counts match the canonical documents (no count rot);
+  6. the schema suite result (tools/schema_suite/RESULT.json) is present, passed,
+     and matches the current schema digest — well-formed JSON is NOT validation.
 
-Exit status: 0 when no errors (warnings allowed), 1 when any error is found.
+Exit 0 when no errors (warnings allowed), 1 otherwise.
 Usage: python3 tools/foundation_lint.py [repo_root]
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
 
-# ID prefixes, longest-first so "NFR" wins over "FR", "SCH" over "SC", etc.
-PREFIXES = [
-    "NFR", "SCH", "ADR", "NG", "FR", "AC", "SR", "FM", "FI", "RT",
-    "GA", "IT", "AR", "PT", "EA", "SC", "P", "E", "R", "M", "G", "Q", "A",
-]
+PREFIXES = ["NFR", "SCH", "ADR", "NG", "FR", "AC", "SR", "FM", "FI", "RT",
+            "GA", "IT", "AR", "PT", "EA", "SC", "P", "E", "R", "M", "G", "Q", "A"]
 ID_RE = re.compile(r"\b(" + "|".join(PREFIXES) + r")-(\d{2,4})\b")
-
-# Owning file(s) per namespace, relative to repo root. ADR is any file in adr/.
 OWNERS = {
     "P": ["docs/00-vision/VISION.md"], "NG": ["docs/00-vision/VISION.md"],
     "FR": ["docs/01-product/PRD.md"], "NFR": ["docs/01-product/PRD.md"],
@@ -53,26 +49,31 @@ OWNERS = {
     "GA": ["docs/02-research/GAP-ANALYSIS.md"],
     "EA": ["docs/02-research/EXTERNAL-AUDITS.md"],
 }
-# A requirement is "tested" if its traceability row cites a test-family id or a
-# named verification kind (property/golden/corpus/etc.) — governance §4 accepts
-# property, golden-contract, corpus/benchmark and fixture evidence, not only
-# failure-injection/rollback ids.
-TEST_FAMILIES = (
-    "FI-", "RT-", "IT-", "SC-", "SCH-", "PT-",
-    "property", "properties", "golden", "corpus", "benchmark", "fixture",
-    "round-trip", "canary", "suite",
-)
+READINESS = "FOUNDATION-READINESS-REPORT.md"
 TRACE = "docs/TRACEABILITY.md"
 OPEN_Q = "docs/OPEN-QUESTIONS.md"
 ACCEPTED_WORDS = ("accepted", "resolved", "decided", "closed")
+NEG_CUES = ("until", "through", "not ", "pending", "require", "when ", "undecided")
+SCHEMA_FILES = ["plan-confirmation.schema.json", "transaction.schema.json",
+                "profile-adapter.schema.json", "memory.schema.json",
+                "tool-policy.schema.json", "delegation-task.schema.json",
+                "event-support.schema.json", "model-routing.schema.json",
+                "tolerant-read/event.tolerant.schema.json"]
+# publication phrase -> ID prefix for readiness count reconciliation
+COUNT_CLAIMS = [(r"(\d+)\s+principles", "P"), (r"(\d+)\s+non-goals", "NG"),
+                (r"(\d+)\s+non-functional", "NFR"), (r"(\d+)\s+functional", "FR"),
+                (r"(\d+)\s+product acceptance criteria", "AC"),
+                (r"(\d+)\s+security requirements", "SR"),
+                (r"(\d+)\s+(?:initial )?failure modes", "FM")]
 
 errors: list[str] = []
 warnings: list[str] = []
+EXCLUDE = (".git", ".worktrees", ".venv", "__pycache__", "node_modules")
 
 
-def iter_files(root: Path, suffixes: tuple[str, ...]):
+def iter_files(root: Path, suffixes):
     for p in sorted(root.rglob("*")):
-        if ".git" in p.parts or "/.worktrees/" in str(p):
+        if any(part in EXCLUDE for part in p.parts):
             continue
         if p.is_file() and p.suffix in suffixes:
             yield p
@@ -82,142 +83,194 @@ def rel(root: Path, p: Path) -> str:
     return str(p.relative_to(root))
 
 
-def is_definition_line(line: str, ident: str) -> bool:
-    """A canonical definition site: bold list item or leading table cell.
-
-    Headings are deliberately NOT definitions: a summary/ledger table row plus a
-    detail section heading for the same id is normal cross-referencing, not a
-    duplicate assignment. A true duplicate is the same id used as a bold list
-    definition or a leading table cell more than once.
-    """
-    s = line.rstrip("\n")
-    pat = re.escape(ident)
-    return bool(
-        re.match(rf"^\s*[-*]\s+\*\*{pat}\b", s)          # - **FR-01 ...**
-        or re.match(rf"^\s*\|\s*\*?\*?{pat}\*?\*?\s*\|", s)  # | FR-01 | ...
-        or re.match(rf"^\s*[-*]\s+\[.*\b{pat}\b.*\]\(", s)  # - [FR-01](...)
-    )
-
-
-def owners_for(prefix: str, root: Path) -> list[Path]:
+def owners_for(prefix: str, root: Path):
     if prefix == "ADR":
         return sorted((root / "docs/adr").glob("*.md"))
     return [root / o for o in OWNERS.get(prefix, [])]
+
+
+def canonical_defs(ident: str, owner_texts) -> int:
+    """Definition sites of ident, applying priority heading > bold-list > table-cell."""
+    pat = re.escape(ident)
+    heads, bolds, cells = [], [], []
+    for text in owner_texts:
+        for ln in text.splitlines():
+            if re.match(rf"^#{{1,6}}\s+\**{pat}\b", ln):
+                heads.append(ln)
+            elif re.match(rf"^\s*[-*]\s+\*\*{pat}\b", ln):
+                bolds.append(ln)
+            elif re.match(rf"^\s*\|\s*\*?\*?{pat}\b", ln):
+                cells.append(ln)
+    return len(heads or bolds or cells)
+
+
+def slug(heading: str) -> str:
+    h = re.sub(r"^#{1,6}\s+", "", heading.strip())
+    h = h.replace("`", "").replace("*", "")
+    h = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", h)  # link text only
+    h = h.lower()
+    h = re.sub(r"[^a-z0-9 -]", "", h)
+    return h.strip().replace(" ", "-")
+
+
+def anchors_of(text: str) -> set:
+    return {slug(ln) for ln in text.splitlines() if re.match(r"^#{1,6}\s+", ln)}
+
+
+def parse_tables(text: str):
+    """Yield (headers, rows) for each Markdown table."""
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        if lines[i].lstrip().startswith("|") and i + 1 < len(lines) and re.match(
+                r"^\s*\|[\s:|-]+\|\s*$", lines[i + 1]):
+            hdr = [c.strip() for c in lines[i].strip().strip("|").split("|")]
+            rows = []
+            j = i + 2
+            while j < len(lines) and lines[j].lstrip().startswith("|"):
+                rows.append([c.strip() for c in lines[j].strip().strip("|").split("|")])
+                j += 1
+            yield hdr, rows
+            i = j
+        else:
+            i += 1
 
 
 def main() -> int:
     root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     md_files = list(iter_files(root, (".md",)))
     ref_files = list(iter_files(root, (".md", ".json")))
+    text_of = {rel(root, p): p.read_text(encoding="utf-8", errors="replace") for p in md_files}
 
-    # Gather every ID occurrence (references) across md + json.
-    refs: dict[str, set[str]] = {}
+    # references
+    refs: dict[str, set] = {}
     for p in ref_files:
-        text = p.read_text(encoding="utf-8", errors="replace")
-        for m in ID_RE.finditer(text):
+        for m in ID_RE.finditer(p.read_text(encoding="utf-8", errors="replace")):
             refs.setdefault(f"{m.group(1)}-{m.group(2)}", set()).add(rel(root, p))
 
-    # Build owning-file content once.
-    owner_text: dict[str, str] = {}
-    for p in md_files:
-        owner_text[rel(root, p)] = p.read_text(encoding="utf-8", errors="replace")
-
-    # --- Check 1 & 2a: duplicate definitions and broken (undefined) references.
+    # Check 1: exactly one canonical definition per referenced id
     for ident, where in sorted(refs.items()):
         prefix = ident.split("-")[0]
         owner_paths = owners_for(prefix, root)
         if not owner_paths:
-            continue  # unknown namespace: skip silently
-        def_count = 0
-        defined_anywhere = False
-        for op in owner_paths:
-            key = rel(root, op) if op.exists() else None
-            if key is None or key not in owner_text:
-                continue
-            for line in owner_text[key].splitlines():
-                if ident in line:
-                    defined_anywhere = True
-                    if is_definition_line(line, ident):
-                        def_count += 1
-        if not defined_anywhere:
-            errors.append(
-                f"[broken-ref] {ident} is referenced ({', '.join(sorted(where))}) "
-                f"but never appears in its owning file(s) "
-                f"{[rel(root, o) for o in owner_paths]}"
-            )
-        elif def_count > 1:
-            errors.append(
-                f"[duplicate-id] {ident} has {def_count} definition sites in its "
-                f"owning file {[rel(root, o) for o in owner_paths if o.exists()]}"
-            )
+            continue
+        texts = [text_of.get(rel(root, o), "") for o in owner_paths if o.exists()]
+        n = canonical_defs(ident, texts)
+        if n == 0:
+            errors.append(f"[undefined-ref] {ident} referenced ({', '.join(sorted(where))}) "
+                          f"but has no canonical definition in {[rel(root, o) for o in owner_paths]}")
+        elif n > 1:
+            errors.append(f"[duplicate-id] {ident} has {n} canonical definitions in "
+                          f"{[rel(root, o) for o in owner_paths if o.exists()]}")
 
-    # --- Check 2b: broken local Markdown links.
+    # Check 2: broken links + anchors
     link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
     for p in md_files:
-        for m in link_re.finditer(p.read_text(encoding="utf-8", errors="replace")):
-            target = m.group(1).split("#", 1)[0].strip()
-            if not target or re.match(r"^[a-z]+://", target) or target.startswith("mailto:"):
+        for m in link_re.finditer(text_of[rel(root, p)]):
+            raw = m.group(1).strip()
+            if re.match(r"^[a-z]+://", raw) or raw.startswith("mailto:"):
                 continue
-            resolved = (p.parent / target).resolve()
-            if not resolved.exists():
-                errors.append(f"[broken-link] {rel(root, p)} -> {target} (missing)")
+            path, _, frag = raw.partition("#")
+            target = p if path == "" else (p.parent / path).resolve()
+            if path and not target.exists():
+                errors.append(f"[broken-link] {rel(root, p)} -> {raw} (missing file)")
+                continue
+            if frag:
+                ttext = text_of.get(rel(root, target)) if target.suffix == ".md" and \
+                    str(target).startswith(str(root)) else None
+                if ttext is None and target.exists() and target.suffix == ".md":
+                    ttext = target.read_text(encoding="utf-8", errors="replace")
+                if ttext is not None and slug("# " + frag) not in anchors_of(ttext):
+                    errors.append(f"[broken-anchor] {rel(root, p)} -> {raw} (no heading '#{frag}')")
 
-    # --- Check 3: requirements without a test (via TRACEABILITY).
-    trace_text = (root / TRACE).read_text(encoding="utf-8", errors="replace")
-    trace_lines = trace_text.splitlines()
+    # Check 3: traceability — one keyed row per requirement, with full columns
+    trace = text_of.get(TRACE, "")
+    covered: dict[str, list] = {}
+    for hdr, rows in parse_tables(trace):
+        head0 = hdr[0].upper()
+        if head0 not in ("FR", "NFR", "SR", "AC"):
+            continue
+        cols = {name: i for i, name in enumerate(h.lower() for h in hdr)}
+        def col(*names):
+            for n in names:
+                for name, i in cols.items():
+                    if n in name:
+                        return i
+            return None
+        ci = {"risk": col("risk", "threat"), "fm": col("failure"),
+              "acc": col("acceptance"), "ver": col("verification"), "st": col("status")}
+        for r in rows:
+            key = re.sub(r"[*` ]", "", r[0])
+            if not re.match(rf"^{head0}-\d+$", key):
+                continue
+            covered[key] = r
+            need = [("risk", ci["risk"]), ("failure/justification", ci["fm"]),
+                    ("verification", ci["ver"]), ("status", ci["st"])]
+            if head0 != "AC":
+                need.append(("acceptance", ci["acc"]))
+            for label, idx in need:
+                if idx is None or idx >= len(r) or not r[idx].strip():
+                    errors.append(f"[trace-incomplete] {key} row missing {label}")
     for prefix in ("FR", "NFR", "SR", "AC"):
-        for op in owners_for(prefix, root):
-            key = rel(root, op)
-            for line in owner_text.get(key, "").splitlines():
-                m = re.match(rf"^\s*[-*]\s+\*\*({prefix}-\d+)\b", line) or re.match(
-                    rf"^\s*\|\s*\*?\*?({prefix}-\d+)\b", line
-                )
-                if not m:
-                    continue
-                ident = m.group(1)
-                rows = [ln for ln in trace_lines if ident in ln]
-                if not rows:
-                    errors.append(f"[untraced] {ident} has no row in {TRACE}")
-                elif not any(fam in ln for ln in rows for fam in TEST_FAMILIES):
-                    errors.append(
-                        f"[no-test] {ident} appears in {TRACE} but cites no test "
-                        f"family ({', '.join(TEST_FAMILIES)})"
-                    )
+        for o in owners_for(prefix, root):
+            for ln in text_of.get(rel(root, o), "").splitlines():
+                m = re.match(rf"^\s*[-*]\s+\*\*({prefix}-\d+)\b", ln)
+                if m and m.group(1) not in covered:
+                    errors.append(f"[untraced] {m.group(1)} has no keyed row in {TRACE}")
 
-    # --- Check 4: accepted decisions still listed as open.
-    open_ids = set()
-    for line in owner_text.get(OPEN_Q, "").splitlines():
-        m = re.match(r"^\s*\|\s*(Q-\d+)\b", line)
-        if m:
-            open_ids.add(m.group(1))
-    for p in md_files:
-        key = rel(root, p)
+    # Check 4: accepted decisions still listed open
+    open_ids = {m.group(1) for ln in text_of.get(OPEN_Q, "").splitlines()
+                if (m := re.match(r"^\s*\|\s*(Q-\d+)\b", ln))}
+    for key, text in text_of.items():
         if key == OPEN_Q:
             continue
-        for line in owner_text.get(key, "").splitlines():
-            low = line.lower()
-            # Skip range/futurity/negation phrasing ("until Q-05 is accepted",
-            # "Q-01 through Q-05 resolved", "not owner-decided") — those are not
-            # assertions that a specific decision is already accepted.
-            if any(cue in low for cue in ("until", "through", "not ", "pending", "require", "when ", "undecided")):
+        for ln in text.splitlines():
+            low = ln.lower()
+            if any(c in low for c in NEG_CUES):
                 continue
             for qid in open_ids:
-                if qid in line and any(w in low for w in ACCEPTED_WORDS):
-                    warnings.append(
-                        f"[maybe-accepted] {qid} is open in {OPEN_Q} but {key} says: "
-                        f"\"{line.strip()[:90]}\""
-                    )
+                if qid in ln and any(w in low for w in ACCEPTED_WORDS):
+                    warnings.append(f"[maybe-accepted] {qid} open in {OPEN_Q} but {key}: "
+                                    f"\"{ln.strip()[:80]}\"")
 
-    # --- Check 5: schema example JSON well-formedness.
-    ex_dir = root / "docs/05-data/schemas/examples"
-    for p in sorted(ex_dir.glob("*.json")) if ex_dir.exists() else []:
+    # Check 5: readiness counts vs canonical documents
+    rtext = text_of.get(READINESS, "")
+    for pat, prefix in COUNT_CLAIMS:
+        m = re.search(pat, rtext)
+        if not m:
+            continue
+        claimed = int(m.group(1))
+        ids = set()
+        for o in owners_for(prefix, root):
+            for ln in text_of.get(rel(root, o), "").splitlines():
+                for mm in re.finditer(rf"\b({prefix}-\d+)\b", ln):
+                    if re.match(rf"^\s*[-*]\s+\*\*{re.escape(mm.group(1))}\b", ln) or \
+                       re.match(rf"^\s*\|\s*\*?\*?{re.escape(mm.group(1))}\b", ln):
+                        ids.add(mm.group(1))
+        if len(ids) != claimed:
+            errors.append(f"[count-rot] {READINESS} says {claimed} for {prefix}, "
+                          f"canonical has {len(ids)}")
+
+    # Check 6: schema suite executed, passed, and not stale
+    sdir = root / "docs/05-data/schemas"
+    result_p = root / "tools/schema_suite/RESULT.json"
+    if not result_p.exists():
+        errors.append("[schema-suite] tools/schema_suite/RESULT.json missing — run the suite")
+    else:
+        res = json.loads(result_p.read_text(encoding="utf-8"))
+        sha = hashlib.sha256()
+        for name in SCHEMA_FILES:
+            sha.update((sdir / name).read_bytes())
+        if not res.get("passed"):
+            errors.append(f"[schema-suite] last run did not pass: {res.get('failures')}")
+        if res.get("schemaSha256") != sha.hexdigest():
+            errors.append("[schema-suite] RESULT.json is stale — schemas changed since the "
+                          "last run; re-run tools/schema_suite/run_suite.py")
+    for p in sorted((sdir / "examples").glob("*.json")) if sdir.exists() else []:
         try:
-            data = json.loads(p.read_text(encoding="utf-8"))
+            json.loads(p.read_text(encoding="utf-8"))
         except Exception as exc:  # noqa: BLE001
             errors.append(f"[bad-json] {rel(root, p)}: {exc}")
-            continue
-        if p.name.endswith(".valid.json") and "schemaVersion" not in data:
-            errors.append(f"[schema] {rel(root, p)} valid example lacks schemaVersion")
 
     for w in warnings:
         print("WARN  " + w)

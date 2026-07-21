@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "transactionId": "01J8Z0CNF8QH7VK3M2P9XR4T5C",
+  "startedAt": "2026-07-21T18:00:10Z",
+  "trigger": "interrupted",
+  "action": "replay",
+  "outcome": "completed",
+  "evidenceRefs": ["journal:01J8Z0CNF8QH7VK3M2P9XR4T5C"],
+  "idempotencyKey": "recover:01J8Z0CNF8QH7VK3M2P9XR4T5C:1"
+}

@@ -1,0 +1,9 @@
+# Foundation-only, pinned Draft 2020-12 validator for the SC-01..SC-10 suite.
+# This dependency set is isolated to tools/schema_suite/.venv and MUST NOT enter
+# the Koquetel product runtime dependency graph (P-13, NFR-13, IT-01..IT-03).
+# Fully pinned for reproducibility (frozen from a clean install).
+attrs==26.1.0
+jsonschema==4.23.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.6.3
