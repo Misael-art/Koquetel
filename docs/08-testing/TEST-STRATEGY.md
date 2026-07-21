@@ -18,6 +18,12 @@ Last reviewed: 2026-07-21
 7. End-to-end supported-client tests in clean VMs/containers.
 8. Physical-host acceptance only after all earlier gates pass.
 
+Before these layers, the disposable prototype gates `PT-01..PT-05`
+([`PROTOTYPE-GATES.md`](PROTOTYPE-GATES.md)) prove the high-risk assumptions
+(exclusive lock, torn-journal recovery, ai-memory durability/concurrency/export,
+rootless sandbox containment, Rust distribution + recovery). Prototypes are
+discarded after evidence capture and never enter the product build graph.
+
 ## Minimum release gates
 
 - formatting, lint, strict types and boundary lint;

@@ -92,3 +92,16 @@ Append-only evidence log.
   the source register and robustness-score interpretation.
 - Verified PhaseZero and SteamZero were not modified; the clone lives only in the
   scratchpad. No dependency on either source was introduced.
+
+## 2026-07-21 — F3 disposable prototype gates
+
+- Added `docs/08-testing/PROTOTYPE-GATES.md` specifying five disposable prototype
+  gates `PT-01..PT-05` (exclusive lock, torn-journal recovery, ai-memory
+  durability/concurrency/export/removal, rootless sandbox containment, Rust
+  distribution + recovery).
+- Each gate defines environment, input, injected fault, expected result, evidence
+  artifact, measurable pass/fail and disposal; a shared disposability contract
+  keeps prototypes out of the product build graph and off the host.
+- Wired PT ids into G-05 (PT-04) and G-11 (PT-01/PT-02), cross-referenced the
+  gates from `TEST-STRATEGY.md`, and cited them in roadmap `M-00`. Gates are
+  specified only; no prototype was run and no product code was written.
