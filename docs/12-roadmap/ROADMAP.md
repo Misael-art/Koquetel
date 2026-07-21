@@ -9,7 +9,7 @@ Implementation phases remain inactive until M-00 exits and approval exists.
 
 Deliver source audit, final capability/robustness/gap matrices, owner decisions,
 license plan, accepted architecture/security/data/API contracts, the
-`PT-01..PT-05` prototype gates (`docs/08-testing/PROTOTYPE-GATES.md`), complete
+`PT-01..PT-06` prototype gates (`docs/08-testing/PROTOTYPE-GATES.md`), complete
 traceability and independent review.
 
 Exit: every item in `FOUNDATION-GOVERNANCE.md §5` evidenced and readiness report

@@ -106,6 +106,52 @@ Append-only evidence log.
   gates from `TEST-STRATEGY.md`, and cited them in roadmap `M-00`. Gates are
   specified only; no prototype was run and no product code was written.
 
+## 2026-07-21 — Correction pass: PT-01 dedup, EA audits, linter tests, ADRs
+
+Brought the uncommitted corrections from the previous evaluation cycle into a
+consistent, validated state:
+
+- **PT-01 deduplication.** `PROTOTYPE-GATES.md` had `### PT-01 Filesystem semantics`
+  which `foundation_lint` counted as a second canonical definition for `PT-01`,
+  producing a `[duplicate-id]` error. Renamed to `### Filesystem semantics`.
+- **PT-01..PT-06 reconciliation.** Five documents referenced the old `PT-01..PT-05`
+  set — all updated to `PT-01..PT-06`. Historical WORKLOG entries (e.g. F3) left
+  unchanged per append-only rule. ROADMAP.md, READINESS-REPORT.md, TRACEABILITY.md,
+  TEST-STRATEGY.md updated.
+- **FR-07/SC-05/SC-06 misinterpretation check.** Searched all foundation docs for
+  incorrect associations. PRD correctly defines FR-07 as drift detection.
+  SCHEMA-REGISTRY correctly maps SC-05 to SCH-11..13 and SC-06 to SCH-14..16
+  (TaskCheckpoint = SCH-16 under SC-06). No corrections needed.
+- **EA-02 corrected.** The AC-NFS claim "RTK's lock/heartbeat mechanisms rely on
+  flock" was false — `rg -n flock` across all RTK `.rs` files at `66e09cb` returned
+  zero hits. RTK has no locking of its own. Replaced with AC-NO-LOCK noting the
+  absence and that Koquetel must implement its own lease (PT-01/PT-06).
+- **EA-03 date clarified.** "spec revision 2026-07-28" changed to note that
+  `"2026-07-28"` is the protocol version string embedded in the spec documents at
+  the pinned commit, not a document publication date. Verified by fetching the spec
+  `basic/index.mdx` at `88191b9` which shows `"2026-07-28"` as the
+  `io.modelcontextprotocol/protocolVersion` example.
+- **PT-01 filesystem table cited.** Added primary source citations (Linux man-pages,
+  kernel tmpfs.txt, nfs(5), lockd(8)) for each claim about O_EXCL, flock and lease
+  visibility on ext4/XFS, tmpfs and NFS.
+- **Linter tests converted to unittest.** `tools/tests/test_foundation_lint.py`
+  rewritten as `unittest.TestCase` — `test_*` methods discoverable by
+  `python3 -m unittest discover -s tools/tests -v`. Replaced the no-op
+  `test_missing_classification_not_linted` with `test_stale_schema_suite_rejected`
+  (proves lint rejects stale RESULT.json) and
+  `test_missing_required_classification_schema_suite` (proves removing
+  x-classification from a `$defs` property makes SC-10 fail). All 8 tests pass.
+- **Schema suite evidence.** Confirmed clean venv install from requirements.txt,
+  re-ran suite: 12/12 PASS, digest matches current schemas. Example count verified:
+  40 entity examples (20 SCH × 2) + 2 SC-09 extras (tolerant, major2) = 42 example
+  files plus manifest.json.
+- **ADR-0010 (session lifecycle)** and **ADR-0011 (lease recovery/fencing)**
+  produced as proposed. Both reference prototype gates as prerequisites and record
+  unresolved owner questions.
+- **`.venv`, `__pycache__`, `.pyc`** are gitignored and excluded from tracked content.
+
+No APPROVED_TO_IMPLEMENT created. No production code, package or host change.
+
 ## 2026-07-21 — F4 traceability, documentation lint and readiness
 
 - Added `tools/foundation_lint.py` (stdlib only, read-only, non-product): checks
@@ -156,3 +202,92 @@ Schema compatibility contradiction resolved (strict-write / tolerant-read):
 - Rewrote `SC-09` into five sub-tests and made `SC-01..SC-08` individually defined;
   `SC-10` is now recursive. Execution is delivered in the next commit.
 - Validated: JSON well-formed, `foundation_lint` 0/0.
+
+## 2026-07-21 — R1 red-team architectural review: ADR-0010 and ADR-0011
+
+Red-team corrections applied to both ADRs and all downstream honesty and
+traceability files. Architecture not expanded; only rigor corrections.
+
+### ADR-0011 corrections (rigor pass)
+
+- **H. Howard reference removed**: unverifiable — no DOI, URL or primary-source
+  bibliographic confirmation provided. The six-concern taxonomy is now
+  explicitly identified as Koquetel's own analytical decomposition.
+- **OFD lock claims corrected**: table and prose now state clearly that
+  OFD/flock are **cooperative advisory** — they prevent lock acquisition by
+  another cooperating process but do **not** prevent I/O from a process that
+  ignores the protocol. The old claim "I/O error on stale fd" for concern 4
+  (fence at commit) was removed. OFD lifecycle section rewritten with precise
+  fork/exec/dup semantics: dup preserves lock across multiple fds until the
+  last close; fork shares the same OFD; exec with CLOEXEC closes the fd.
+- **"Decision (proposed)" changed to "Candidate direction (blocked by G-13 /
+  PT-06)"**: ADR-0011 cannot reach a definitive proposed decision until G-13
+  (conditional atomic commit primitive) and PT-06 (kill-fault injection with
+  epoch evidence) provide evidence. A blocked status is honest about this.
+- **Journal epoch semantics fixed**: the simple `entry.leaseEpoch <
+  currentLeaseEpoch` discard rule was rejected — a committed entry from a prior
+  epoch is legitimate history. Four conceptual states documented (prepared,
+  committed, aborted/quarantined, recovered). An entry may only be rejected
+  with evidence it was produced after its epoch was revoked or never reached
+  valid commit. Shortfall recorded in G-13.
+- **NFS position changed to unsupported/proposed for v1**: NFSv3/lockd vs
+  NFSv4 integrated locking distinguished. Heartbeat + epoch counter mechanism
+  acknowledged as non-atomic (a live stale holder continues writing). NFS
+  v1 support requires G-13 or a distributed fencing protocol. Q-08 created
+  for owner decision on future v2 support.
+- **Consequences table rewritten**: removed "zero-cost fencing", "fencing
+  filesystem-independent", "covers all environments from local dev to NFS-backed
+  CI" as inaccurate.
+- Epoch journal-scoped isolation assumption removed from ASSUMPTIONS.md —
+  not proven; uncertainty remains in G-13.
+- **FM-21/FM-22 corrected**: FM-21 guaranteed state changed to "not guaranteed;
+  blocks ADR acceptance until G-13"; external effects classified as possibly
+  irreversible. FM-22 detection moved to startup-time check; response changed
+  to fail-closed + controlled rekey; DB restore epoch regression documented
+  as realistic risk.
+- **Prerequisites rewritten**: NFS removed as gate requirement; G-13, Q-03,
+  Q-08 added.
+
+### ADR-0010 corrections (rigor pass)
+
+- **MCP statelessness made precise**: references draft removal of
+  `initialize`/`Mcp-Session-Id`; notes `clientInfo`/`serverInfo` are
+  self-reported and MUST NOT be used for security decisions.
+- **Extension namespace specified**: `io.koquetel/sessionId` in `_meta`
+  (MCP extension convention).
+- **UUIDv7 table corrected with RFC 9562**: bit layout (48-bit ts, 74-bit
+  random in typical layout), collision probability 2^(-74) per ms (not 2^(-122)),
+  monotonicity requires explicit per-ms counter (RFC 9562 §6.2), timestamp
+  opacity noted as acceptable for internal correlation handle. Choice kept as
+  **proposed** until a requirement/benchmark confirms ordering benefit over
+  random 128-bit.
+- **ADR prerequisite inconsistency corrected**: the Status header referenced
+  Q-06 as a dependency; corrected — session lifecycle semantics are identical
+  for individual and team deployments. No owner decision on Q-04 or Q-06 was
+  made.
+
+### Honesty / traceability updates
+
+- **KNOWN-GAPS.md**: G-13 (conditional atomic commit primitive / revocation-proof
+  epoch design), G-14 (serialized epoch counter measurement).
+- **ASSUMPTIONS.md**: stale assumption removed (not proven; uncertainty
+  remains in G-13).
+- **OPEN-QUESTIONS.md**: Q-08 added (NFS commit-level fence requirement).
+- **FAILURE-MODES.md**: FM-21 (TOCTOU stale write — blocks ADR-0011 acceptance,
+  fail-closed quarantine, external effects possibly irreversible). FM-22
+  (epoch wraparound/restore regression — startup detection, controlled rekey).
+- **PROTOTYPE-GATES.md**: PT-01 gains OFD lifecycle arm (fork fd close); PT-06
+  gains dup survival and exec CLOEXEC arms.
+- **TRACEABILITY.md**: FM-21, FM-22 linked to FR-03, NFR-03.
+- **SCHEMA-REGISTRY.md**: SCH-04 references FM-21, FM-22, PT-06.
+
+No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
+
+## 2026-07-21 — R2 editorial microcorrections
+
+- **ADR-0010**: "opaque sessionId" → "correlation sessionId" (UUIDv7 is not
+  fully opaque; it reveals ms timestamp). Collision table for Random 128-bit
+  uses birthday bound ~n²/2^129 for consistency with UUIDv7 row. Choice
+  remains proposed.
+
+No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
