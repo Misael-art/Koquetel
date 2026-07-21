@@ -10,7 +10,7 @@
       "additionalProperties": false,
       "required": ["schemaVersion", "memoryId", "contentDigest", "kind", "scope", "source", "timestamps", "validationState", "sensitivity", "remoteProcessingPolicy"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "memoryId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "description": "immutable id.", "x-classification": "identifier" },
         "contentDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
         "kind": { "enum": ["session", "episodic", "semantic", "procedural", "artifact", "policy-reference"], "x-classification": "public" },
@@ -95,7 +95,7 @@
       "description": "Versioned, self-describing archive manifest; usable after replacing the backend (FR-05, GA-09).",
       "required": ["schemaVersion", "exportId", "createdAt", "exportFormatVersion", "scope", "recordCount", "includedContent", "integrityDigest"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "exportId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
         "exportFormatVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:tolerant-read:event:1",
+  "title": "Koquetel tolerant-read profile for EventRecord (SCH-17)",
+  "description": "SEPARATE read-only profile. It is NOT the strict-write schema and does not grant forward tolerance to it. A record validated ONLY by this profile MUST NOT be routed to any mutating, authority or admission operation (SC-09 sub-test 5). Known major is required (schemaVersion enum of known majors); unknown optional fields are tolerated and preserved; unknown major is rejected.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schemaVersion", "eventId", "sequence", "installationId", "correlationId", "timestamp", "category", "action", "result", "eventDigest"],
+  "properties": {
+    "schemaVersion": { "enum": [1], "description": "known majors only; enumerated as new majors are accepted for read.", "x-classification": "public" },
+    "eventId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
+    "sequence": { "type": "integer", "minimum": 0, "x-classification": "metadata" },
+    "installationId": { "type": "string", "x-classification": "identifier" },
+    "correlationId": { "type": "string", "x-classification": "identifier" },
+    "causeCorrelationId": { "type": "string", "x-classification": "identifier" },
+    "timestamp": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+    "actor": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
+    "category": { "enum": ["mutation", "authority", "memory", "routing", "tool", "lifecycle", "telemetry"], "x-classification": "public" },
+    "action": { "type": "string", "x-classification": "metadata" },
+    "result": { "enum": ["ok", "denied", "failed", "degraded"], "x-classification": "metadata" },
+    "redactedOutcome": { "type": "string", "x-classification": "metadata" },
+    "prevEventDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+    "eventDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "x-classification": "identifier" },
+    "otelTraceId": { "type": "string", "pattern": "^[0-9a-f]{32}$", "x-classification": "identifier" },
+    "otelSpanId": { "type": "string", "pattern": "^[0-9a-f]{16}$", "x-classification": "identifier" }
+  }
+}

@@ -13,16 +13,18 @@ local reference sources now also have pinned evidence, structural inventories,
 capability comparison, numerical robustness scoring and named anti-requirements.
 
 This is not yet an implementation-ready foundation. The current work converts the
-idea into testable contracts; it does not complete the evidence-level audit,
-owner decisions, prototypes, traceability matrix or independent review.
+idea into testable contracts; it does not complete the evidence-level external
+audits, owner decisions, prototype execution or independent review. The
+traceability matrix is now **structurally** complete (one row per requirement),
+but its rows are not yet **proven** with retained execution evidence.
 
 ## What is established
 
 - implementation gate and document precedence;
 - stable requirement/error/risk/test identifiers;
-- 12 principles and 10 non-goals;
-- 26 functional and 12 non-functional requirements;
-- 16 product acceptance criteria;
+- 13 principles and 10 non-goals;
+- 26 functional and 13 non-functional requirements;
+- 17 product acceptance criteria;
 - component boundaries and one-writer/one-executor rules;
 - journaled transaction model and 20 initial failure modes;
 - 16 security requirements and threat/control seed matrix;
@@ -39,7 +41,8 @@ owner decisions, prototypes, traceability matrix or independent review.
 - owner-confirmed complete operational independence from PhaseZero and SteamZero,
   specified by P-13/NFR-13/AC-17 and eight release-blocking independence tests.
 - twenty versioned record schemas `SCH-01..SCH-20` with classification, retention
-  and export rules, valid/invalid examples, and an `SC-01..SC-10` test family;
+  and export rules, valid/invalid examples, an explicit strict-write/tolerant-read
+  compatibility policy, and an `SC-01..SC-10` test family;
 - an implementation-level external audit of ai-memory (`EA-01`) with line-exact
   evidence at its pin, and an audit framework for the remaining candidates;
 - five disposable prototype gates `PT-01..PT-05` with measurable pass/fail;

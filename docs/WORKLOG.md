@@ -124,3 +124,35 @@ Append-only evidence log.
   blocker (owner decisions, license, ADR acceptance, SC/prototype execution,
   independent review) and held the classification at **NOT READY**.
 - No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
+
+## 2026-07-21 — Corrective review: readiness counts and schema compatibility
+
+Inconsistencies found (verified against canonical docs, not substituted blindly):
+
+- readiness said "12 principles" — VISION defines P-01..P-13 → corrected to 13;
+- readiness said "12 non-functional requirements" — PRD defines NFR-01..NFR-13 →
+  corrected to 13;
+- readiness said "16 product acceptance criteria" — ACCEPTANCE defines AC-01..AC-17
+  → corrected to 17;
+- readiness executive assessment implied the traceability matrix was incomplete
+  while a later bullet claimed one row per requirement → differentiated:
+  *structural* coverage complete, *proven* evidence still pending;
+- verified the still-accurate counts (10 non-goals, 26 FR, 16 SR, 20 FM, 10 AR,
+  10 GA, 8 IT, 20 SCH) and left them unchanged.
+
+Schema compatibility contradiction resolved (strict-write / tolerant-read):
+
+- `SCHEMA-REGISTRY.md` §3 rewritten: strict-write records (all SCH-01..SCH-20) use
+  `schemaVersion const: 1` and `additionalProperties: false`; additive change is a
+  documented minor with a schema revision; read-only consumers use a *separate*
+  tolerant profile that requires a known major, tolerates unknown optional fields,
+  and may never feed a mutating/authority operation. The false "a single
+  additionalProperties:false schema is forward-tolerant" claim was removed.
+- Set `schemaVersion` to `const: 1` in all 19 entity definitions across the eight
+  schema files.
+- Added an explicit tolerant profile `tolerant-read/event.tolerant.schema.json`
+  (SCH-17) plus `examples/event.tolerant.valid.json` carrying an unknown field the
+  strict schema rejects but the tolerant profile accepts.
+- Rewrote `SC-09` into five sub-tests and made `SC-01..SC-08` individually defined;
+  `SC-10` is now recursive. Execution is delivered in the next commit.
+- Validated: JSON well-formed, `foundation_lint` 0/0.

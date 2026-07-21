@@ -38,23 +38,53 @@ entities are `$defs` referenced by `$ref`.
 
 ## 3. Versioning and compatibility
 
-- Every instance carries an integer `schemaVersion` equal to the schema's major
-  version. This mirrors the existing CLI/API envelope (`docs/06-api/CONTRACTS.md`)
-  and transaction record (`docs/03-architecture/TRANSACTION-MODEL.md`).
-- **Additive-minor rule (same major):** new *optional* fields may be added without
-  a major bump. Consumers MUST ignore unknown optional fields within a known major
-  (forward tolerance) and MUST NOT treat their absence as an error.
-- **Breaking change (new major):** removing a field, renaming it, narrowing its
-  type, or adding a *required* field. A new major schema keeps a new `SCH-xx`
-  suffix history entry; the prior major is retained as `superseded`, never deleted.
-- **Fail-closed rule (NFR-08):** a consumer that encounters an *unknown major* on a
-  mutating record MUST refuse to act on it, emit `E-6002`/`E-1001` as applicable,
-  and leave prior state usable. It MUST NOT silently coerce the record.
+Koquetel does **not** rely on implicit forward tolerance. A single schema with
+`additionalProperties: false` is *not* forward-tolerant, and this document does
+not claim it is. Two explicit modes exist, and a record is bound to the mode of
+the operation consuming it, not to the schema alone.
+
+### 3.1 Strict-write mode (canonical, default)
+
+Applies to every record used for **mutation, authority, persistence or admission**
+— i.e. all of `SCH-01..SCH-20`, whose files live in this directory.
+
+- `schemaVersion` is `const: 1` for the v1 contracts; a value other than `1`
+  fails closed.
+- Unknown fields are **rejected** (`additionalProperties: false`).
+- An additive change (a new *optional* field) is a new **documented minor**: it
+  requires a registry changelog entry and a corresponding schema revision. A
+  strict producer/consumer validates against the exact current revision — it does
+  not accept fields from a minor it does not know.
+- A **breaking change** (removing/renaming/retyping a field, or adding a required
+  field) is a new **major**: a new schema retained under a new `SCH-xx` history
+  entry; the prior major is `superseded`, never deleted.
+- **Fail-closed (NFR-08):** an unknown major on a mutating record is refused
+  (`E-6002`/`E-1001`), leaving prior state usable; the record is never coerced.
+
+### 3.2 Tolerant-read mode (opt-in, read-only)
+
+Applies only to **read-only consumers** (dashboards, exporters, diagnostics) that
+never mutate, never grant authority and never rewrite the record.
+
+- The **known major is required**: `schemaVersion` must be an enumerated known
+  major; an unknown major is still rejected.
+- Unknown *optional* fields are **preserved/ignored** (`additionalProperties:
+  true`) so a reader survives a newer minor.
+- A tolerant-validated record **MUST NOT** be routed to any mutating, authority or
+  admission operation. That is a runtime invariant JSON Schema cannot express; it
+  is asserted by `SC-09` sub-test 5.
+
+Where a record class is consumed read-only, its tolerant profile is modelled as a
+**separate** schema — see [`tolerant-read/event.tolerant.schema.json`](tolerant-read/event.tolerant.schema.json)
+for `EventRecord` (SCH-17). The tolerant profile shares the field shapes but sets
+`additionalProperties: true` and a `schemaVersion` enum; it does not weaken the
+strict schema, which remains the only contract accepted for writes.
+
 - **Offline resolution (P-13, NFR-13):** every `$id` uses the `urn:koquetel:schema:*`
   form, not an `https://` URL, so schema identity never requires a network host or
   any PhaseZero/SteamZero path to resolve. `$ref` values are file- or fragment-local.
 
-Compatibility is proven by test `SC-09` (version guard) below.
+Both modes are executed by the `SC-09` sub-tests in §6.
 
 ## 4. Sensitivity classification
 
@@ -114,19 +144,48 @@ Invariants enforced by classification:
 
 ## 6. Schema-contract tests (`SC-xx`)
 
-These are *specified*, not yet implemented (foundation phase). Each is a golden
-contract obligation.
+These are **executed** by the foundation schema suite
+(`tools/schema_suite/run_suite.py`), a foundation-only, pinned Draft 2020-12
+validator that is isolated from the product runtime. Each `SC-01..SC-08` covers one schema file and asserts, for every
+entity in it (root **and** each `$defs` secondary entity), that the valid example
+validates and the invalid example is rejected for exactly its documented rule
+(`examples/README.md`).
 
-- **SC-01..SC-08:** for each schema file, every `examples/*.valid.json` validates
-  and every `examples/*.invalid.json` is rejected against the declared schema/`$ref`,
-  with the rejection reason pinned in a golden fixture.
-- **SC-09 version guard:** an instance with an unknown *major* `schemaVersion` is
-  rejected fail-closed (NFR-08); an instance with an unknown *optional* field on a
-  known major is accepted (additive-minor tolerance).
-- **SC-10 classification completeness:** every leaf field declares
-  `x-classification`; every sensitive field additionally declares `x-retention`
-  and `x-exportable`; the invariants in §4 hold. This test reads the schema files
-  themselves, so it cannot silently drift from the contract.
+- **SC-01** `plan-confirmation.schema.json` — Plan (SCH-01), Confirmation (SCH-02).
+- **SC-02** `transaction.schema.json` — TransactionRecord (SCH-03), JournalEntry
+  (SCH-04), RecoveryRecord (SCH-05), OwnershipFingerprint (SCH-06).
+- **SC-03** `profile-adapter.schema.json` — ProfileProbe (SCH-07), AdapterDescriptor
+  (SCH-08).
+- **SC-04** `memory.schema.json` — MemoryEnvelope (SCH-09), MemoryExport (SCH-10).
+- **SC-05** `tool-policy.schema.json` — ToolManifest (SCH-11), CapabilityRequest
+  (SCH-12), PolicyDecision (SCH-13).
+- **SC-06** `delegation-task.schema.json` — Delegation (SCH-14), Budget (SCH-15),
+  TaskCheckpoint (SCH-16).
+- **SC-07** `event-support.schema.json` — EventRecord (SCH-17), SupportBundleManifest
+  (SCH-18).
+- **SC-08** `model-routing.schema.json` — ModelRoute (SCH-19), UsageRecord (SCH-20).
+
+- **SC-09 version guard (strict-write / tolerant-read, §3).** Five independent
+  assertions:
+  1. strict v1 **accepts** a known v1 instance;
+  2. strict v1 **rejects** an unknown field (`additionalProperties: false`);
+  3. `schemaVersion: 2` is **rejected** by the strict schema (`const: 1`) and by
+     the tolerant profile (major not in its enum);
+  4. the tolerant read profile **accepts** an instance with an unknown optional
+     field (preserve/ignore);
+  5. a record that passes *only* the tolerant profile (strict-invalid) **must not**
+     be admitted for a mutating/authority operation — asserted as a semantic gate,
+     since JSON Schema cannot express routing.
+- **SC-10 classification completeness (recursive).** Walking every `properties`,
+  `items`, `oneOf`/`anyOf`/`allOf` branch and `$defs` entry: every field —
+  including composite (object/array) fields — declares `x-classification`; every
+  field whose classification is `host-scoped`, `sensitive`, `secret-ref` or
+  `content` also declares `x-retention` and `x-exportable`; `secret-ref` is never
+  exportable in raw form; `content` is `explicit`-only. The test reads the schema
+  files themselves, so it cannot drift from the contract.
+- **Semantic invariants (beyond JSON Schema).** The suite also asserts cross-field
+  invariants a validator cannot: `confirmation.planHash` must equal the referenced
+  plan's `planHash` (SR-04), and the journal torn-tail isolation rule (AR-09, §7).
 
 ## 7. Critical secondary-entity examples
 

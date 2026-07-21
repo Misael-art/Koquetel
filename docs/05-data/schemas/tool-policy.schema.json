@@ -11,7 +11,7 @@
       "description": "A pinned, integrity-verified tool version. A changed manifest after admission denies invocation (FM-09).",
       "required": ["schemaVersion", "toolId", "name", "version", "source", "integrity", "transport", "inputSchemaRef", "requestedCapabilities", "manifestDigest", "admissionState"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "toolId": { "type": "string", "x-classification": "identifier" },
         "name": { "type": "string", "x-classification": "public" },
         "version": { "type": "string", "x-classification": "public" },
@@ -52,7 +52,7 @@
       "description": "A request to invoke a capability. The requester's text is untrusted (SR-01) and is recorded, not obeyed.",
       "required": ["schemaVersion", "requestId", "toolId", "invokedBy", "requestedCapability", "correlationId"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "requestId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "toolId": { "type": "string", "x-classification": "identifier" },
         "invokedBy": {
@@ -76,7 +76,7 @@
       "description": "The Policy Engine's verdict, independent of requester text (SR-01) and fully attributable (NFR-09).",
       "required": ["schemaVersion", "decisionId", "requestId", "correlationId", "decision", "reasonCode", "actor", "timestamp"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "decisionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "requestId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "correlationId": { "type": "string", "x-classification": "identifier" },

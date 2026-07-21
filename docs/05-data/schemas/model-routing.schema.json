@@ -11,7 +11,7 @@
       "description": "Routing decision by task class, capability, privacy, health, budget and policy (FR-14).",
       "required": ["schemaVersion", "routeId", "correlationId", "taskClass", "privacyClass", "selectedProvider", "selectedModel", "budgetRef", "decidedAt"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "routeId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "correlationId": { "type": "string", "x-classification": "identifier" },
         "taskClass": { "type": "string", "x-classification": "metadata" },
@@ -45,7 +45,7 @@
       "description": "Attributes tokens/cost/latency/cache/outcome to task, client, model and provider without recording content by default (FR-16, NFR-06).",
       "required": ["schemaVersion", "usageId", "correlationId", "clientId", "provider", "model", "outcome", "contentRecorded", "recordedAt"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "usageId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "correlationId": { "type": "string", "x-classification": "identifier" },
         "taskId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },

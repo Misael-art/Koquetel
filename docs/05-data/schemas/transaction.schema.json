@@ -10,7 +10,7 @@
       "additionalProperties": false,
       "required": ["schemaVersion", "transactionId", "operation", "scope", "initiatingActor", "planHash", "requiredConfirmationClass", "steps", "ownedPaths", "state", "timestamps"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "operation": { "enum": ["init", "install", "update", "repair", "remove", "sync"], "x-classification": "public" },
         "scope": {
@@ -81,7 +81,7 @@
       "description": "Append-only journal line. entryDigest + sequence make recovery line-atomic and torn-tail tolerant (AR-09, SR-10).",
       "required": ["schemaVersion", "transactionId", "sequence", "entryType", "timestamp", "payloadDigest", "entryDigest"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "sequence": { "type": "integer", "minimum": 0, "description": "monotonic within a transaction; gaps or non-monotonicity flag a torn tail.", "x-classification": "metadata" },
         "entryType": { "enum": ["intent", "result", "compensation", "terminal"], "x-classification": "public" },
@@ -97,7 +97,7 @@
       "additionalProperties": false,
       "required": ["schemaVersion", "transactionId", "startedAt", "trigger", "action", "outcome", "idempotencyKey"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "transactionId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "startedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
         "trigger": { "enum": ["interrupted", "verification-failed", "activation-failed", "operator-requested"], "x-classification": "metadata" },

@@ -11,7 +11,7 @@
       "description": "An expiring authority grant. A child delegation is provably no broader than its parent (SR-16, AC-12).",
       "required": ["schemaVersion", "delegationId", "issuer", "childAgentId", "grantedCapabilities", "memoryScopes", "budgetRef", "issuedAt", "expiresAt", "revoked"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "delegationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "parentDelegationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "description": "absent for a root delegation; when present, this grant is a subset of the parent.", "x-classification": "identifier" },
         "issuer": { "type": "string", "x-classification": "sensitive", "x-retention": "audit-180d", "x-exportable": "policy" },
@@ -36,7 +36,7 @@
       "description": "Enforced before a request creates an uncontrolled cost loop (FR-15, FM-08).",
       "required": ["schemaVersion", "budgetId", "scope", "limits", "ceilingAction"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "budgetId": { "type": "string", "x-classification": "identifier" },
         "scope": { "enum": ["installation", "user", "project", "task", "delegation"], "x-classification": "public" },
         "limits": {
@@ -72,7 +72,7 @@
       "description": "A restart point for a workflow so a killed task converges to old-or-completed state (FR-23, NFR-03).",
       "required": ["schemaVersion", "checkpointId", "taskId", "correlationId", "stepIndex", "phase", "createdAt", "resumable", "stateDigest"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "checkpointId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "taskId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "correlationId": { "type": "string", "x-classification": "identifier" },

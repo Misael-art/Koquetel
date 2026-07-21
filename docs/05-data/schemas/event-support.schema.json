@@ -11,7 +11,7 @@
       "description": "Append-only audit metadata with monotonic sequence and chained digest within an installation (SR-10).",
       "required": ["schemaVersion", "eventId", "sequence", "installationId", "correlationId", "timestamp", "category", "action", "result", "eventDigest"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "eventId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "sequence": { "type": "integer", "minimum": 0, "description": "monotonic within an installation (SR-10).", "x-classification": "metadata" },
         "installationId": { "type": "string", "x-classification": "identifier" },
@@ -35,7 +35,7 @@
       "description": "Describes a diagnostic bundle produced without a model or cloud (FR-26). Content is excluded unless explicitly requested and previewed (FR-22).",
       "required": ["schemaVersion", "bundleId", "createdAt", "generatedOffline", "includes", "redactionApplied", "includeContent", "integrityDigest"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "bundleId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
         "generatedOffline": { "const": true, "description": "the bundle path must complete using local state only (FR-26, AC-13).", "x-classification": "public" },

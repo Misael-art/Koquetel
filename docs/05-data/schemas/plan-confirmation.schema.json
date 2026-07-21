@@ -10,7 +10,7 @@
       "additionalProperties": false,
       "required": ["schemaVersion", "planId", "planHash", "operation", "scope", "initiatingActor", "createdAt", "expiresAt", "requiredConfirmationClass", "ownedTargets", "steps", "verificationPlan", "rollbackPlan"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "planId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "planHash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256 over the normalized plan; the only value a confirmation may bind.", "x-classification": "identifier" },
         "operation": { "enum": ["init", "install", "update", "repair", "remove", "sync"], "x-classification": "public" },
@@ -111,7 +111,7 @@
       "additionalProperties": false,
       "required": ["schemaVersion", "confirmationId", "planId", "planHash", "actor", "grantedCapabilityClass", "issuedAt", "expiresAt", "singleUse"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "confirmationId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "planId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "planHash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "MUST equal the bound plan's planHash (SR-04).", "x-classification": "identifier" },

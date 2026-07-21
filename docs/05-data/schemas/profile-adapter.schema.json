@@ -11,7 +11,7 @@
       "description": "Read-only discovery output; producing it never mutates the host (FR-01).",
       "required": ["schemaVersion", "probeId", "generatedAt", "host", "profile", "capabilities", "clients"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "probeId": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$", "x-classification": "identifier" },
         "generatedAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
         "host": {
@@ -77,7 +77,7 @@
       "description": "Declares an adapter's tested surface; unknown mutating schema fails closed (NFR-08, FM-04).",
       "required": ["schemaVersion", "adapterId", "kind", "target", "version", "testedVersionRange", "mutating", "failClosedOnUnknownSchema", "healthState"],
       "properties": {
-        "schemaVersion": { "type": "integer", "minimum": 1, "x-classification": "public" },
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
         "adapterId": { "type": "string", "x-classification": "identifier" },
         "kind": { "enum": ["client", "memory", "router", "sandbox", "secrets", "telemetry", "tool-transport"], "x-classification": "public" },
         "target": { "type": "string", "description": "concrete client/backend, e.g. 'claude-code' or 'ai-memory'.", "x-classification": "public" },
