@@ -13,3 +13,4 @@ Last reviewed: 2026-07-21
 | A-06 | Most workspace mutations can run without host privilege | privileged helper remains narrow and optional | required operations routinely need root |
 | A-07 | Retired: independence is no longer an assumption | promoted to accepted ADR-0001, P-13, NFR-13 and AC-17 on 2026-07-21 | identifier retained for history |
 | A-08 | Normative technical documents use English for protocol and ecosystem consistency | identifiers, schemas and review language remain uniform across international tools | owner selects Portuguese as the normative language |
+| A-09 | MCP protocol version string at `88191b9` ("draft" branch) is `2026-07-28`; this is the protocol version identifier, not a document publication date | Koquetel MCP transport negotiates `2026-07-28` as the known version | an MCP revision ships with a different version string or the draft diverges from the pinned spec |

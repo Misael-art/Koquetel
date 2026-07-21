@@ -21,7 +21,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 |---|---|---|---|---|---|
 | FR-01 | R-03 | FM-04, FM-11 | AC-01, AC-13 | SC-03, non-mutation property | specified |
 | FR-02 | R-01 | FM-03 | AC-01, AC-07 | SC-01, FI-03 | specified |
-| FR-03 | R-10 | FM-01, FM-17..20 | AC-01, AC-04 | SC-02, FI-01, RT-01..05 | specified |
+| FR-03 | R-10 | FM-01, FM-17..21 | AC-01, AC-04 | SC-02, FI-01, RT-01..05, PT-06 | specified |
 | FR-04 | R-10 | FM-01, FM-18 | AC-03 | FI-01, RT-02, RT-03, PT-02 | specified |
 | FR-05 | R-11 | FM-20 | AC-04, AC-05 | SC-04, golden export, PT-03 | specified |
 | FR-06 | R-03 | FM-03, FM-04 | AC-02 | SC-03, adapter round-trip fixture, FI-12 | specified |
@@ -52,7 +52,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 |---|---|---|---|---|---|
 | NFR-01 | R-11 | FM-17 | AC-01 | golden provenance, PT-05 | specified |
 | NFR-02 | R-10 | FM-01 | AC-02 | idempotency property, FI-01, RT-03 | specified |
-| NFR-03 | R-10 | FM-01 | AC-03 | FI-01, RT-03, PT-02, PT-05 | specified |
+| NFR-03 | R-10 | FM-01, FM-21, FM-22 | AC-03 | FI-01, RT-03, PT-02, PT-05, PT-06 | specified |
 | NFR-04 | R-05 | FM-05, FM-11 | AC-13, AC-15 | offline E2E suite, FI-09 | specified |
 | NFR-05 | R-08 | FM-05 | AC-15 | startup benchmark | specified |
 | NFR-06 | R-09 | FM-14 | AC-13 | SC-08, redaction canary, default-off property | specified |
@@ -112,7 +112,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 - Every schema `SCH-01..SCH-20` maps to a requirement, threat/failure mode,
   acceptance and an `SC-xx` test in
   [`05-data/schemas/SCHEMA-REGISTRY.md`](05-data/schemas/SCHEMA-REGISTRY.md) §5.
-- Prototype gates `PT-01..PT-05`
+- Prototype gates `PT-01..PT-06`
   ([`08-testing/PROTOTYPE-GATES.md`](08-testing/PROTOTYPE-GATES.md)) each block a
   named contract/milestone until they pass their documented gate.
 - Principles `P-13`/`NFR-13`/`AC-17` share the independence verification family

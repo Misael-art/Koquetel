@@ -12,7 +12,5 @@ Last reviewed: 2026-07-21
 | Q-05 | Default data posture | fully local; local-first with opt-in cloud; cloud-managed | Local-first with explicit per-backend opt-in | memory, telemetry, routing |
 | Q-06 | Supported user profile | individual developer; team; both in v1 | Individual developer v1, schemas team-ready | identity, policy |
 | Q-07 | Dashboard commitment | CLI only; CLI+local web UI; native UI | CLI first and local read-only dashboard after contracts stabilize | UI, packaging |
-
-Until resolved, recommendations are planning assumptions, not accepted owner
-decisions.
+| Q-08 | NFS commit-level fence requirement | (a) NFS is NOT required for v1 — local-fs-only operation is acceptable; (b) NFS commit-level fence IS required for a future v2 that includes multi-host lease; (c) NFS is required even in v1 despite the fencing gap | This ADR takes no position. ADR-0011 candidate direction places NFS as **unsupported for v1** (G-13, PT-06). **Owner decides** whether a future v2 must include NFS multi-host support, which would require resolving G-13. | G-13, ADR-0011 acceptance, Q-03 scope |
 

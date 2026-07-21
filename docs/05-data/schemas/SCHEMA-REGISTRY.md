@@ -130,7 +130,7 @@ Invariants enforced by classification:
 | SCH-01 Plan | FR-02, P-04 | R-01 | AC-01, AC-07 | SC-01 |
 | SCH-02 Confirmation | SR-04, FR-21 | prompt-injection consent bypass | AC-10 | SC-01 |
 | SCH-03 TransactionRecord | FR-03, NFR-02 | FM-01, FM-19 | AC-01, AC-03 | SC-02 |
-| SCH-04 JournalEntry | NFR-03, SR-10 | FM-01 (torn tail, AR-09) | AC-03 | SC-02 |
+| SCH-04 JournalEntry | NFR-03, SR-10 | FM-01 (torn tail, AR-09), FM-21 (stale-epoch fence), FM-22 | AC-03 | SC-02, PT-06 |
 | SCH-05 RecoveryRecord | FR-04, NFR-03 | FM-18, FM-20 | AC-03, AC-04 | SC-02 |
 | SCH-06 OwnershipFingerprint | FR-03, SR-08 | FM-03, FM-20, AR-08 | AC-04 | SC-02 |
 | SCH-07 ProfileProbe | FR-01, NFR-04 | FM-11, FM-04 | AC-01, AC-13 | SC-03 |

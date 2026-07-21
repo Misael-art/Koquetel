@@ -23,24 +23,127 @@ not implement any prototype and authorizes no product code.
   environment; a single containment or convergence failure fails the gate.
 - No PhaseZero/SteamZero path, command or data format is used by any prototype.
 
-## PT-01 — Exclusive cross-process lock under concurrency
+## PT-01 — Exclusive cross-process mutual exclusion
 
 - **Gap/req:** G-11, AR-08; concurrency rule in `ARCHITECTURE.md §5`; `E-2002`.
-- **Environment:** one Linux host; the local filesystem that will hold the lease
-  (and, separately, a repeat on a networked/`tmpfs` filesystem to expose `flock`
-  vs `O_EXCL` differences); ≥100 concurrent processes.
-- **Input:** N processes each attempt to acquire the single installation-scope
-  lease, do a marked critical section (increment a shared counter guarded only by
-  the lock), release, and loop for ≥10,000 total contended acquisitions.
-- **Injected fault:** kill `-9` the current holder mid-critical-section; a second
-  contender must detect the stale lease (owner/pid/lease-expiry) and take over.
-- **Expected result:** at most one holder at any instant; the guarded counter
-  equals the number of acquisitions exactly; a dead holder's lease is reclaimed
-  within the declared timeout without manual cleanup.
-- **Evidence artifact:** the run log with per-acquisition holder id, the final
-  counter equality assertion, and the takeover timestamp trace.
-- **Pass/fail:** 0 mutual-exclusion violations across all acquisitions AND stale
-  lease reclaimed within the bound. Any double-hold or lost counter fails.
+- **Environment:** one Linux host; tested on **local filesystem (ext4/XFS)**,
+  **tmpfs** and **network filesystem (NFS)** separately — flock semantics,
+  `O_EXCL` atomicity and lease expiry differ across them and Koquetel must
+  document which are supported (see §Filesystem semantics below).
+- **Input:** N ≥ 100 concurrent processes each attempt to acquire the single
+  installation-scope lease via `O_EXCL` creation + `flock` (or equivalent kernel
+  mechanism), do a **read-only marked critical section** (read shared counter),
+  release, and loop for ≥10,000 total contended acquisitions.
+- **Injected fault:** none in this gate — this gate proves **mutual exclusion
+  only**; lease recovery is PT-06.
+- **Expected result:** at most one holder at any instant; the shared counter is
+  used **only as a read oracle** — its value is never asserted after a
+  non-transactional update. The acquisition log is **append-only** per
+  acquisition: each successful lock logs `(holder_id, timestamp, lease_path)`
+  and no two logs overlap temporally.
+- **OFD lifecycle arm (new sub-test, mandatory for ext4/XFS):** repeat the
+  same N × 10,000 contention with `fork()` injected mid-lease: after acquiring
+  the lock, the process forks. The child inherits a reference to the **same**
+  OFD. The child MUST close the lease fd immediately (removing its reference;
+  the parent's reference keeps the lock alive), and the parent continues.
+  **Expected:** no mutual-exclusion violation despite the fork — the lock
+  persists because the parent still holds a reference to the OFD.
+  A second variant closes the fd in the parent first (parent releases its
+  reference; the child's reference keeps the lock alive) and then the child
+  closes — the lock must be released only after **both** references are
+  closed. **Expected:** no double-release; the lock is released once when the
+  last reference is closed.
+- **Evidence artifact:** the per-acquisition log with holder id + start/end
+  timestamps and the lease-path owner file at each instant. A script that
+  detects temporal overlaps in the log.
+- **Pass/fail:** 0 mutual-exclusion violations across all acquisitions (no
+  temporal overlap in logs, no concurrent lease file owners). Any double-hold
+  fails. The mechanism (`O_EXCL`, `flock` or equivalent) must be identified by
+  name and kernel syscall, not as a vague "filesystem lease".
+- **Disposal:** delete the lease dir and prototype binary; retain only the log.
+
+### Filesystem semantics
+
+| Filesystem | `O_EXCL` (open with O_CREAT\|O_EXCL) | `flock` advisory | Lease owner visibility | Notes |
+|---|---|---|---|---|---|
+| Local ext4/XFS | **atomic** on the same node¹ | advisory, released on fd close² | immediate | Baseline behaviour; Koquetel production target. |
+| tmpfs | **atomic** on the same node¹ | advisory, released on fd close² | immediate | Volatile; reclaimed on unmount³. Acceptable for ephemeral coordinators. |
+| NFS v3/v4 | **not atomic** without `O_EXCL` emulation⁴ | `flock` is emulated via `fcntl`-based byte-range lock (lockd); may not release on unexpected disconnect until lockd timeout⁵ | stale lease may persist beyond NFS lockd timeout⁵ | **Unsupported for v1** (Q-08, G-13). PT-01 must fail on NFS. A distributed fencing protocol or conditional atomic commit primitive is required for any future NFS support. |
+
+**Primary sources:**
+¹ `open(2)` man page (Linux man-pages 6.x): `O_EXCL` guarantees exclusive creation
+  on local filesystems; `O_EXCL` on NFS relies on remote server support and is
+  not atomic without workarounds.
+² `flock(2)` man page (Linux man-pages 6.x): advisory, released on close.
+³ `tmpfs.txt` (kernel.org, kernel 6.x): tmpfs does not survive unmount.
+⁴ NFS man page `nfs(5)` (Linux man-pages 6.x): `O_EXCL` on NFS requires
+  `O_EXCL` emulation via context-bearing nonce file; without it the open is not
+  atomic.
+⁵ NFS man page `nfs(5)` and `lockd(8)` documentation: `flock` on NFS is
+  emulated via POSIX `fcntl` byte-range locks managed by `lockd`; unlock on
+  client crash depends on `lockd` lease (typically 45s grace).
+
+A claim of "network filesystem support" without PT-01 evidence on that filesystem
+is invalid.
+
+## PT-06 — Lease recovery after holder death
+
+- **Gap/req:** G-11, AR-08; supplements PT-01 mutual exclusion with recovery.
+- **Environment:** same as PT-01 (local fs, repeated on target filesystems).
+- **Input:** same N-process contention harness, but now each critical section
+  increments a shared counter **using an atomic/transactional update** (e.g.,
+  `fsync`-guarded file increment or SQLite row update). If the counter update
+  is not transactional, the gate **does not assert equality** — it can only
+  assert fencing.
+- **Injected fault:** kill `-9` the current holder mid-critical-section after
+  the lock is acquired but before release. A second contender must detect the
+  stale lease (owner pid no longer alive, or lease expiry elapsed) and take
+  over.
+- **Expected result:**
+  1. A dead holder's lease is reclaimed within the declared timeout without
+     manual cleanup.
+  2. The new holder **fences against the old holder**: e.g., it writes a
+     fencing token (epoch counter) that any late-arriving old-holder write
+     would reject, or the lease mechanism itself (kernel-backed) guarantees
+     the old holder cannot write after release.
+  3. Recovery time (from death to new-holder acquisition) is measured and
+     reported against the declared bound.
+  4. **Epoch token validation at journal write (arm):** two sub-cases:
+     *a)* after takeover, the prototype writes a journal entry with the *old*
+     epoch (simulating a stale-holder write that arrives late), where the old
+     epoch's revocation is **provable** (e.g., the new holder's epoch
+     increment is persisted before the stale write). **Expected:** the journal
+     reader quarantines the stale-epoch entry during recovery (concern 5).
+     *b)* same scenario but without provable revocation — the stale write
+     arrives concurrently with the epoch increment and there is no evidence
+     whether the write preceded or followed revocation. **Expected:** the
+     journal reader **preserves** the entry (no simple `leaseEpoch < current`
+     discard) because the entry may be legitimate history from the prior
+     epoch. The implementation must detect the ambiguity and escalate
+     (fail-closed) rather than silently discarding or accepting.
+     Together these validate that epoch fencing at the journal level requires
+     a revocation-proof protocol (G-13), not just a numeric comparison.
+  5. **OFD lifecycle arm (ext4/XFS only):** repeat the kill-fault injection
+     with two sub-tests:
+     *a) exec with CLOEXEC:* the holder sets `FD_CLOEXEC` on the lease fd,
+     then calls `exec()` to a no-op helper. **Expected:** `exec()` closes the
+     fd (CLOEXEC), releasing the last reference. The helper runs without the
+     lease, and a contender acquires the lock.
+     *b) dup survival:* the holder calls `dup()` on the lease fd, then closes
+     the original fd. **Expected:** the lock **survives** because the
+     duplicate fd still references the same OFD. The contender must not be
+     able to acquire the lock. When the duplicate is also closed, the lock is
+     released and the contender acquires it.
+- **Evidence artifact:** the takeover timestamp trace showing death→detection→
+  acquisition→fencing; the fenced-out late-write rejection log (if any); the
+  recovery-time distribution; the stale-epoch entry rejection attestation; the
+  exec/dup survival log.
+- **Pass/fail:** stale lease reclaimed within the bound AND fencing prevents
+  old-holder writes from being accepted AND stale-epoch journal entries are
+  isolated during recovery. Any split-brain, unbound recovery, or acceptance
+  of a stale-epoch entry fails. The counter value after recovery is recorded
+  but **not** used as a pass/fail criterion unless its update is proven
+  transactional.
 - **Disposal:** delete the lease dir and prototype binary; retain only the log.
 
 ## PT-02 — Journal recovery with a truncated final write
@@ -150,7 +253,11 @@ not implement any prototype and authorizes no product code.
 | PT-03 | ai-memory durability/concurrency/export/removal (G-04) | ADR-0004 / `M-03` |
 | PT-04 | rootless sandbox containment + cost (G-05) | `M-04`, external tool execution |
 | PT-05 | Rust distribution + recovery (ADR-0002) | ADR-0002 acceptance / `M-01` |
+| PT-06 | lease recovery with fencing (AR-08, G-11) | transaction ADR / `M-01` |
 
 `FOUNDATION-GOVERNANCE.md §5` requires the three highest-risk of these (PT-01,
 PT-02 and PT-03, or PT-04 where external execution ships first) to pass their
-documented gates before `READY FOR IMPLEMENTATION`.
+documented gates before `READY FOR IMPLEMENTATION`. PT-01 and PT-06 together
+replace the original combined PT-01: mutual exclusion (PT-01) must pass before
+lease recovery (PT-06) is run, and both must pass for the lock contract to be
+accepted.
