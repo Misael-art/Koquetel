@@ -36,7 +36,8 @@ Use and preserve these namespaces:
 - `ADR-xxxx`: architectural decision;
 - `IT-xx`: source-project independence test; `AR-xx`: anti-requirement;
 - `GA-xx`: synthesis gap; `SCH-xx`: normative schema;
-- `SC-xx`: schema-contract test; `PT-xx`: prototype gate.
+- `SC-xx`: schema-contract test; `PT-xx`: prototype gate;
+- `EA-xx`: external implementation audit.
 
 Identifiers are never renumbered after publication. Retired identifiers remain
 listed as retired. Every normative `MUST`, `SHALL`, or `NEVER` statement needs an

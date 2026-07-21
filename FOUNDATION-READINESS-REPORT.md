@@ -38,19 +38,30 @@ owner decisions, prototypes, traceability matrix or independent review.
 - ten anti-requirements and ten cross-source synthesis gaps.
 - owner-confirmed complete operational independence from PhaseZero and SteamZero,
   specified by P-13/NFR-13/AC-17 and eight release-blocking independence tests.
+- twenty versioned record schemas `SCH-01..SCH-20` with classification, retention
+  and export rules, valid/invalid examples, and an `SC-01..SC-10` test family;
+- an implementation-level external audit of ai-memory (`EA-01`) with line-exact
+  evidence at its pin, and an audit framework for the remaining candidates;
+- five disposable prototype gates `PT-01..PT-05` with measurable pass/fail;
+- a one-row-per-requirement traceability matrix (every FR/NFR/SR/AC mapped to a
+  verification family) guarded by a documentation linter that currently reports
+  zero ID, reference, link, traceability or schema-well-formedness errors.
 
 ## Blocking work
 
-1. Resolve Q-01 through Q-05 with the project owner.
-2. Complete equivalent implementation-level audits for external projects selected
-   as dependency or architectural base; observed remote HEAD is not a release pin.
+1. Resolve Q-01 through Q-05 with the project owner (G-01, critical).
+2. Complete the remaining implementation-level audits (`EXTERNAL-AUDITS.md`):
+   ai-memory is done (`EA-01`); RTK, MCP, LiteLLM, OpenHands, Letta and Mem0 remain,
+   and no observed remote HEAD is a release pin.
 3. Complete license compatibility and attribution after Q-02; PhaseZero remains
-   behavior-research-only because it has no tracked root license.
+   behavior-research-only because it has no tracked root license (G-02, critical).
 4. Turn proposed ADRs into accepted decisions after their gates.
-5. Define versioned JSON Schemas for state, plan, memory, tool manifest, policy,
-   events, export and adapter descriptors.
-6. Complete requirement→threat/failure→acceptance→test traceability.
-7. Run memory, sandbox, Rust/distribution, atomic-lock and torn-journal prototypes.
+5. Schemas `SCH-01..SCH-20` are defined with examples; still execute the
+   `SC-01..SC-10` golden/version/classification tests against a validator (a
+   validator dependency was intentionally not added in this phase).
+6. Traceability now carries one row per requirement; rows remain `specified` and
+   must reach `proven` with retained evidence under the approval rule.
+7. Run the prototype gates `PT-01..PT-05`; all remain specified, none executed.
 8. Obtain an independent adversarial foundation review.
 
 ## Gate decision

@@ -42,4 +42,7 @@ Start with:
 | `docs/glossary` | canonical vocabulary and forbidden ambiguities |
 
 Cross-cutting traceability is maintained in
-[`docs/TRACEABILITY.md`](docs/TRACEABILITY.md).
+[`docs/TRACEABILITY.md`](docs/TRACEABILITY.md). Versioned record schemas live in
+[`docs/05-data/schemas/`](docs/05-data/schemas/SCHEMA-REGISTRY.md). Run
+`python3 tools/foundation_lint.py` to check ID, reference, link, traceability and
+schema-example consistency (read-only foundation tooling, not product code).

@@ -105,3 +105,22 @@ Append-only evidence log.
 - Wired PT ids into G-05 (PT-04) and G-11 (PT-01/PT-02), cross-referenced the
   gates from `TEST-STRATEGY.md`, and cited them in roadmap `M-00`. Gates are
   specified only; no prototype was run and no product code was written.
+
+## 2026-07-21 — F4 traceability, documentation lint and readiness
+
+- Added `tools/foundation_lint.py` (stdlib only, read-only, non-product): checks
+  duplicate ID definitions, broken ID/link references, requirements without a
+  traceability row/test, accepted decisions still listed open, and schema-example
+  JSON well-formedness. It exits non-zero on any error.
+- Expanded `docs/TRACEABILITY.md` to one row per requirement (FR-01..26,
+  NFR-01..13, SR-01..16, AC-01..17), each mapped to risk, failure mode, acceptance
+  and a verification family; added schema/prototype coverage notes.
+- Iterated the linter to remove false positives (section-heading vs ledger-row
+  double counting; range/negation phrasing near open Q-ids) until it reports
+  `0 error(s), 0 warning(s)`.
+- Registered the `EA-xx` namespace in `AGENTS.md`.
+- Updated `FOUNDATION-READINESS-REPORT.md` honestly: recorded schemas, EA-01,
+  prototype gates and full traceability as established; kept every unresolved
+  blocker (owner decisions, license, ADR acceptance, SC/prototype execution,
+  independent review) and held the classification at **NOT READY**.
+- No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
