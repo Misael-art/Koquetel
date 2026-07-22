@@ -99,9 +99,12 @@ Prototype source, target/ and `drive.sh` live only in
 
 ## ADRs affected
 
-- **ADR-0010 (session lifecycle):** PT-01, PT-02 and now **PT-06** prerequisites
-  are met, and recovery with no lost mutations is shown (counter equality). One
-  residual remains: the UUIDv7-benefit justification (ADR-0010 §3). Stays proposed.
+- **ADR-0010 (session lifecycle) — corrected by RF-02:** PT-01, PT-02 and PT-06
+  prerequisites are met, and recovery with no lost mutations is shown (counter
+  equality). The v1 id is a single **random 128-bit** format (32 lowercase hex);
+  UUIDv7 is rejected for v1 — **no UUIDv7-benefit residual**. Ready for owner
+  ratification. ~~Original: one residual remains — the UUIDv7-benefit justification
+  (ADR-0010 §3).~~
 - **ADR-0011 (lease recovery/fencing):** PT-01 and **PT-06** met; the OFD path and
   journal-classification logic are validated. **G-13 remains open** (revocation-proof
   fence at commit), so ADR-0011 stays **proposed** — exactly as its prerequisites state.

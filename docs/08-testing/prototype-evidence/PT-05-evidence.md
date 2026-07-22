@@ -8,9 +8,18 @@ Prototype location: `/tmp/koquetel-prototypes/pt05/` (ephemeral, deleted after e
 ## Verdict
 
 **PASS** for the PT-05 gate as written (distribution binary, SQLite migration,
-Unix-socket peer credentials, recovery after kill). Note: ADR-0002's *own* gate
-lists two further arms — **Podman invocation** and **atomic config projection** —
-that PT-05 does not cover, so ADR-0002 is **not** fully accepted here (see below).
+Unix-socket peer credentials, recovery after kill).
+
+> **Superseded by RF-01 remediation (2026-07-22).** The historical sentence below
+> treated Podman invocation and atomic config projection as *ADR-0002 gate arms*.
+> Under the RF-01 authoritative interpretation, **ADR-0002's acceptance predicate
+> is PT-05 (core language + distribution) only**; Podman invocation belongs to
+> PT-04/M-04 and G-05, and atomic config projection is an M-01 exit criterion —
+> neither is part of the ADR-0002 language decision. History preserved, struck.
+
+~~Note: ADR-0002's own gate lists two further arms — Podman invocation and atomic
+config projection — that PT-05 does not cover, so ADR-0002 is not fully accepted
+here.~~
 
 ## Environment
 
@@ -103,8 +112,15 @@ Only this file (with the binary SHA-256 and measured numbers) is retained.
 
 ## ADRs affected
 
-- **ADR-0002 (Rust core):** distribution/SQLite/socket/recovery arms **satisfied**;
-  Podman-invocation and atomic-config-projection arms **outstanding**. ADR-0002
-  stays **proposed** until PT-04 (Podman) and the config-projection arm are shown.
-- **ADR-0010 (session lifecycle):** the peer-credential and recovery mechanics it
-  relies on are demonstrated feasible; still gated on PT-06 + UUIDv7 justification.
+- **ADR-0002 (Rust core) — corrected by RF-01:** PT-05 satisfies ADR-0002's
+  acceptance predicate (core language + distribution: static binary, bundled
+  SQLite, Unix-socket peer credentials, kill-recovery). **Podman invocation
+  (PT-04/M-04, G-05) and atomic config projection (M-01 exit) are NOT ADR-0002 gate
+  arms.** ADR-0002 is **ready for owner ratification** (not author-accepted).
+  ~~Original: distribution/SQLite/socket/recovery satisfied; Podman-invocation and
+  atomic-config-projection arms outstanding; ADR-0002 stays proposed until PT-04
+  and the config-projection arm are shown.~~
+- **ADR-0010 (session lifecycle) — corrected by RF-02:** peer-credential/recovery
+  mechanics demonstrated feasible; PT-06 is met and the v1 id is **random 128-bit**
+  (no UUIDv7 justification). ~~Original: still gated on PT-06 + UUIDv7
+  justification.~~

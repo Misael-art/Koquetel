@@ -492,3 +492,20 @@ all remain **awaiting independent validation**.
   external pins, toolchain versions and honest limitations. Wired into the
   PROTOTYPE-GATES disposability contract. Policy committed **before** any rerun,
   per RF-03's requirement of an authorized evidence plan.
+
+### RF-01 (ADR-0002) and RF-02 (ADR-0010) — one authoritative predicate each
+
+- **RF-01:** adopted a single interpretation — ADR-0002 decides only the core
+  *language + basic distribution*; **PT-05 is its acceptance predicate**. Podman
+  invocation = PT-04/M-04 and `G-05`; atomic config projection = **M-01 exit
+  criterion** (added to ROADMAP M-01). Corrected the PT-05 and PT-04 evidence
+  reports: the earlier "ADR-0002 gate includes Podman/config" claims are struck
+  through and marked "superseded by RF-01 remediation" (history preserved, not
+  rewritten). ADR-0002 stays **ready for owner ratification**, not accepted.
+- **RF-02:** ADR-0010 now carries **one** v1 identifier format — random 128-bit,
+  wire form 32 lowercase hex `^[0-9a-f]{32}$`, no timestamp, correlation-not-
+  credential, constant-time compare, no reuse after expiry. UUIDv7 reframed to
+  "rejected for v1" (removed the "Chosen = yes" row and the benchmark blocker).
+  `OWNER-RATIFICATION-PACKET` R-2 and the PT-06 evidence report aligned to the
+  identical decision. ADR-0010 stays **ready for owner ratification**.
+- No RF closed by the author; both remain awaiting independent validation.

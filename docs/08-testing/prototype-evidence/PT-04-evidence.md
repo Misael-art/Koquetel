@@ -88,6 +88,10 @@ Bubblewrap invocations and the benign data file live only under
   isolation, memory rlimit and process-tree kill demonstrated rootless with 12 ms
   overhead. **Stays open** pending the Podman-backed run and the network-allowlist
   arm on a suitable host.
-- **ADR-0002 (Rust core):** its "Podman invocation" arm remains **unmet** (Podman
-  absent), so ADR-0002 stays **proposed** even though PT-05 cleared its
-  distribution/SQLite/socket/recovery arms.
+- **ADR-0002 (Rust core) — corrected by RF-01:** Podman invocation is **not** an
+  ADR-0002 gate arm; it is a PT-04/M-04 sandbox capability and blocks **G-05**, not
+  the Rust language decision. PT-04's PARTIAL verdict blocks **M-04 and any
+  sandbox-declared release**, not ADR-0002 and not the start of M-01/M-02.
+  ~~Original: ADR-0002's "Podman invocation" arm remains unmet, so ADR-0002 stays
+  proposed even though PT-05 cleared its distribution/SQLite/socket/recovery
+  arms.~~

@@ -1,6 +1,6 @@
 # ADR-0010 — Session lifecycle
 
-Status: proposed — ready for owner ratification. The **session-lifecycle decision** (lightweight session token) rests on PT-01, PT-02 and PT-06 — **all met** (PT-06 showed recovery with no lost mutations: 10,000 contended increments exact, 20/20 reclaims). The **identifier format** is a subordinate, schema-substitutable detail; the author recommends a **random 128-bit** id for v1 (privacy + simplicity), not UUIDv7. Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
+Status: proposed — ready for owner ratification. The **session-lifecycle decision** (lightweight session token) rests on PT-01, PT-02 and PT-06 — **all met** (PT-06 showed recovery with no lost mutations: 10,000 contended increments exact, 20/20 reclaims). The **identifier format is a single v1 selection** — a **random 128-bit id, wire form 32 lowercase hex (`^[0-9a-f]{32}$`)**, no timestamp — fixed by the versioned session schema; UUIDv7 is a rejected alternative (no benchmark blocker). Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
 Date: 2026-07-21
 
 ## Context
@@ -51,26 +51,36 @@ Option 2: lightweight session token.
 - The session token is an opaque correlation `sessionId` returned in the response
   `_meta` under the key `io.koquetel/sessionId` (MCP extension namespace
   convention) and carried by the client on subsequent requests. Its **format is a
-  subordinate detail** (see below), normatively substitutable via the schema; it
+  detail** (see below) fixed by the versioned session schema; it
   is a reference, not a credential — authority is re-evaluated per request.
 
-### Identifier format — recommendation (subordinate to the lifecycle decision)
+### Identifier format — single v1 selection (RF-02 remediation)
 
-The identifier format does **not** gate the lifecycle decision. Three options:
+The lifecycle decision carries **one** identifier format for v1, not a menu. The
+proposed format is:
 
-- **A. Random 128-bit (CSPRNG).** No embedded timestamp → leaks no creation time
-  (privacy), needs no monotonic counter or clock (simplicity); collision bound
-  ~n²/2^129. **Recommended for v1.**
-- **B. UUIDv7 (RFC 9562).** Index locality from time-sortability, but leaks
-  approximate creation time and needs a monotonicity counter to order within a
-  millisecond. Adopt only after a benchmark shows measurable index benefit over A.
-- **C. Schema-substitutable.** The format is declared in the schema and can change
-  without reopening this ADR; producers/consumers agree via the schema version.
+- **128 bits from a CSPRNG.**
+- **Canonical wire representation: 32 lowercase hexadecimal characters**, pattern
+  `^[0-9a-f]{32}$`.
+- **No embedded timestamp** — leaks no creation time.
+- A **correlation identifier, not a bearer credential**; authority is revalidated
+  on every request and never derived from the id.
+- **Constant-time comparison** wherever an id is compared against a stored value.
+- **Not reused after expiry.**
 
-The author recommends **A for v1** unless a benchmark justifies B; C keeps the
-door open. The UUIDv7 analysis below is retained as the evidence for option B.
+This is the single format proposed to the owner. Its wire contract (field name,
+presence, lifecycle invariants, request/response placement) is **fixed by a
+versioned session schema** (`session.schema.json`, added in this RF remediation) —
+so the format is not "vaguely substitutable"; changing it is a schema version
+change with explicit compatibility rules.
 
-### Session-id format: UUIDv7 (RFC 9562) over alternatives
+**UUIDv7 is an alternative considered and REJECTED for v1** — it leaks approximate
+creation time (privacy) and needs a monotonicity counter to order within a
+millisecond (complexity). The table below is retained only as the rejected-
+alternative record; it is **not** a pending decision and carries **no benchmark
+blocker**.
+
+### Alternatives considered — UUIDv7 (rejected for v1)
 
 | Property | UUIDv7 (RFC 9562) | Random 128-bit | Separate token + timestamp |
 |---|---|---|---|
@@ -81,7 +91,7 @@ door open. The UUIDv7 analysis below is retained as the evidence for option B.
 | Opacity | reveals approximate creation time (ms) | does not reveal creation time | timestamp portion reveals time |
 | Collision probability (birthday) | for n IDs in same ms: ~n²/2^75 | for n IDs: ~n²/2^129 | depends |
 | Single wire value | yes (128-bit total) | yes | two values |
-| Chosen (proposed) | **yes** — single wire value, approximate ordering, offline uniqueness³ | no | no — two values increase protocol surface |
+| Chosen for v1 | **no — rejected** (leaks creation time; needs a counter)³ | **yes** — 32 lowercase hex, `^[0-9a-f]{32}$`, no timestamp | no — two values increase protocol surface |
 
 ¹ UUIDv7 is **not** guaranteed monotonic within the same millisecond without a
 monotonicity counter occupying part of `rand_a`/`rand_b` (Section 6.2, RFC 9562).
@@ -97,12 +107,11 @@ a monotonicity counter (4096 values per ms), the random portion drops to
 62 bits, changing the birthday bound to ~n²/2^63.
 
 ³ UUIDv7 reveals the approximate creation time of the session (ms precision).
-This is **not fully opaque** — a UUIDv7 can be used to infer when a session
-was created, which is acceptable for an internal correlation handle but must
-not be relied upon as a security token or secret. The choice remains
-**proposed**; a requirement or benchmark demonstrating that UUIDv7 ordering
-provides measurable benefit over a random 128-bit identifier must be produced
-before the decision is confirmed.
+This is **not fully opaque** — it can be used to infer when a session was created.
+That privacy leak is the primary reason UUIDv7 is **rejected for v1**. It is **not**
+a pending decision and there is **no benchmark blocker**: the v1 format is the
+random 128-bit id above. A future version could revisit UUIDv7 only via an explicit
+schema version change, not by leaving the current choice open.
 
 RFC 9562 primary source: Section 5.7 (UUIDv7 layout).
 
@@ -135,8 +144,9 @@ RFC 9562 primary source: Section 5.7 (UUIDv7 layout).
 - ~~Prototype demonstrates timeout → recovery cycle with no lost mutations~~ —
   **met (PT-06:** 10,000 contended transactional increments exact; 20/20 lease
   reclaims; classifier PASS). PT-02 (torn-journal recovery) also met.
-- The identifier format (A/B/C above) is **schema-substitutable** and does not
-  gate this decision. Author recommendation: random 128-bit (A) for v1.
+- The identifier format is a **single v1 selection** (random 128-bit, 32 lowercase
+  hex, `^[0-9a-f]{32}$`, no timestamp), fixed by the versioned session schema
+  (`session.schema.json`, added in this RF remediation). UUIDv7 is rejected for v1.
 - Not accepted by the author; prepared for owner ratification.
 
 ## References

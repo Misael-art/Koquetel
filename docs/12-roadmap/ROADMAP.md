@@ -36,7 +36,12 @@ states `READY FOR IMPLEMENTATION`.
 Implement typed domain, state DB, transaction journal, CLI/API, ownership,
 install/update/repair/remove, status and doctor. No AI provider required.
 
-Exit: AC-01..04, AC-13 and lifecycle FI/RT suites green in supported Linux matrix.
+**Atomic config projection is an M-01 exit criterion** (RF-01): it is a
+transactional-core capability, not part of the ADR-0002 language decision, and it
+must pass before M-01 is complete.
+
+Exit: AC-01..04, AC-13, **atomic config projection**, and lifecycle FI/RT suites
+green in supported Linux matrix.
 
 ## M-02 — Essential client capability
 
