@@ -332,3 +332,23 @@ was auto-converted; each answer came from the owner via the decision packet.
 
 No `APPROVED_TO_IMPLEMENT` created. No production code, package, service or host
 change was made. Work is on branch `foundation/m00-closure`.
+
+## 2026-07-21 — Attribution plan (G-02 plan half closed)
+
+- Wrote `docs/11-legal/ATTRIBUTION-PLAN.md` defining: clean-room policy (default)
+  vs copy-with-attribution (conditional); per-file `REUSE-LEDGER.md` record
+  format; per-dependency `DEPENDENCY-MATRIX.md` format; `NOTICE` template;
+  CycloneDX 1.5 SBOM format; source-offer format; prohibited shortcuts.
+- PhaseZero (no license) and SteamZero (GPL-3.0) explicitly listed as
+  clean-room-only prohibited-from-copy sources.
+- `G-02` reclassified to "medium (plan written)"; closes fully when the first
+  `REUSE-LEDGER.md`/`DEPENDENCY-MATRIX.md` row exists and `NOTICE` is applied to
+  a release artifact.
+- `REUSE-POLICY.md` and readiness report updated; no-copy block stays until the
+  first ledger row.
+- Launched 5 background research agents (EA-04 LiteLLM, EA-05 OpenHands, EA-06
+  Letta, EA-07 Mem0, Caveman identity) running in parallel into
+  `/tmp/koquetel-audits/` (ephemeral, outside the product tree).
+
+No `APPROVED_TO_IMPLEMENT` created. No production code, package, service or host
+change was made.

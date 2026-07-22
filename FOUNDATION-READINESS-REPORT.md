@@ -64,10 +64,11 @@ audits, prototype execution or independent review. The traceability matrix is
    OpenHands, Letta and Mem0 remain, and no observed remote HEAD is a release
    pin. Caveman identity/license must also be verified before it is treated as
    a component.
-3. Complete the attribution plan now that Q-02 selected Apache-2.0 (NOTICE,
-   SBOM/source-offer format, per-file review); PhaseZero remains
-   behavior-research-only because it has no tracked root license (G-02 narrowed,
-   still open).
+3. ~~Complete the attribution plan now that Q-02 selected Apache-2.0 (NOTICE,
+   SBOM/source-offer format, per-file review)~~ — **Done 2026-07-21
+   (`docs/11-legal/ATTRIBUTION-PLAN.md`)**; G-02 narrowed to "ledger/matrix
+   created on first reuse". PhaseZero remains behavior-research-only because it
+   has no tracked root license.
 4. Turn proposed ADRs into accepted decisions after their gates
    (`ADR-0002/0004/0005/0010/0011` still proposed; `ADR-0003` accepted via Q-04).
 5. Schemas `SCH-01..SCH-20` are defined with examples; the `SC-01..SC-10`

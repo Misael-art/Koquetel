@@ -1,19 +1,22 @@
 # License, provenance and reuse policy
 
-Status: normative draft; Koquetel license selected (Apache-2.0, ADR-0006 / Q-02); attribution plan still open (G-02 narrowed)
+Status: normative draft; Koquetel license selected (Apache-2.0, ADR-0006 / Q-02); attribution plan written ([ATTRIBUTION-PLAN.md](ATTRIBUTION-PLAN.md)); ledger/matrix created on first reuse
 Last reviewed: 2026-07-21
 
 ## Operative block
 
 Koquetel's license is Apache-2.0 ([ADR-0006](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md),
-Q-02). The no-copy block below remains in force until the component-level
-attribution plan, NOTICE template and SBOM/source-offer format are written
-(`G-02` narrowed). Behavioral observation and independently written contracts are
-allowed at all times.
+Q-02). The attribution plan, NOTICE template, SBOM (CycloneDX 1.5) and
+source-offer format are written in
+[ATTRIBUTION-PLAN.md](ATTRIBUTION-PLAN.md). The no-copy block below remains in
+force until the per-file `REUSE-LEDGER.md` and per-dependency
+`DEPENDENCY-MATRIX.md` are created on first reuse. Behavioral observation and
+independently written contracts are allowed at all times.
 
-Until G-02 closes, no source code, templates, distinctive configuration
-structures or documentation passages from research projects may be copied into
-Koquetel. Behavioral observation and independently written contracts are allowed.
+Until the first `REUSE-LEDGER.md` row exists, no source code, templates,
+distinctive configuration structures or documentation passages from research
+projects may be copied into Koquetel. Behavioral observation and independently
+written contracts are allowed.
 
 ## Reuse decision
 
