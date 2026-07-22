@@ -52,7 +52,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 |---|---|---|---|---|---|
 | NFR-01 | R-11 | FM-17 | AC-01 | golden provenance, PT-05 | specified |
 | NFR-02 | R-10 | FM-01 | AC-02 | idempotency property, FI-01, RT-03 | specified |
-| NFR-03 | R-10 | FM-01, FM-21, FM-22 | AC-03 | FI-01, RT-03, PT-02, PT-05, PT-06 | specified |
+| NFR-03 | R-10 | FM-01, FM-21, FM-22, FM-23 | AC-03 | FI-01, RT-03, PT-02, PT-05, PT-06 | specified |
 | NFR-04 | R-05 | FM-05, FM-11 | AC-13, AC-15 | offline E2E suite, FI-09 | specified |
 | NFR-05 | R-08 | FM-05 | AC-15 | startup benchmark | specified |
 | NFR-06 | R-09 | FM-14 | AC-13 | SC-08, redaction canary, default-off property | specified |

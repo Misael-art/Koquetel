@@ -1,6 +1,6 @@
 # ADR-0011 — Lease recovery and fencing
 
-Status: proposed — owner decisions Q-03/Q-08 resolved (ADR-0006); PT-01 met (evidence in prototype-evidence/); still blocked on PT-06 and gap G-13
+Status: proposed — two decisions separated. **Decision A (v1: local single-host cooperative OFD lease)** is ready for owner ratification (PT-01 and PT-06 pass; the analysis below shows G-13 is not required for the local model). **Decision B (distributed / NFS / multi-host fencing)** is deferred to a potential v2 and remains blocked by G-13. Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
 Date: 2026-07-21
 
 ## Context
@@ -119,7 +119,49 @@ produce a correct result because the operation is replayed or ignored.
   resource may not be idempotent. Real-world idempotency proofs are hard.
   Rejected as insufficiently defensible.
 
-## Candidate direction (blocked by G-13 / PT-06)
+## Decision A — v1 local single-host cooperative OFD lease (ready for ratification)
+
+Q-08 excluded NFS and multi-host from v1; Q-03 fixed Linux-local as the v1 host.
+Under that scope the lease is an OFD (`F_OFD_SETLK`) advisory lock on the lease
+file. Formal analysis of the local model:
+
+1. **No timed expiry.** An OFD lock does not expire while a live process keeps the
+   last open reference to the open file description. There is no lease TTL to
+   misconfigure and no clock dependency.
+2. **A paused holder keeps the lock → liveness risk, not split-brain.** A holder
+   under `SIGSTOP`, `D`-state I/O wait, or deadlock retains the lock; contenders
+   block. This stalls progress but never produces two concurrent writers. It is a
+   **liveness** failure (`FM-23`), not a correctness/split-brain failure.
+3. **Takeover happens only after the last reference is closed.** A contender's
+   blocking `F_OFD_SETLKW` is granted only when the prior holder's last OFD
+   reference is released — i.e. the prior holder has exited/been killed or has
+   voluntarily released. PT-01 (0 overlaps in 10,000 acquisitions) and PT-06
+   (20/20 reclaims) demonstrate this.
+4. **After `SIGKILL`/exit the old writer cannot execute again.** A dead process
+   cannot resume and emit a late, stale write. The "revoked-but-still-writing
+   holder" that concern 4 (fence-at-commit) and G-13 exist to stop **has no local
+   instantiation**: on one host, a holder is either alive (still holds its
+   reference, so no takeover occurs) or dead (cannot write). Split-brain requires
+   a partitioned *live* old holder, which is a distributed condition.
+5. **A non-cooperative writer is outside the advisory-lock guarantee — by
+   definition.** OFD is advisory; a process that ignores the protocol can still
+   write. In Koquetel all managed writes go through the single Transaction Engine
+   (`ARCHITECTURE.md §3`), so no cooperating writer bypasses the lease; filesystem
+   ownership/permissions bound the rest. This is a stated boundary, not a fix.
+6. **External effects still need idempotency/compensation.** Effects outside the
+   journal (remote APIs, tool side effects) remain governed by per-effect
+   idempotency keys / compensation recorded before the call — unchanged by v1.
+
+**Consequence:** for v1 local single-host, concern 4 (fence-at-commit) and a
+revocation-proof epoch protocol (**G-13**) are **not required**. The epoch journal
+classifier (PT-06, concern 5) is retained to classify recovered entries after a
+crash, but its provably-stale-quarantine branch is only exercised in the
+distributed case; in v1-local a recovered prior-epoch entry is legitimate history
+(its writer is dead and could not have raced). Decision A is therefore ready for
+owner ratification on PT-01 + PT-06 evidence, with `FM-23` (liveness) as the one
+new residual to detect via `status`/`doctor`.
+
+## Decision B — distributed / NFS / multi-host fencing (deferred to v2; blocked by G-13)
 
 Option 3 (hybrid OFD/flock + epoch journal guard) is the most promising
 direction, but a definitive decision is **blocked** until G-13 and PT-06
@@ -246,18 +288,28 @@ future ADR; this ADR records the gap.
 
 ## Prerequisites for acceptance
 
-- PT-01 passes on ext4/XFS (cooperative OFD mutual exclusion, including fork
-  lifecycle arm).
-- PT-06 passes with kill-fault injection (local OFD path only; NFS path is
-  research-only and must not gate acceptance).
+### Decision A (v1 local OFD) — met, ready for ratification
+
+- ~~PT-01 passes on ext4/XFS (cooperative OFD mutual exclusion, incl. fork arm)~~
+  — **met** (PT-01 evidence: 0 overlaps in 10,000 acquisitions; exec/dup arms).
+- ~~PT-06 passes with kill-fault injection (local OFD path only)~~ — **met**
+  (PT-06 evidence: 20/20 reclaims, avg 4 ms; classifier PASS).
+- ~~Owner decisions Q-03/Q-08~~ — **closed 2026-07-21 (ADR-0006)**: Q-03 = Linux
+  first; Q-08 = NFS unsupported in v1. The local-fs scope is confirmed.
+- G-13 is **not** a prerequisite for Decision A (see the local-model analysis
+  above): the local model has no revoked-but-alive-writer race.
+
+### Decision B (v2 distributed / NFS / multi-host) — deferred, blocked by G-13
+
+- Reopen Q-08 (NFS commit-level fence requirement) for v2.
 - G-13 resolved: either journal-scoped post-hoc isolation (concern 5) is proven
-  sufficient, or a conditional atomic commit primitive (concern 4) is made
-  available for the target filesystems.
-- ~~Owner decisions on Q-03 (supported hosts) and Q-08 (NFS commit-level fence
-  requirement)~~ — **both closed 2026-07-21 (ADR-0006)**: Q-03 = Linux first,
-  WSL next; Q-08 = NFS unsupported in v1. The local-fs scope of this ADR is
-  therefore confirmed; any future NFS/multi-host support requires reopening
-  Q-08 and resolving G-13.
+  sufficient, or a conditional atomic commit primitive (concern 4) is available
+  for networked filesystems.
+- A proven distributed fencing protocol for a partitioned live old holder.
+
+**Author recommendation:** ratify **Decision A only** for v1. Do not accept
+Decision B; keep it as a v2 gap. The author does not accept either decision on the
+owner's behalf.
 
 ## References
 

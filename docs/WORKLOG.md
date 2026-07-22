@@ -433,3 +433,43 @@ only evidence files. No product code, no host mutation.
   §5 checklist: the "three high-risk prototypes pass" item is now met (5 pass);
   **2 hard blockers remain** (independent review, explicit approval). Classification
   held at **NOT READY**; no `APPROVED_TO_IMPLEMENT`.
+
+## 2026-07-22 — Reconcile ADR scope and independent-review entry
+
+Corrective reconciliation on `foundation/m00-closure` (still under foundation gate;
+no product code; no `APPROVED_TO_IMPLEMENT`; no ADR accepted on the owner's behalf).
+
+- **Working tree.** Restored `RESULT.json` `generatedAt` to the committed value
+  (non-destructive Edit); future validations run the schema suite on a temp export
+  of HEAD so the repo copy is never re-dirtied.
+- **Readiness.** Corrected the executive assessment (was "two of six gates"): now
+  PT-01/02/03/05/06 PASS, PT-04 PARTIAL, `G-05` open, five gates pass. Reworked the
+  §5 checklist and conclusion so no section claims "only two blockers" while ADRs
+  are proposed — the remaining work is owner ratification of ADR-0002/0010/0011
+  plus the independent review plus explicit approval.
+- **ADR-0011 → local v1 scope.** Formally separated **Decision A** (v1 local
+  single-host cooperative OFD lease — ready for ratification on PT-01/PT-06) from
+  **Decision B** (distributed/NFS/multi-host — v2, blocked by G-13). Analysis: a
+  dead holder cannot race a new holder; a paused holder is a liveness stall
+  (`FM-23`), not split-brain; takeover needs the last OFD reference closed.
+  Reclassified `G-13` to block **only** Decision B (kept open as a v2 gap, not
+  closed). Updated ADR-0011, KNOWN-GAPS (G-13/G-14), FAILURE-MODES (+FM-23, count
+  22→23), TRANSACTION-MODEL, ARCHITECTURE §5, TRACEABILITY (NFR-03 +FM-23), readiness.
+- **ADR-0002.** Rewrote the gate: the decision is the core *language*; PT-05
+  sustains Rust; atomic config projection is an M-01 exit criterion and Podman
+  invocation a PT-04/M-04 criterion — removed as circular blockers. Prepared for
+  ratification, not accepted.
+- **ADR-0010.** Removed the stale "PT-06 pending". Separated the lifecycle decision
+  from the id format; recommended **random 128-bit** id for v1 (privacy +
+  simplicity), UUIDv7 only after a benchmark, format schema-substitutable. Prepared
+  for ratification, not accepted.
+- **PT-04/G-05.** Recorded G-05 blocks M-04 and any sandbox-declared release, not
+  the start of M-01/M-02 under phased implementation; Podman is primary, valid only
+  after a real Podman test.
+- **Charter.** Entry criteria now say the reviewer *verifies* (not assumes) a clean
+  tree at a pinned SHA; added the unit tests, EA-01..EA-07, PT-01..PT-06 (PT-04
+  partial), ATTRIBUTION-PLAN, G-13 reclassification, a pinned-revision section, and
+  a check that ADR-0002/0010/0011 are ratification-ready and none self-accepted.
+- **Owner packet.** Added `docs/OWNER-RATIFICATION-PACKET.md` (R-1..R-6) — awaiting
+  owner decision; nothing recorded as accepted.
+- Classification held **NOT READY**; no `APPROVED_TO_IMPLEMENT`; no product code.

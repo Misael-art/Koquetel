@@ -21,12 +21,19 @@ not satisfy §5. The reviewer is either a different human, or an agent operating
 under a separate mandate that has not contributed content, and must record their
 identity and non-authorship in the report.
 
-## 2. Entry criteria (all currently met)
+## 2. Entry criteria (the reviewer VERIFIES each at the pinned revision)
 
-- `foundation_lint` reports 0 errors, 0 warnings.
-- The schema suite (`tools/schema_suite/run_suite.py`) reports all checks pass.
-- Owner decisions `Q-01..Q-08` are ratified (`ADR-0006`, owner-confirmed).
-- The working tree is clean and the reviewed revision is pinned by commit hash.
+The reviewer does not assume these — they **verify** each at the pinned commit SHA
+(§8) before starting, running the gates on a temporary export of that revision:
+
+- `foundation_lint` reports 0 errors, 0 warnings;
+- the schema suite (`tools/schema_suite/run_suite.py`) reports all 12 checks pass;
+- the linter unit tests (`tools/tests/test_foundation_lint.py`) pass;
+- owner decisions `Q-01..Q-08` are ratified (`ADR-0006`);
+- the working tree at the pinned SHA is clean (**verified, not assumed**);
+- `ADR-0002`, `ADR-0010` and `ADR-0011` are **ready for owner ratification** and
+  **not** marked accepted by an author — the reviewer confirms no author
+  self-accepted them.
 
 ## 3. Artifacts in scope
 
@@ -36,10 +43,15 @@ The reviewer reads, at the pinned revision:
 - product intent: `VISION.md`, `PRD.md`, `ACCEPTANCE-CRITERIA.md`;
 - architecture and safety: `ARCHITECTURE.md`, `TRANSACTION-MODEL.md`, `FAILURE-MODES.md`, `THREAT-MODEL.md`;
 - data and contracts: `DATA-MODEL.md`, `schemas/` (SCH-01..SCH-20 + tolerant profile), `CONTRACTS.md`;
-- decisions: `ADR-0001..ADR-0006`, `ADR-0010`, `ADR-0011`;
-- evidence: `EXTERNAL-AUDITS.md` (EA-01..EA-07), `prototype-evidence/` (PT-01, PT-02), `RESULT.json`;
-- traceability and honesty: `TRACEABILITY.md`, `KNOWN-GAPS.md`, `OPEN-QUESTIONS.md`, `ASSUMPTIONS.md`, `WORKLOG.md`;
-- tooling: `tools/foundation_lint.py`, `tools/schema_suite/`.
+- decisions: `ADR-0001..ADR-0006`, `ADR-0010`, `ADR-0011` (note the ADR-0011
+  Decision A / Decision B split and the `G-13` v2 reclassification);
+- evidence: `EXTERNAL-AUDITS.md` (**EA-01..EA-07**), all six reports in
+  `prototype-evidence/` (**PT-01..PT-06; PT-04 is PARTIAL**), `RESULT.json`,
+  `11-legal/ATTRIBUTION-PLAN.md`;
+- traceability and honesty: `TRACEABILITY.md`, `KNOWN-GAPS.md` (incl. the `G-13`
+  reclassification), `OPEN-QUESTIONS.md`, `ASSUMPTIONS.md`, `WORKLOG.md`;
+- owner packet: `OWNER-RATIFICATION-PACKET.md`;
+- tooling: `tools/foundation_lint.py`, `tools/schema_suite/`, `tools/tests/`.
 
 ## 4. Adversarial checklist (attempt to break each)
 
@@ -57,7 +69,8 @@ that the contracts fail to stop):
 - **secret leakage** — a seeded secret reaches a plan, log, event or support
   bundle; verify SR-05/SR-06 + the secret-ref/content export invariants (SC-10).
 - **recovery bypass** — a torn journal, stale lease or unknown-major record drives
-  a mutation; verify PT-02, ADR-0011 fencing analysis, and SC-09 sub-test 5
+  a mutation; verify PT-02, the `ADR-0011` Decision A local-model analysis (a dead
+  holder cannot race; `FM-23` liveness is the only residual), and SC-09 sub-test 5
   (tolerant-only record must not be admitted for a write).
 
 Foundation-integrity attacks (the reviewer hunts contradictions):
@@ -73,6 +86,11 @@ Foundation-integrity attacks (the reviewer hunts contradictions):
   canonical documents (cross-check with `foundation_lint`)?
 - **ID and reference integrity** — duplicate definitions, dangling references,
   broken anchors (cross-check with `foundation_lint`).
+- **ADR readiness & G-13 scope** — confirm `ADR-0002`, `ADR-0010` and `ADR-0011`
+  are prepared for owner ratification with explicit recommendations and **none
+  self-accepted**; confirm `G-13` blocks only the v2 distributed/NFS/multi-host
+  path (`ADR-0011` Decision B), not the v1 local OFD model (Decision A), and that
+  the reclassification argument holds.
 
 ## 5. Findings format
 
@@ -107,3 +125,12 @@ the pinned revision reviewed.
 - It does **not** by itself exit M-00: the prototype gates (≥3 high-risk passing,
   §5) and the explicit `APPROVED_TO_IMPLEMENT` marker remain independent
   requirements.
+
+## 8. Pinned revision
+
+The review MUST be performed against a single pinned commit SHA — the tip of
+`foundation/m00-closure` at or after the reconciliation commit
+`docs(m00): reconcile ADR scope and independent review entry`. The reviewer
+records that exact SHA in the report and re-runs every §2 entry check against a
+temporary export of it (not against a live, possibly-dirty tree). Any commit after
+the pinned SHA invalidates the review and requires re-pinning.

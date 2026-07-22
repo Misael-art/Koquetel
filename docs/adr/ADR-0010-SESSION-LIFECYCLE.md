@@ -1,6 +1,6 @@
 # ADR-0010 — Session lifecycle
 
-Status: proposed — owner decision Q-04 resolved (ADR-0006, Balanced); PT-01 and PT-02 met (evidence in prototype-evidence/); still blocked on PT-06 and the UUIDv7 benefit justification
+Status: proposed — ready for owner ratification. The **session-lifecycle decision** (lightweight session token) rests on PT-01, PT-02 and PT-06 — **all met** (PT-06 showed recovery with no lost mutations: 10,000 contended increments exact, 20/20 reclaims). The **identifier format** is a subordinate, schema-substitutable detail; the author recommends a **random 128-bit** id for v1 (privacy + simplicity), not UUIDv7. Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
 Date: 2026-07-21
 
 ## Context
@@ -48,10 +48,27 @@ Option 2: lightweight session token.
 - A session is created implicitly on the first authenticated request from a given
   (actor, task identity) pair, or explicitly via `session/start` for long-running
   workflows.
-- The session token is a correlation `sessionId` (UUIDv7, time-sortable) returned in
-  the response `_meta` under the key `io.koquetel/sessionId` (MCP extension
-  namespace convention) and carried by the client on subsequent requests in the
-  same field.
+- The session token is an opaque correlation `sessionId` returned in the response
+  `_meta` under the key `io.koquetel/sessionId` (MCP extension namespace
+  convention) and carried by the client on subsequent requests. Its **format is a
+  subordinate detail** (see below), normatively substitutable via the schema; it
+  is a reference, not a credential — authority is re-evaluated per request.
+
+### Identifier format — recommendation (subordinate to the lifecycle decision)
+
+The identifier format does **not** gate the lifecycle decision. Three options:
+
+- **A. Random 128-bit (CSPRNG).** No embedded timestamp → leaks no creation time
+  (privacy), needs no monotonic counter or clock (simplicity); collision bound
+  ~n²/2^129. **Recommended for v1.**
+- **B. UUIDv7 (RFC 9562).** Index locality from time-sortability, but leaks
+  approximate creation time and needs a monotonicity counter to order within a
+  millisecond. Adopt only after a benchmark shows measurable index benefit over A.
+- **C. Schema-substitutable.** The format is declared in the schema and can change
+  without reopening this ADR; producers/consumers agree via the schema version.
+
+The author recommends **A for v1** unless a benchmark justifies B; C keeps the
+door open. The UUIDv7 analysis below is retained as the evidence for option B.
 
 ### Session-id format: UUIDv7 (RFC 9562) over alternatives
 
@@ -114,8 +131,13 @@ RFC 9562 primary source: Section 5.7 (UUIDv7 layout).
   ADR-0003 plan-bound confirmation. Q-06 (supported user profile) is **not** a
   prerequisite: session lifecycle semantics are identical for individual and team
   deployments.
-- PT-01 proves the lock contract works for session-scoped state.
-- Prototype demonstrates timeout → recovery cycle with no lost mutations.
+- ~~PT-01 proves the lock contract works for session-scoped state~~ — **met**.
+- ~~Prototype demonstrates timeout → recovery cycle with no lost mutations~~ —
+  **met (PT-06:** 10,000 contended transactional increments exact; 20/20 lease
+  reclaims; classifier PASS). PT-02 (torn-journal recovery) also met.
+- The identifier format (A/B/C above) is **schema-substitutable** and does not
+  gate this decision. Author recommendation: random 128-bit (A) for v1.
+- Not accepted by the author; prepared for owner ratification.
 
 ## References
 

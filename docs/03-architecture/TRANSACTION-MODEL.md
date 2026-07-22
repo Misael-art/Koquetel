@@ -48,3 +48,15 @@ next mutating command must recover before accepting new mutation.
 - Backups are never the sole canonical copy of user-owned data.
 - Repeating recovery is idempotent.
 
+## Lease model (v1 local)
+
+The scoped lease (mutation-protocol step 5) is, in v1, a **local single-host
+cooperative OFD advisory lock** (`F_OFD_SETLK`) on the lease file — the scope
+confirmed by Q-08 (NFS/multi-host excluded from v1). Per `ADR-0011` **Decision A**:
+on one host a holder is either alive (keeps the lock) or dead (cannot write), so
+split-brain has no local instantiation and **no distributed fence (`G-13`) is
+required** for v1. The one residual is a paused/stuck holder (`FM-23`) — a liveness
+stall surfaced by `status`/`doctor`, never two concurrent writers.
+Distributed/NFS/multi-host fencing (`ADR-0011` **Decision B**) is deferred to a
+potential v2 and remains blocked by `G-13`.
+

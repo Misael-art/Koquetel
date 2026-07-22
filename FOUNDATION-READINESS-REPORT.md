@@ -17,11 +17,22 @@ All eight owner decisions `Q-01..Q-08` are now closed in
 `G-01` is closed and `G-02` is narrowed (license selected; attribution plan
 still open). `ADR-0003` is accepted via Q-04 = Balanced.
 
-This is not yet an implementation-ready foundation. The current work converts the
-idea into testable contracts; two of six prototype gates are executed (PT-01,
-PT-02) but PT-03..PT-06 and the independent review remain. The traceability matrix is
-**structurally** complete (one row per requirement), but its rows are not yet
-**proven** with retained execution evidence.
+This is not yet an implementation-ready foundation. All six prototype gates are
+executed: **PT-01, PT-02, PT-03, PT-05 and PT-06 PASS** (five gates), and **PT-04
+is PARTIAL** — rootless containment was shown via bwrap/userns, but the Podman
+backend and the network-allowlist arm are a coverage gap, so **`G-05` stays open
+(high)**. The traceability matrix is **structurally** complete (one row per
+requirement), but its rows are not yet **proven** (the approval rule requires an
+independent reviewer).
+
+Remaining before `READY`: (1) the independent adversarial review (`G-09`,
+organized but not run); (2) explicit implementation approval; and (3) owner
+ratification of the still-**proposed** decisions `ADR-0002` (Rust core),
+`ADR-0010` (session lifecycle) and `ADR-0011` (local OFD lease) — the §5
+"architecture boundaries and transaction model accepted" item depends on that
+ratification. It is therefore **not** true that only two items remain while those
+ADRs are proposed. A ratification packet is prepared in
+[`docs/OWNER-RATIFICATION-PACKET.md`](docs/OWNER-RATIFICATION-PACKET.md).
 
 ## What is established
 
@@ -31,7 +42,7 @@ PT-02) but PT-03..PT-06 and the independent review remain. The traceability matr
 - 26 functional and 13 non-functional requirements;
 - 17 product acceptance criteria;
 - component boundaries and one-writer/one-executor rules;
-- journaled transaction model and 22 initial failure modes;
+- journaled transaction model and 23 initial failure modes;
 - 16 security requirements and threat/control seed matrix;
 - governed, backend-independent memory envelope;
 - initial CLI/API and stable error catalog;
@@ -74,8 +85,11 @@ PT-02) but PT-03..PT-06 and the independent review remain. The traceability matr
    (`docs/11-legal/ATTRIBUTION-PLAN.md`)**; G-02 narrowed to "ledger/matrix
    created on first reuse". PhaseZero remains behavior-research-only because it
    has no tracked root license.
-4. Turn proposed ADRs into accepted decisions after their gates
-   (`ADR-0002/0004/0005/0010/0011` still proposed; `ADR-0003` accepted via Q-04).
+4. **Owner ratification** of `ADR-0002` (Rust core), `ADR-0010` (session lifecycle
+   + random-128-bit id) and `ADR-0011` (local OFD lease — Decision A only) — all
+   **prepared for ratification** in `docs/OWNER-RATIFICATION-PACKET.md`, **not**
+   self-accepted. (`ADR-0001/0003/0004/0005/0006` already accepted.) `G-13` is
+   reclassified to block only the v2 distributed/NFS path, not v1-local.
 5. Schemas `SCH-01..SCH-20` are defined with examples; the `SC-01..SC-10`
    golden/version/classification tests are **executed** against a pinned
    Draft 2020-12 validator (`tools/schema_suite/run_suite.py`), isolated from
@@ -100,26 +114,28 @@ paper; they are marked as blockers, not narrated as done.
 | source inventory + capability matrix | ✅ done | research docs, EA-01..EA-07, robustness/capability matrices |
 | owner decisions Q-01..Q-05 resolved | ✅ done | ADR-0006, owner-ratified 2026-07-22 |
 | license + clean-room reuse policy accepted | 🟡 partial | Apache-2.0 (Q-02); ATTRIBUTION-PLAN written; per-file ledger due on first reuse (G-02) |
-| architecture boundaries + transaction model accepted | 🟡 partial | boundaries acceptable; transaction recovery/fencing blocked on ADR-0011 / PT-06 / G-13 |
+| architecture boundaries + transaction model accepted | 🟡 awaiting ratification | boundaries acceptable; the v1 transaction/lease model (ADR-0011 Decision A, local OFD) is proven (PT-01/PT-06) and **prepared for owner ratification** — G-13 reclassified to v2-only, so it no longer blocks v1 |
 | state/memory/permission/secrets/event schemas versioned | ✅ done | SCH-01..SCH-20; schema suite 12/12 |
-| failure modes cover install/update/tool/memory/routing | ✅ done | FM-01..FM-22 |
+| failure modes cover install/update/tool/memory/routing | ✅ done | FM-01..FM-23 |
 | acceptance/failure-injection/rollback/security matrices complete | 🟡 specified | TRACEABILITY one row/req; rows `specified`, not `proven` (needs tests + G-09) |
 | installer + removal ownership rules specified | ✅ done | LIFECYCLE; ownership markers |
 | three high-risk prototypes pass their gates | ✅ done | PT-01/02/03/05/06 PASS (5/6); PT-04 partial (G-05 open). ≥3 high-risk gates pass |
 | independent review, no unresolved critical contradiction | ❌ **blocker** | charter written; review not run (G-09) |
 | explicit implementation approval exists | ❌ **blocker** | no `APPROVED_TO_IMPLEMENT` |
 
-ADR status: `ADR-0001/0003/0005/0006` accepted; **`ADR-0004` accepted 2026-07-22**
-(PT-03 met its prototype gate; envelope decision accepted, ai-memory adapter
-conditional on three requirements). Still **proposed**: `ADR-0002` (Rust core —
-PT-05 cleared distribution/SQLite/socket/recovery, but the Podman-invocation arm
-via PT-04 is unmet and atomic config projection is outstanding), `ADR-0010`
-(session lifecycle — PT-01/02/06 met; the UUIDv7-benefit justification remains) and
-`ADR-0011` (lease recovery — PT-01/06 met; **G-13** revocation-proof fence still open).
+ADR status: `ADR-0001/0003/0004/0005/0006` **accepted**. `ADR-0002` (Rust core),
+`ADR-0010` (session lifecycle + random-128-bit id) and `ADR-0011` (local OFD lease
+— Decision A) are **proposed and prepared for owner ratification**
+(`docs/OWNER-RATIFICATION-PACKET.md`), **not** self-accepted. The language decision
+(ADR-0002) is decoupled from Podman (M-04) and atomic config projection (M-01);
+ADR-0011 splits Decision A (v1 local, ready) from Decision B (v2 distributed,
+blocked by `G-13`).
 
-**Conclusion:** 6 items done, 3 partial, **2 hard blockers** — the independent
-review (organized, not run) and explicit implementation approval. Both require
-acts that paper cannot supply. `NOT READY` stands.
+**Conclusion:** 6 §5 items done, 3 partial/awaiting-ratification. Remaining M-00
+work: (1) **owner ratification** of `ADR-0002/0010/0011` (packet prepared);
+(2) the **independent adversarial review** (`G-09`, organized, not run); and
+(3) **explicit implementation approval**. It is therefore **not** true that only
+two items remain while those ADRs are proposed. `NOT READY` stands.
 
 ## Gate decision
 
