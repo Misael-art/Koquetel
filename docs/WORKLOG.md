@@ -473,3 +473,22 @@ no product code; no `APPROVED_TO_IMPLEMENT`; no ADR accepted on the owner's beha
 - **Owner packet.** Added `docs/OWNER-RATIFICATION-PACKET.md` (R-1..R-6) — awaiting
   owner decision; nothing recorded as accepted.
 - Classification held **NOT READY**; no `APPROVED_TO_IMPLEMENT`; no product code.
+## 2026-07-22 — RF remediation (independent review FAIL, RF-01..RF-04)
+
+Independent reviewer (Codex, `review/m00-independent` @ `34f8feb`) returned
+**FAIL** on the reviewed pin `5db0244`, with four open high findings: RF-01
+(ADR-0002 contradiction), RF-02 (ADR-0010 UUIDv7-vs-random contradiction), RF-03
+(prototype evidence is summary-only; raw artifacts deleted), RF-04 (no `sessionId`
+schema contract). Remediating on `foundation/m00-closure`. Base SHA `5db0244`;
+gates green (lint 0/0, suite 12/12, unittest OK). No RF is closed by the author —
+all remain **awaiting independent validation**.
+
+### RF-03 evidence policy (first)
+
+- Added `docs/08-testing/PROTOTYPE-EVIDENCE-POLICY.md`: each `PT-NN` must retain a
+  non-secret, non-binary bundle (`manifest.json`, `environment.txt`,
+  `commands.txt`, raw `stdout.log`/`stderr.log`, `metrics.*`, `pass-fail.json`,
+  `SHA256SUMS`, disposable `harness/`, `README.md`), with synthetic inputs,
+  external pins, toolchain versions and honest limitations. Wired into the
+  PROTOTYPE-GATES disposability contract. Policy committed **before** any rerun,
+  per RF-03's requirement of an authorized evidence plan.

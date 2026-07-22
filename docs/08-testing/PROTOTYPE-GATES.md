@@ -19,9 +19,13 @@ not implement any prototype and authorizes no product code.
 - Prototype code is throwaway: it lives outside the default build/runtime graph,
   is never imported by a product module, and never becomes a release artifact
   (`IT-01..IT-04`). It is deleted after evidence capture.
-- Only the **evidence** is retained: a dated record (environment, exact commands,
-  measured numbers, pass/fail, and the retained artifact path). "It worked" without
-  a retained artifact and pinned inputs does not pass (`TRACEABILITY.md` rule).
+- Only the **evidence** is retained, and it MUST follow
+  [`PROTOTYPE-EVIDENCE-POLICY.md`](PROTOTYPE-EVIDENCE-POLICY.md) (added for RF-03):
+  a per-`PT` bundle `prototype-evidence/PT-NN/` with `manifest.json`,
+  `environment.txt`, `commands.txt`, raw `stdout.log`/`stderr.log`, `metrics.*`,
+  `pass-fail.json`, `SHA256SUMS` and the disposable `harness/` source. A summary
+  Markdown report is **not** the gate-required artifact; "it worked" without the
+  retained raw bundle and pinned inputs does not pass.
 - A gate `passes` only if every listed criterion is met on the declared
   environment; a single containment or convergence failure fails the gate.
 - No PhaseZero/SteamZero path, command or data format is used by any prototype.
