@@ -19,6 +19,7 @@ No source below is approved for code reuse. Remote HEADs are observation pins fr
 | OpenHands | `a1547a9c0d4ef89cfd3161c530b24f6d8cbc5cae` | `OpenHands/OpenHands` | sandbox/runtime candidate |
 | OpenTelemetry SemConv | `421dda788ca3dd9f2537d95dc70e457c1fd52600` | `open-telemetry/semantic-conventions` | GenAI telemetry contract |
 | A2A | `cfc9d34bc41e368827eb6446d31f912e44f795c5` | `a2aproject/A2A` | future agent interoperability |
+| Caveman | (not yet pinned) | `JuliusBrussee/caveman` | style/frugality role candidate (claimed MIT, unverified); identity confirmed 2026-07-21; pin + EA audit deferred to M-02 adapter work |
 
 ## Local source state
 

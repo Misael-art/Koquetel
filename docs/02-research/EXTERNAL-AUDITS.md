@@ -1,6 +1,7 @@
 # External implementation audits
 
-Status: research; EA-01 (ai-memory), EA-02 (RTK) and EA-03 (MCP) complete; others pending
+Status: research; EA-01 (ai-memory), EA-02 (RTK), EA-03 (MCP), EA-04 (LiteLLM),
+EA-05 (OpenHands), EA-06 (Letta), EA-07 (Mem0) complete
 Last reviewed: 2026-07-21
 
 This file holds implementation-level audits of external projects that could
@@ -29,16 +30,18 @@ evidence (governance MP-2).
 
 | Project | Pin | License (verified) | Audit |
 |---|---|---|---|
-| ai-memory | `2a85950` | MIT (root `LICENSE`, © 2026 Fabio Akita) | **EA-01 complete (this pass)** |
-| RTK | `66e09cb` | Apache-2.0 | **EA-02 complete (this pass)** |
-| MCP | `88191b9` | MIT/Apache-2.0 (transition), docs CC-BY-4.0 | **EA-03 complete (this pass)** |
-| LiteLLM | `212a921` | MIT outside `enterprise/` | pending — read router/budget core, exclude `enterprise/` |
-| OpenHands | `a1547a9` | MIT outside `enterprise/` | pending — read runtime/sandbox core, exclude `enterprise/` |
-| Letta | `b76da90` | Apache-2.0 | pending — read memory-tier model |
-| Mem0 | `dd5f7e3` | Apache-2.0 | pending — read vector/graph store |
+| ai-memory | `2a85950` | MIT (root `LICENSE`, © 2026 Fabio Akita) | **EA-01 complete** |
+| RTK | `66e09cb` | Apache-2.0 | **EA-02 complete** |
+| MCP | `88191b9` | MIT/Apache-2.0 (transition), docs CC-BY-4.0 | **EA-03 complete** |
+| LiteLLM | `212a921` | MIT outside `enterprise/`; commercial inside `enterprise/` | **EA-04 complete** |
+| OpenHands | `a1547a9` | MIT outside `enterprise/`; PolyForm Free Trial inside `enterprise/` | **EA-05 complete** |
+| Letta | `b76da90` | Apache-2.0 (repo in maintenance mode) | **EA-06 complete** |
+| Mem0 | `dd5f7e3` | Apache-2.0 | **EA-07 complete** |
+| Caveman | (not yet pinned) | (claimed MIT, unverified) | identity confirmed; pin + audit deferred to M-02 adapter work |
 
 Pending rows carry no score. They stay unscored until an equivalent EA audit
-attaches implementation evidence (`G-03`).
+attaches implementation evidence (`G-03` — now closed for the four priority
+candidates).
 
 ---
 
@@ -437,3 +440,771 @@ Documented across several files:
 - Independence unaffected: MCP is a specification, not a runtime dependency.
   Koquetel can implement MCP-compatible transport without importing any MCP
   code (P-13, IT-01..IT-03).
+
+---
+
+## EA-04 — LiteLLM `212a9213c4997a4957dfb9337d3f7a94ca138fba`
+
+### Pin & license
+
+- Cloned read-only (`--filter=blob:none`) and checked out
+  `212a9213c4997a4957dfb9337d3f7a94ca138fba` — equal to the observation pin in
+  [`SOURCE-REPOSITORIES.md`](SOURCE-REPOSITORIES.md). Remote HEAD matched the
+  pin at audit time (2026-07-21).
+- `git log -1`: commit `212a9213c4997a4957dfb9337d3f7a94ca138fba`, committed
+  **2026-07-21 10:28:49 -0700**, `refactor(ui): migrate agents table onto the
+  shared DataTable (#34089)`. `pyproject.toml:3` declares `version = "1.94.0"`.
+- **Dual-license regime** — root `LICENSE` is itself the demarcation file: lines
+  1–4 state "All content that resides under the `enterprise/` directory ... is
+  licensed under the license defined in `enterprise/LICENSE`. Content outside
+  ... is available under the MIT license." The MIT block follows (lines 6–26),
+  `Copyright (c) 2023 Berri AI`. `pyproject.toml:6` declares `license = "MIT"`
+  with `license-files = ["LICENSE"]`.
+- `enterprise/LICENSE.md` (lines 5–25) is the BerriAI Enterprise License:
+  production use requires a paid subscription and a valid seat count; copying,
+  merging, publishing, distributing, sublicensing or selling the Software is
+  **forbidden** (line 24). 200 tracked files live under `enterprise/`; they
+  are out of scope for Koquetel reuse.
+
+### Inventory
+
+- **8,839 tracked files.** Dominant language **Python**: 5,011 `.py` (4,872
+  outside `enterprise/`, 139 inside). Frontend is TypeScript/React: 1,093 `.tsx`,
+  353 `.ts`, 249 `.js`, 162 `.md`, 141 `.sql`, 113 `.rs` (the experimental
+  `litellm-rust/` crate, 142 files).
+- **Test suite is very large:** 2,637 `.py` files under `tests/` (2,263 matching
+  `test_*.py`).
+- Module map (top-level, outside `enterprise/`):
+  - `litellm/` (3,165 files) — SDK core: provider adapters (`litellm/llms/`),
+    the router (`litellm/router.py`, 11,576 lines), `litellm_core_utils/` (75
+    files: logging, tokenizers, redaction, duration parsing), `router_strategy/`
+    (routing strategies + `budget_limiter.py`), `router_utils/` (cooldown,
+    fallback, retry, pre-call checks), `integrations/` (telemetry/loggers),
+    `proxy/` (the gateway server), `types/` (pydantic models).
+  - `litellm-proxy-extras/` (329 files), `litellm-rust/` (142 files), `ui/`
+    (1,627 files), `tests/` (2,879 files), `docker/`, `helm/`, `terraform/`,
+    `cookbook/`, `examples/`, `migrations/`.
+- `model_prices_and_context_window.json` (45,966 lines) is the bundled
+  pricing/context table that drives `response_cost` calculation.
+
+### Files read fully
+
+| Path | Lines | SHA-256 |
+|---|---:|---|
+| `litellm/router_strategy/budget_limiter.py` | 840 | `51025b2958ecf05fe244a689f1130864713e1017c7a6917ca39be3b3e33e1112` |
+| `litellm/router_utils/cooldown_handlers.py` | 420 | `f8c14e57692db7056d1a3239c89e6ae21ae1119913bbad6cb63f7eec442185b8` |
+| `litellm/router_utils/handle_error.py` | 96 | `5c90795ad1c88cc600c576af869860afed9c30e77142c3445e8634d06b34497e` |
+
+Structural sections were also read in the main retry/fallback loop
+(`litellm/router.py:6356-6668`), the fallback chain
+(`litellm/router.py:6094-6353` and
+`litellm/router_utils/fallback_event_handler.py:85-165`), the retry constants
+(`litellm/constants.py:326-328`, `26-32`, `75-79`), the global logging defaults
+(`litellm/__init__.py:194-214`), and the payload schema
+(`litellm/types/utils.py:2941-2980`).
+
+### Positive patterns
+
+- **Retry count is bounded by construction.** `async_function_with_retries`
+  iterates a fixed `for current_attempt in range(num_retries)`
+  (`litellm/router.py:6555`); if `num_retries` is unset it defaults to 0
+  (`litellm/router.py:6465`). No path retries forever.
+- **Fallback depth is bounded.** `run_async_fallback` has a hard base case
+  `if fallback_depth >= max_fallbacks: raise original_exception`
+  (`litellm/router_utils/fallback_event_handler.py:118-119`); `max_fallbacks`
+  defaults to `ROUTER_MAX_FALLBACKS = 5` (`litellm/constants.py:9`).
+- **Exponential backoff with jitter and a server-provided Retry-After.**
+  `_calculate_retry_after` honours the HTTP `Retry-After` header when reasonable
+  (`0 < retry_after ≤ 60`), otherwise computes
+  `INITIAL_RETRY_DELAY * pow(2, attempt)` boxed to `[min_timeout, MAX_RETRY_DELAY]`
+  plus `JITTER * random()` (`litellm/utils.py:6400-6423`).
+- **Operator-tunable retry classification.** `RetryPolicy` lets operators set
+  per-exception retry counts and per-model-group overrides
+  (`litellm/router_utils/get_retry_from_policy.py:34-54`).
+- **Explicit provider-failure classification.** `_should_retry` retries only on
+  408/409/429 and `>= 500`; other 4xx (400/401/403/404) are not retried unless
+  additional deployments exist (`litellm/utils.py:6337-6363`).
+- **Fail-closed on budget exhaustion.** The budget filter raises
+  `ValueError(RouterErrors.no_deployments_with_provider_budget_routing)` when
+  every deployment is over budget rather than silently falling through
+  (`litellm/router_strategy/budget_limiter.py:182-185`); ceiling check at
+  provider (line 234), deployment (line 249) and tag (line 264) granularity.
+- **Fail-closed on no-deployment.** When no healthy deployment exists,
+  `async_raise_no_deployment_exception` raises `RouterRateLimitError`
+  (`litellm/router_utils/handle_error.py:71-96`); it does not fabricate or fall
+  open.
+- **Spend tracked as a rolling window with explicit reset.**
+  `_increment_spend_for_key` stores `provider_budget_start_time:{provider}`
+  alongside the spend key and resets both when `current_time - budget_start > ttl`
+  (`litellm/router_strategy/budget_limiter.py:455-502`).
+- **Most-recent-error raised, not first.** The retry loop overwrites
+  `original_exception` on each attempt and raises that at the end
+  (`litellm/router.py:6573-6575`, `6618-6628`).
+- **Tag budgets are gated behind the Enterprise license.** `_init_tag_budgets`
+  refuses to initialise unless `premium_user is True`
+  (`litellm/router_strategy/budget_limiter.py:821-826`), so the MIT-licensed
+  surface stays self-consistent with its license scope.
+
+### Weaknesses / adoption constraints for Koquetel
+
+- **AC-BUDGET-RESERVE — budgets are post-hoc, not reserved.** Spend is
+  incremented only inside `async_log_success_event` *after* the call returns
+  (`litellm/router_strategy/budget_limiter.py:398-453`); there is no pre-call
+  hold/reservation. A burst of concurrent in-flight requests can all pass the
+  filter and collectively overshoot the ceiling. Koquetel needs
+  reservation/commit semantics (FR-15/FR-16, GA-05, G-07).
+- **AC-COST-ATTR — cost is attributed to the call, never to the task outcome.**
+  `response_cost` is attached to the `StandardLoggingPayload`
+  (`litellm/types/utils.py:2947, 2973-2974`) but nothing ties that cost to
+  whether the requesting task ultimately succeeded (GA-05, FR-17).
+- **AC-COOLDOWN-SINGLE — cooldowns are suppressed for single-deployment model
+  groups.** `_should_cooldown_deployment` returns `False` for single-deployment
+  groups unless 100% of ≥1000 requests failed
+  (`litellm/router_utils/cooldown_handlers.py:178-179, 206-208, 212`). A lone
+  provider can keep failing without isolation (NFR-06, FR-14).
+- **AC-NOISY-CLASSIFY — cooldown classification defaults to "yes" on any error
+  and uses substring matching.** `_is_cooldown_required` wraps everything in
+  `try/except: return True` (`litellm/router_utils/cooldown_handlers.py:91-93`)
+  and excludes `APIConnectionError` by substring-searching the exception
+  *message* (lines 57-61). Koquetel routing policy must classify on typed
+  status/exception, not string content (FR-14).
+- **AC-CONTENT-LOGGED — prompt and completion content flows to all logging
+  callbacks by default.** `turn_off_message_logging = False` is the global
+  default (`litellm/__init__.py:194`); the `StandardLoggingPayload` carries
+  full `messages` and `response` text plus `requester_ip_address`, `user_agent`,
+  `end_user`, `metadata` (`litellm/types/utils.py:2970-2975`). Direct SR-14 /
+  NFR-06 conflict.
+- **AC-SECRETS-IN-ALERTS — exception strings and tracebacks are shipped to
+  Slack/Teams.** `send_llm_exception_alert` redacts secrets via key-pattern
+  masking but appends `str(original_exception)`, `litellm_debug_info`, and a
+  truncated traceback (`litellm/router_utils/handle_error.py:54-68`). Koquetel
+  SR-14 requires content-classification before any external egress.
+- **AC-DEBUG-LEAK — internal wiring is appended to client-facing exceptions by
+  default.** `expose_router_debug_in_errors = True` by default
+  (`litellm/__init__.py:201-209`); model_group names, fallback model groups,
+  deployment timeouts and fallback-failure details are appended to
+  `ProxyException.message` sent to clients (`litellm/router.py:6311-6312`,
+  `6342-6351`, `6255-6256`, `6291-6292`). SR-14/NFR-06 conflict.
+- **AC-ENV-OVERRIDE — retry and budget constants are env-var overridable with
+  no upper bound.** `INITIAL_RETRY_DELAY`, `MAX_RETRY_DELAY`, `JITTER`,
+  `DEFAULT_COOLDOWN_TIME_SECONDS`, `ROUTER_MAX_FALLBACKS`, etc. are all
+  `os.getenv(...)` reads (`litellm/constants.py:9, 26-32, 75-79`). An operator
+  (or compromised env) can multiply blast radius (FR-14/FR-15).
+- **AC-NO-OUTCOME-AUTHORITY — routing has no concept of plan-bound authority or
+  delegation attenuation.** Nothing binds the chosen deployment to a Koquetel
+  plan token, capability scope, or parent delegation (FR-16, GA-07, G-07).
+- **AC-PROXY-SCOPE — much of the operationally relevant surface (auth, virtual
+  keys, spend management UI, RBAC, audit logs) lives in `litellm/proxy/` or
+  `enterprise/`.** Koquetel can only reuse the MIT-licensed SDK/router surface.
+
+### Reuse recommendation
+
+- **Concept source for routing/retry/budget mechanics, not a dependency and not
+  an adapter base.** Koquetel should re-implement independently: bounded retry
+  with exponential backoff + `Retry-After`, bounded fallback depth, typed retry
+  classification overridable per model group, rolling-window budget filters with
+  fail-closed exhaustion, and cooldown-based deployment isolation.
+- **Blocking gaps before any acceptance:**
+  1. Koquetel must add pre-call budget **reservation/commit** (AC-BUDGET-RESERVE;
+     FR-15/FR-16/G-07).
+  2. Koquetel must bind every routing decision to a **plan token / capability
+     scope** and enforce parent→child attenuation (FR-14/FR-16, GA-07).
+  3. Koquetel must own **cost-to-task-outcome attribution** (GA-05, FR-17).
+  4. Koquetel must override LiteLLM's logging defaults — content-off-by-default,
+     typed failure classification, no internal-wiring in client exceptions
+     (SR-14/NFR-06).
+  5. Cooldown policy must not inherit LiteLLM's single-deployment suppression.
+- **No code copied.** MIT outside `enterprise/` is license-compatible with
+  Apache-2.0 Koquetel; per-file attribution still required if any code is
+  reused. The `enterprise/` tree is commercially licensed and excluded from
+  every reuse path.
+- **Independence unaffected:** LiteLLM is an *optional* external concept source.
+  Its absence must degrade to Koquetel's own router/offline mode (P-13, NFR-13).
+  The experimental `litellm-rust/` crate is not the router and is not a
+  shortcut (ADR-0002).
+
+---
+
+## EA-05 — OpenHands `a1547a9c0d4ef89cfd3161c530b24f6d8cbc5cae`
+
+### Pin & license
+
+- **Source / pin:** `github.com/All-Hands-AI/openhands.git` (the register lists
+  `OpenHands/OpenHands`; the org now resolves to `All-Hands-AI/openhands`). Pin
+  `a1547a9c0d4ef89cfd3161c530b24f6d8cbc5cae` reached cleanly via
+  `--filter=blob:none` and verified.
+- **Commit metadata:** `a1547a9c0 2026-07-21 11:28:37 -0500` "fix(app-server):
+  support Bitbucket Data Center personal repos as marketplace sources (#15334)".
+- **Repo identity note (load-bearing):** the in-tree `README.md` is for
+  **`agent-canvas`** (`ghcr.io/openhands/agent-canvas:1`, README:95-125). The
+  classic "OpenHands runtime" tree has been refactored: there is **no `runtime/`
+  Python package and no in-tree action-execution / bash server** at this pin.
+  The container runtime is pulled from an external image
+  (`ghcr.io/openhands/agent-server`) and the in-process bash server comes from
+  the external PyPI package **`openhands-agent-server==1.36.0`**
+  (`pyproject.toml:62, 251, 353`). That code is not in this clone and was not
+  auditable here.
+- **License — root:** MIT, `Copyright © 2025`, SPDX `MIT`. `LICENSE:1-30`,
+  `pyproject.toml:11`. SHA-256 `90bd960a…83e5bb94`.
+- **License — `enterprise/`:** **PolyForm Free Trial 1.0.0**
+  (`enterprise/LICENSE:1`, `Copyright (c) 2026 All Hands AI`), with a
+  30-day-per-year commercial-use cap (`:38-40`), no-distribution clause
+  (`:18-19`), and termination-on-violation (`:57-61`). SHA-256
+  `de6a0079…ce1ca627`. Root `LICENSE:1-3` carves `enterprise/` out of MIT.
+  **585 tracked files under `enterprise/` are excluded from any reuse.**
+
+### Inventory
+
+- **Tracked files:** 2,562 (1,977 ex-`enterprise/`, 585 in `enterprise/`).
+- **Dominant languages (ex-.git):** `.py` 910, `.tsx` 754, `.ts` 532, `.svg`
+  124, `.md` 77, `.yml` 36, `.j2` 34. ~41% Python, ~50% TS/TSX.
+- **Tests:** 110 `test_*.py` under `tests/`. No sandbox-escape / containment
+  suites located.
+- **Module map (top-level):**
+  - `openhands/` — Python backend: `analytics/`, `app_server/` (main package, 21
+    submodules incl. `sandbox/`, `secrets/`, `integrations/`, `mcp/`,
+    `user_auth/`, `file_store/`, `web_client/`), `db/`, `server/`.
+  - `frontend/` (1,375 files) + `openhands-ui/` (81) — React/TS canvases.
+  - `containers/{app,dev}/` — Dockerfiles + entrypoint for the **server** image
+    (not the sandbox image).
+  - `enterprise/` (585, PolyForm-excluded): SaaS server, billing, sync,
+    migrations.
+- **Key external deps:** `openhands-sdk==1.36.0`, `openhands-agent-server`,
+  `openhands-tools` (PyPI, not in tree); `litellm==1.84.1` (`pyproject.toml:163`);
+  `posthog` SDK.
+- **No `runtime/` package, no Podman code, no `EventStreamRuntime`/
+  `action_execution_server` in tree** — confirmed via directory and symbol
+  search.
+
+### Files read fully
+
+| Path | Lines | SHA-256 |
+|---|---:|---|
+| `LICENSE` | 30 | `90bd960a6d24cce8f64f3f2b9be5923d5b33e2650afd6fb683ced4be83e5bb94` |
+| `enterprise/LICENSE` | 91 | `de6a0079a9e2ae8a514ab26d541a0a57b10f10b49a1402d99fab62d88ce1ca627` |
+| `containers/app/Dockerfile` | 105 | `68df393343c9d456ddbbbf7e22f60469dc86d1bd8fd232f6de9b5a4357a51705` |
+| `containers/app/entrypoint.sh` | 61 | `9df6b2de1a689f136f708a041f475176d1ff9494a11563ffe71817910446b1a` |
+| `openhands/app_server/sandbox/docker_sandbox_service.py` | 715 | `34bb7f8a81c81cdb99984718fdf6175b99cbc43aca6043b7506c2cfdec5aaca8` |
+| `openhands/app_server/sandbox/docker_sandbox_spec_service.py` | 133 | `a663361ce8a0ea937446ae1b4573a6e7d6d0f41ed3eea5e2c5ed1a100dfb2437` |
+| `openhands/app_server/sandbox/process_sandbox_service.py` | 477 | `31a1c2cacda2caffe36484196498ba3c55e8f54e5e777eb0c7130620c4056179` |
+| `openhands/app_server/sandbox/sandbox_spec_service.py` | 210 | `ff71e0fb45cda438fbd8253425704746d41f2273d8a3d0aff26b43637962b415` |
+| `openhands/app_server/secrets/file_secrets_store.py` | 45 | `7bb66f0fbdd5b901d1c83affa82419f5bdfc51b966e66752fabc58624564522d` |
+| `openhands/app_server/secrets/secrets_models.py` | 199 | `afbdbcd2cc7920bb7e815451b50566599ef93eeaff31c935daa0581db86e9808` |
+| `openhands/app_server/utils/env_var_validation.py` | 24 | `a89947cbc676ad2608c7ca199411c7dcc768c04f6d7c63c7057418f73f789153` |
+| `openhands/app_server/server_config/server_config.py` | 56 | `a8fa8e77beffc6209acf7d091ff66ea6e25e2b371c08eca8ebaf8defc3386c15` |
+| `openhands/analytics/analytics_service.py` | 575 | `2c857df969e9e91a1226ccfd4680d595e9cd9f23fb2ebb98f0261d286217abf2` |
+| `openhands/analytics/oss_install_id.py` | 39 | `180f7c03e787c34d5066cb7dcd39d67f68be66b76b7ac97ef47ef92eb0e9ed74` |
+
+### Positive patterns
+
+- **Session keys are strong random values:** `session_api_key =
+  base62.encodebytes(os.urandom(32))` (256 bits) —
+  `docker_sandbox_service.py:414`; sandbox ids use `os.urandom(16)` (`:410`).
+- **Session keys are scope- and lifetime-bound:** a key is rejected unless the
+  sandbox is in `RUNNING` state, so a leaked key cannot reach secrets after
+  pause/stop/delete — `session_auth.py:73-87`.
+- **Sandbox-scoped secret endpoint requires key↔sandbox match:**
+  `sandbox_router.py:127-143` returns 403 on mismatch.
+- **Secret *names* listing returns no raw values:** `sandbox_router.py:157-185`.
+- **Pydantic serializers default to redacted form:** `secrets_models.py:58-107`
+  redacts both provider tokens and custom secrets unless
+  `context={'expose_secrets': True}` is passed explicitly.
+- **Container uses an init process for zombie reaping:** `init=True` on
+  `docker_client.containers.run` — `docker_sandbox_service.py:498`.
+- **Sandbox count ceiling:** `max_num_sandboxes` (default 5) —
+  `docker_sandbox_service.py:399, 521, 600-603`.
+- **Health-check gate before reporting RUNNING:** startup-grace window
+  (`STARTUP_GRACE_SECONDS = 15`, `:46`) and `/health` probe —
+  `docker_sandbox_service.py:238-285`.
+- **Env-var name validation before secret creation:** regex
+  `[a-zA-Z_][a-zA-Z0-9_]*` — `env_var_validation.py:6-11`.
+- **Telemetry is consent-gated and OSS profiling is off:** `AnalyticsService.capture`
+  returns immediately when `ctx.consented=False` (`analytics_service.py:83-84`).
+
+### Weaknesses / adoption constraints for Koquetel
+
+All of these are blockers for direct reuse of the sandbox core as Koquetel's
+PT-04 rootless sandbox:
+
+- **W1 — No resource limits whatsoever.** `docker_client.containers.run(...)` at
+  `docker_sandbox_service.py:485-509` passes no `mem_limit`, `nano_cpus`/
+  `cpu_quota`, `pids_limit`, `ulimits`, or wall-clock (FM-12, AC-11, PT-04(e),
+  G-05).
+- **W2 — No network allowlist.** Container runs on Docker's default bridge with
+  no egress filtering; `network_mode` is either `None` or `'host'`
+  (`docker_sandbox_service.py:470, 506`). (SR-07, SR-14, PT-04(d)).
+- **W3 — Host-network mode is a single env var away.** `use_host_network`
+  defaults from `AGENT_SERVER_USE_HOST_NETWORK` (`docker_sandbox_service.py:49-56,
+  660-669, 470, 472-473, 506`) — fail-open by configuration (SR-07, FM-11).
+- **W4 — Host gateway route is wired in by default.** `extra_hosts=
+  {'host.docker.internal': 'host-gateway'}` (`docker_sandbox_service.py:644-652`,
+  applied at `:502-504`) hands every sandbox a route back to the host network
+  (SR-07, SR-14).
+- **W5 — No capability / userns / seccomp hardening.** No `cap_drop`,
+  `security_opt`, `userns_mode`, or `privileged=False` enforcement. **Zero
+  `podman`/`rootless` references in the entire tree.** PT-04's primary
+  environment (Podman rootless) is unsupported (SR-07, PT-04, G-05).
+- **W6 — The Docker engine socket is mounted in the server image.**
+  `containers/app/entrypoint.sh:47` does `stat -c '%g' /var/run/docker.sock` and
+  joins that group so the in-image user can talk to the engine. SR-07 forbids
+  this exact pattern (SR-07, PT-04(c), SR-02).
+- **W7 — Sandbox mounts are unvalidated.** `SANDBOX_VOLUMES` is parsed by
+  splitting on `,` then `:` and the host path is taken verbatim —
+  `config.py:361-385`. No absoluteness check, no symlink resolution, no
+  confinement, no race check (SR-07, SR-08, PT-04(a)).
+- **W8 — Host environment is wholesale copied into process sandboxes.**
+  `process_sandbox_service.py:125` does `env = os.environ.copy()` then layers
+  `sandbox_spec.initial_env` and `SESSION_API_KEY` (SR-05, SR-07, PT-04(b)).
+- **W9 — Secrets are persisted in cleartext JSON.**
+  `file_secrets_store.py:32-34` writes
+  `secrets.model_dump_json(context={'expose_secrets': True})` to `secrets.json`
+  (SR-05, SR-06, PT-04(b)).
+- **W10 — Auto-forwarded host env vars leak into every container.**
+  `AUTO_FORWARD_PREFIXES = ('LLM_', 'LMNR_')` (`sandbox_spec_service.py:151`);
+  `get_agent_server_env` copies every host var with those prefixes into the
+  sandbox env (`:198-210`), including telemetry API keys (SR-05, SR-14, NG-05,
+  PT-04(b)).
+- **W11 — Webhook callback URL embeds the host port.**
+  `env_vars[WEBHOOK_CALLBACK_VARIABLE] = f'http://host.docker.internal:{self.host_port}/api/v1/webhooks'`
+  (`docker_sandbox_service.py:419-421`) (SR-07, SR-14).
+- **W12 — Telemetry has a persistent install identity and a hardcoded PostHog
+  key.** `oss_install_id.py:21-37` writes/reads `analytics_id.txt`;
+  `server_config.py:12` hardcodes `posthog_client_key = 'phc_3ESM…'` (NG-05,
+  SR-14, G-05).
+- **W13 — "Without a Sandbox" is a supported mode.** README:69 ships an option
+  that runs the agent directly on the host with full filesystem access; no
+  consent gate (FM-11, SR-02, PT-04).
+- **W14 — Image is pulled on first use by digest-less tag.**
+  `docker_sandbox_spec_service.py:60-66, 78-92` pulls `ghcr.io/openhands/
+  agent-server:<bundled>-python` when missing; tag auto-rewrites to match the
+  installed SDK. No digest pinning, no signature verification (SR-09).
+- **W15 — Sandbox deletion stops with a 10s timeout and ignores archive failure
+  by default.** `docker_sandbox_service.py:559-572`; `RUNTIME_FILE_ARCHIVE_REQUIRED`
+  defaults to `false` (PT-04 Disposal, SR-10).
+- **W16 — Runtime backend is chosen by env var with no capability probe.**
+  `RUNTIME` env selects Docker / remote / process (`config.py:388-394`). FM-11
+  expects a capability probe that denies untrusted execution when no sandbox is
+  fit; absence silently downgrades.
+- **W17 — Security-critical runtime code is not in this repository.** The
+  in-container action/bash server is the external `openhands-agent-server==1.36.0`
+  package and the `ghcr.io/openhands/agent-server` image; this audit cannot see
+  the bash execution, file IO, or syscall surface (SR-09, PT-04, G-09).
+
+### Reuse recommendation
+
+**Recommendation: do NOT adopt OpenHands as Koquetel's sandbox runtime; at most
+treat it as a reference for an adapter / clean-room concept, and only for the
+orchestration layer (lifecycle, ports, session-key auth).**
+
+Blocking gaps (six):
+
+1. Containment defaults are inverted vs SR-07 (no limits W1, no network
+   allowlist W2, host-network one env var away W3, `host.docker.internal` route
+   by default W4, no cap/userns/seccomp/Podman-rootless support W5, engine
+   socket mounted W6). PT-04 would fail every row of its containment matrix.
+2. Path safety is absent (W7). SR-08 cannot be patched at the adapter layer.
+3. Secret handling violates SR-05 in three independent ways (W8, W9, W10).
+4. The actual sandbox runtime is unauditable from this pin (W17).
+5. Supply chain (W14). Tag-based, digest-less image pulls with auto-rewrite.
+6. Telemetry footprint (W12).
+
+Adapter / clean-room concept worth retaining (positive evidence only): the
+`SandboxService` ABC + `DockerSandboxService` shape, the `max_num_sandboxes`
+ceiling, the `init=True` zombie-reaping choice, the running-state-bound session
+key, the consent-gated metadata-only telemetry vocabulary, the secret-name
+listing without values, and the redact-by-default Pydantic serializers. None of
+these licenses reuse; each must be reimplemented natively against a rootless
+Podman backend.
+
+License: the MIT-licensed portion is referenceable by a documentation-only
+foundation; the `enterprise/` PolyForm-Free-Trial subtree (585 files) is
+excluded from all reuse. No dependency on OpenHands is proposed or implied.
+
+---
+
+## EA-06 — Letta `b76da9092518cbaa2d09042e52fdcbde69243e18`
+
+### Pin & license
+
+- **Pinned commit:** `b76da9092518cbaa2d09042e52fdcbde69243e18`, committed
+  `2026-07-03 11:53:39 -0700`, `docs: update README to Letta Agent SDK, add
+  AGENTS.md deprecation notice (#3393)`. Matches the pin in
+  [`SOURCE-REPOSITORIES.md`](SOURCE-REPOSITORIES.md).
+- **License:** Root `LICENSE` is canonical Apache License 2.0 (`LICENSE:1-4`).
+  `pyproject.toml:8` declares `license = {text = "Apache License"}`. SPDX:
+  **Apache-2.0**. Copyright `Copyright 2023, Letta authors` (`LICENSE:178`). No
+  `NOTICE` file and no per-subdirectory `LICENSE`; a single repo-wide Apache-2.0
+  applies.
+- **Repository status (load-bearing):** `README.md:9` states "[README claim]
+  This repository contains the legacy Letta server ... Active development has
+  moved to the letta-ai/letta-code repo." `AGENTS.md:3` states "[README claim]
+  This repository is deprecated ... in maintenance mode and is no longer where
+  active development happens." Observed behavior at pin confirms this. **This is
+  the single biggest adoption constraint.**
+
+### Inventory
+
+- **Tracked file count:** 1156.
+- **Dominant language:** Python (878 `.py`, 116 `.json`, 33 `.yml`, 20 `.txt`).
+- **LOC:** 248,417 total Python LOC; 137,850 inside `letta/`; 97,808 in `tests/`.
+- **Tests:** 93 files matching `tests/**/test_*.py`.
+- **Module map (top-level subpackages of `letta/`, by LOC):**
+  - `letta/services/` 41,334 (summarizer, block_manager, passage_manager,
+    message_manager, archive_manager, agent_serialization_manager, memory_repo/,
+    …)
+  - `letta/server/` 19,648 (FastAPI REST + WS API)
+  - `letta/schemas/` 17,939 (Pydantic models: memory, block, message, passage,
+    agent, …)
+  - `letta/llm_api/` 9,494, `letta/agents/` 8,050, `letta/local_llm/` 5,471,
+    `letta/helpers/` 4,957, `letta/orm/` 4,919 (47 ORM models including
+    `passage.py`, `message.py`, `block.py`, `block_history.py`, `source.py`,
+    `archive.py`)
+  - `letta/functions/` 3,851, `letta/interfaces/` 3,721, `letta/otel/` 2,259,
+    `letta/groups/` 1,913, `letta/adapters/` 1,404, `letta/prompts/` 1,111.
+- **Memory-tier core:** `letta/schemas/memory.py` (in-context/core memory + tier
+  summaries), `letta/schemas/block.py`, `letta/services/block_manager*.py` +
+  `letta/services/block_manager_git.py`, `letta/orm/passage.py` (archival),
+  `letta/orm/message.py` (recall), `letta/orm/block_history.py` (provenance
+  snapshots), `letta/services/summarizer/`, `letta/services/memory_repo/`.
+
+### Files read fully
+
+| Path | Lines | SHA-256 |
+|---|---:|---|
+| `letta/schemas/memory.py` | 884 | `febcd15fa5bad3e73a40d5229f75f747782f046c5e3f3c26b8f5c557403cc91c` |
+| `letta/schemas/block.py` | 209 | `db805da329a276532510d9586c85adb49fb36e550da09584dc70d18a927e8f88` |
+| `letta/services/block_manager_git.py` | 596 | `02d181eafbc53a8023fb8a3ff257b6a7bc89612d154e6747ed3a6a47051591bc` |
+| `letta/orm/passage.py` | 104 | `bf278435c7d7cfa4a1d7f02514a3b2fb1aa9ed0041d70feda25041be295e8a49` |
+| `letta/orm/block_history.py` | 48 | `5cb6dd4e473d19afd6e68a25cd13d1c6bcbbc79ad2f8f1ea5b5d4c2a9071cab0` |
+| `letta/services/memory_repo/storage/base.py` | 127 | `ef3d39a001a812a359769b380f6f1ef79f84d2c107c3bef9b7c769847bacc63c` |
+
+Also read fully for cross-reference: `letta/orm/message.py` (265 lines, recall
+persistence with monotonic `sequence_id`), `letta/services/summarizer/
+summarizer_sliding_window.py` (232 lines, the recall-consolidation algorithm).
+
+### Positive patterns
+
+- **Three explicit memory tiers, separated by persistence table and access
+  path.** Core (in-context) memory = `Memory`/`Block` rendered into the system
+  prompt (`letta/schemas/memory.py:68-77, 142-203`); archival = `ArchivalPassage`
+  table (`letta/orm/passage.py:76-104`); recall = `Message` table
+  (`letta/orm/message.py:23-91`). The `ContextWindowOverview` model enumerates
+  them as distinct counts (`letta/schemas/memory.py:32-45`). Directly relevant
+  to ADR-0004 and FR-09..13.
+- **Core-memory edits are bounded by per-block limits.** `Block.limit` defaults
+  to `CORE_MEMORY_BLOCK_CHAR_LIMIT = 100000` (`letta/constants.py:435`); the
+  renderer surfaces `chars_current`/`chars_limit` to the model
+  (`letta/schemas/memory.py:161-166`). Directly relevant to ADR-0004.
+- **Recall memory is bounded by a sliding-window summarizer with a configurable
+  eviction percentage and a token-budget target.** `summarize_via_sliding_window`
+  computes `goal_tokens = (1 - sliding_window_percentage) *
+  agent_llm_config.context_window` and walks the cutoff up by 10% until the
+  post-summary buffer fits (`summarizer_sliding_window.py:152-191`); proactive
+  compaction triggers at 90% of context window (`SUMMARIZATION_TRIGGER_MULTIPLIER
+  = 0.9`, `letta/constants.py:82-83`). Satisfies the spirit of SR-11.
+- **Archival persistence is pluggable across vector DBs.** `BasePassage`
+  switches between pgvector and `CommonVector` based on `settings.database_engine`
+  (`letta/orm/passage.py:34-40`); optional extras for `postgres` (pgvector),
+  `pinecone`, `sqlite` (sqlite-vec), `redis` (`pyproject.toml:89-98`).
+- **Memory edits are versioned two ways.** (1) `BlockHistory` rows with
+  monotonic `sequence_number`, unique on `(block_id, sequence_number)`
+  (`letta/orm/block_history.py:17-48`), written by `checkpoint_block_async` with
+  truncation of "future" entries to keep a linear undo/redo stack
+  (`letta/services/block_manager.py:874-901`). (2) Optional git-backed
+  source-of-truth via `GitEnabledBlockManager` (writes to git first, Postgres is
+  a cache) (`letta/services/block_manager_git.py:1-8, 186-285`). Relevant to
+  SR-12.
+- **Provenance fields exist on memory snapshots.** `BlockHistory` records
+  `actor_type` (`ActorType.LETTA_AGENT` vs `LETTA_USER`) and `actor_id` at
+  checkpoint time (`letta/orm/block_history.py:36-37`).
+- **Storage backend is abstracted behind an ABC.** `StorageBackend`
+  (`letta/services/memory_repo/storage/base.py:7-127`) defines
+  `upload_bytes`/`download_bytes`/`exists`/`delete`/`list_files`/`delete_prefix`,
+  with concrete `local.py`. The seam Koquetel would reuse for a portable
+  envelope store.
+- **Agent-definition export to JSON exists** (`AgentFileSchema` at
+  `letta/schemas/agent_file.py:431-445`; exporter/importer at
+  `letta/services/agent_serialization_manager.py:382-494`).
+
+### Weaknesses / adoption constraints for Koquetel
+
+- **Repository is in maintenance mode / deprecated.** `README.md:9` and
+  `AGENTS.md:3-6` state active development moved to `letta-ai/letta-code`.
+  Depending on this codebase as a runtime dependency is not viable; only
+  concept/spec reuse is on the table (ADR-0004).
+- **Tight coupling to specific LLM/embedding providers in the persistence path.**
+  `letta/services/passage_manager.py:8` imports `AsyncOpenAI` directly and
+  `:35-40` hardcodes an OpenAI embeddings client. 51 files import `openai`, 18
+  import `anthropic`. `embedding_config` is serialized per-passage
+  (`letta/orm/passage.py:29`), so archival rows are bound to the provider that
+  produced them. FR-10/FR-11 and PT-03 (provider lock-in).
+- **Summarizer/compaction logic is hard-coded to OpenAI/Anthropic tokenizers and
+  contains model-family regex special-casing.**
+  `letta/services/summarizer/thresholds.py:11-41` special-cases `gpt-5` family
+  via regex. SR-11: bounded-recall behavior is provider-dependent.
+- **Memory content is logged at INFO by default and captured into OTEL spans.**
+  `block_manager_git.py:196-238` emits `logger.info` lines containing `block_id`,
+  `label`, commit SHA, and timings on every memory write. The `@trace_method`
+  decorator serializes function parameters into span attributes up to
+  `MAX_PARAM_SIZE = 2 MB` per param and `MAX_TOTAL_SIZE = 4 MB` total, with only
+  an explicit opt-out list (`SKIP_PARAMS`) protecting large objects
+  (`letta/otel/tracing.py:250-277`). SR-12 / G-04 / privacy.
+- **Provenance on memory edits is partial and only for core memory.**
+  `BlockHistory` only snapshots `Block` state — there is no equivalent history
+  table for `ArchivalPassage` or `Message` (recall). SR-12 / ADR-0004.
+- **Export/portability does not cover the full memory envelope.** `AgentFileSchema`
+  includes blocks, files, sources, tools, MCP servers, skills — but **not**
+  archival passages, **not** `BlockHistory` (provenance), and only the currently
+  in-context slice of recall messages. G-04 (export/portability).
+- **Disable does not delete the backing git store.**
+  `disable_git_memory_for_agent` only removes the tag and "keeps the git repo
+  for historical reference" (`letta/services/block_manager_git.py:485-506`).
+  SR-12 / privacy / right-to-be-forgotten.
+- **Heavy dependency surface and Python 3.11–3.13 only.** ~70 runtime deps
+  including `anthropic`, `openai[realtime]`, `mistralai`, `google-genai`,
+  `llama-index`, `temporalio`, `mcp`, `grpcio`, `sentry-sdk`, `ddtrace`.
+  `requires-python = "<3.14,>=3.11"`. PT-03 / G-04.
+- **Recall sequence correctness relies on SQLite-specific event listeners with
+  hand-rolled sequence tables and `RETURNING` fallbacks.** `letta/orm/
+  message.py:130-265` maintains a `message_sequence` table via raw SQL on
+  SQLite. SR-11.
+- **Core-memory value sanitization is lossy.** `BaseBlock.sanitize_value_null_bytes`
+  strips null bytes silently before persistence (`letta/schemas/block.py:51-57`).
+  SR-12.
+
+### Reuse recommendation
+
+**Recommendation: clean-room concept reuse only. Reject as a dependency (runtime
+or vendored).**
+
+1. The project is explicitly deprecated/maintenance-mode at the pinned commit;
+   Koquetel must not adopt it as a dependency, and even adapter reuse would
+   inherit an unmaintained codebase with ~70 transitive deps.
+2. The memory-tier *concepts* are well worth modeling for ADR-0004 and FR-09..13:
+   three-tier split, per-block char limits surfaced to the model, sliding-window
+   consolidation with token-budget target, dual versioning scheme.
+3. The persistence interface abstraction (`StorageBackend` ABC) is a good
+   template for an envelope-store port, but the actual implementation is
+   OpenAI/Anthropic-coupled and Postgres/pgvector-leaning.
+
+Blocking gaps Koquetel must close independently (none closeable by adopting
+Letta): provider-neutral embedding interface; provenance on **archival** and
+**recall** edits; full-envelope export including recall history, archival store,
+and edit provenance; default-off content telemetry; first-class forget/purge
+that includes object-store git history.
+
+Suggested clean-room deliverables: (a) a memory-envelope spec (ADR-0004) modeled
+on Letta's tier separation and per-block limits; (b) a bounded-recall policy spec
+(SR-11) modeled on the sliding-window + token-budget algorithm but stated
+provider-neutrally; (c) a provenance spec (SR-12) that extends `BlockHistory` to
+archival and recall tiers with mandatory `actor_type`/`actor_id`/`source` on
+every write.
+
+---
+
+## EA-07 — Mem0 `dd5f7e39a86170dd35c6860c854a2b0ef0293b08`
+
+### Pin & license
+
+- Repository cloned read-only via `git clone --filter=blob:none` into
+  `/tmp/koquetel-audits/mem0`. Pin matches
+  [`SOURCE-REPOSITORIES.md`](SOURCE-REPOSITORIES.md).
+- `git log -1 --format='%H %ci'` → `dd5f7e39a86170dd35c6860c854a2b0ef0293b08
+  2026-07-21 21:39:00 +0530` "ci: infer component labels for issues filed
+  without the form (#6471)".
+- `pyproject.toml:7`: `version = "2.0.12"` (name `mem0ai`).
+- **License:** Apache-2.0, single project-wide. Root `LICENSE` (11349 B):
+  "Apache License, Version 2.0" (LICENSE:1). SHA-256
+  `0bbcbe931c353293a2fafce08326181dfeea0e568c566afd4ce8337a70f5e219`.
+  Copyright `Copyright [2023] [Taranjeet Singh]` (LICENSE:190). `pyproject.toml:13`:
+  `license = "Apache-2.0"`. All other `LICENSE` files under `skills/*` and
+  `integrations/*` are also Apache-2.0. No `enterprise/` directory present at
+  this pin.
+
+### Inventory
+
+- **Tracked files at pin:** 1812.
+- **Dominant languages:** `.ts` 428, `.py` 384, `.mdx` 243, `.tsx` 227, `.md`
+  107, `.svg` 83, `.json` 65. Python package = `mem0/` (384 `.py`). TypeScript
+  SDK = `mem0-ts/`.
+- **Tests:** 95 `test_*.py` under `tests/`.
+- **Module map of `mem0/`:**
+  - `mem0/memory/` — `base.py`, `main.py` (3787 lines), `storage.py` (SQLite
+    history), `telemetry.py` (PostHog), `notices.py` (in-product upsell),
+    `setup.py`, `utils.py`.
+  - `mem0/vector_stores/` — `base.py` (interface), 25 backend implementations.
+  - `mem0/embeddings/`, `mem0/llms/`, `mem0/reranker/`, `mem0/configs/`.
+  - `mem0/utils/factory.py` — provider factories. `mem0/proxy/main.py` —
+    wrapper that auto-pip-installs `litellm` and routes between local `Memory`
+    and hosted `MemoryClient`.
+- **Important structural note:** there is **no `mem0/graph_memory/` module and
+  no `mem0/graphs/` module** at this pin. `grep -rn "graph_store\|GraphMemory"
+  mem0/` only returns `mem0/exceptions.py:396`. The entire `mem0/graphs/` tree
+  was deleted by commit `a488e190`. The current v3 design replaces graph edges
+  with an **entity vector store** (a second vector collection keyed by
+  normalized entity text, `mem0/memory/main.py:534-555`, `_entity_collection_name`
+  at `:397`).
+
+### Files read fully
+
+| Path | Lines | SHA-256 |
+| --- | --- | --- |
+| `mem0/vector_stores/base.py` | 100 | `c9d7f6a5fd6d74411eec0be17b409f69d377630ab85ba0a70f754a6df6215450` |
+| `mem0/memory/base.py` | 63 | `bb093eacbeb409b12b043b7df9b3152b895a00bb5ce30776a1e56c915cf17777` |
+| `mem0/utils/factory.py` | 277 | `34698fe69f2fb8c718da3872aca0e35fe2913405a8fd7893283f1a5847e050f5` |
+| `mem0/memory/telemetry.py` | 241 | `89f36bd0b87059fa0710adcccfbd9639ab4d5c4a762d875a1caceaf688aca687` |
+| `mem0/memory/utils.py` | 320 | `dbeba4f50c499fd486cae2250f0a035ff108420b628ea389adb0bd6e1e8f36b88` |
+
+Also read for cross-reference: `mem0/memory/storage.py` (347 lines, SQLite
+history store), `mem0/configs/base.py` (82 lines, `MemoryConfig`),
+`mem0/vector_stores/configs.py` (60 lines). `mem0/memory/main.py` (3787 lines,
+SHA `7aa1a0026056abaea3b3a7653ea0d1753a461d90b83a66c33c680fdac7cb46e`) read in
+full section by section (init, add, get/get_all, search, delete/delete_all,
+_create_memory, _update_memory, _delete_memory, reset, _search_vector_store,
+entity helpers).
+
+### Positive patterns
+
+- **Vector store abstracted behind `VectorStoreBase`** with a uniform 11-method
+  contract (`create_col`, `insert`, `search`, `delete`, `update`, `get`,
+  `list_cols`, `delete_col`, `col_info`, `list`, `reset`) plus opt-in
+  `keyword_search` and `search_batch` defaults — `mem0/vector_stores/base.py:4-99`.
+  The `search` docstring pins a similarity convention so different backends
+  produce comparable scores (`mem0/vector_stores/base.py:14-26`).
+- **Memory lifecycle abstracted behind `MemoryBase`** (`get`, `get_all`, `update`,
+  `delete`, `history`) — `mem0/memory/base.py:6-63`.
+- **Provider pluggability via string-keyed factories.** `VectorStoreFactory.
+  provider_to_class` enumerates 23 vector backends and resolves them by string
+  via `importlib.import_module` (`mem0/utils/factory.py:194-220`). `LlmFactory`
+  enumerates 18 LLM providers (`:43-63`), `EmbedderFactory` 11 embedders
+  (`:162-175`), `RerankerFactory` 5 rerankers (`:249-258`). `LlmFactory.
+  register_provider` exposes an extension point (`:120-130`).
+- **Backend swapping is config-driven.** `Memory.__init__` reads
+  `self.config.vector_store.provider` and calls `VectorStoreFactory.create(...)`
+  (`mem0/memory/main.py:471-473`). Default vector provider is `qdrant`.
+- **Add path is a phased pipeline.** `Memory.add` (`mem0/memory/main.py:735-847`)
+  validates IDs, normalizes expiration, then dispatches to
+  `_add_to_vector_store` (`:849-1056`): Phase 1 retrieves existing memories
+  (`:896-901`), Phase 2 calls the LLM once with `ADDITIVE_EXTRACTION_PROMPT`
+  (`:912-939`), Phase 3 batch-embeds (`:962-964`), Phase 7+ links entities.
+  `infer=False` short-circuits the LLM and stores raw messages (`:850-884`).
+- **Search path is multi-signal and fused.** `Memory.search`
+  (`mem0/memory/main.py:1349-1492`) enforces at least one of
+  `user_id`/`agent_id`/`run_id` (`:1427-1431`), supports an advanced filter DSL,
+  then `_search_vector_store` (`:1598-1698`) over-fetches
+  (`internal_limit = max(limit * 4, 60)` at `:1611`), runs semantic +
+  `keyword_search` (BM25) + entity boosts, and fuses via `score_and_rank`
+  (`:1650-1657`).
+- **Deletion writes audit history.** `_delete_memory` calls
+  `self.vector_store.delete(vector_id=memory_id)` (`:2061`) and immediately
+  appends a row to the SQLite history table with `event="DELETE"` and
+  `is_deleted=1` (`:2062-2072`), preserving `prev_value`, `created_at`,
+  `actor_id`, `role`.
+- **Entity cleanup is best-effort and non-fatal.**
+  `_remove_memory_from_entity_store` (`mem0/memory/main.py:627-680`) strips the
+  memory id from `linked_memory_ids` arrays, deleting orphan entity rows or
+  re-embedding survivors, with per-row `try/except`.
+- **Reset wipes vector + entity + history stores together.** `Memory.reset`
+  (`:2080-2110`) drops SQLite tables, recreates a fresh `SQLiteManager`, calls
+  `VectorStoreFactory.reset`, and resets the entity store.
+
+### Weaknesses / adoption constraints for Koquetel
+
+- **No graph memory at this pin (despite task framing).** Entities are stored as
+  plain vectors in a second collection (`mem0/memory/main.py:534-555`), not as
+  typed graph edges. No Cypher/traversal API, no relationship typing beyond an
+  `entity_type` string payload. ADR-0004 (vector/graph memory candidate) — Mem0
+  at this pin is **vector-only** with a shallow entity-boost layer.
+- **Telemetry is on by default and ships a hardcoded PostHog key.**
+  `MEM0_TELEMETRY = os.environ.get("MEM0_TELEMETRY", "True")`
+  (`mem0/memory/telemetry.py:15`);
+  `PROJECT_API_KEY = "phc_hgJkUVJFYtmaJqrvf6CYN67TIQ8yhXAkWzUn9AMU4y"` and
+  `HOST = "https://us.i.posthog.com"` (`:17-18`). Default sample rate for hot-
+  path OSS events is `0.1` (`:33`). SR-11, G-04.
+- **Vector-store class names and provider choices are sent to PostHog.**
+  `capture_event` builds a payload with `vector_store`, `llm`, `embedding_model`
+  class names, plus `collection` name and `vector_size`
+  (`mem0/memory/telemetry.py:206-216`). `Memory.__init__` fires `mem0.init`
+  (`mem0/memory/main.py:527`); `search` fires `mem0.search` with `keys` and
+  `encoded_ids` (`:1448-1461`). Mitigation: `process_telemetry_filters`
+  (`mem0/memory/utils.py:225-240`) MD5-hashes `user_id`/`agent_id`/`run_id`
+  before telemetry — but `vector_size`, `collection_name`, and provider class
+  names *are* sent. SR-12.
+- **No provenance on memory writes.** `_create_memory` stores only `data`,
+  `hash` (MD5 of `data`, `:1926`), `created_at`, `updated_at`,
+  `text_lemmatized` (`:1924-1930`) plus whatever the caller passed in
+  `metadata`. No `source`, `evidence_ref`, `citation`, or `origin` field.
+  FR-09.
+- **MD5 used as the memory hash.** `hashlib.md5(data.encode()).hexdigest()` at
+  `mem0/memory/main.py:1926, 2013`. MD5 is collision-broken; surfaces in
+  `MemoryItem.hash` (`mem0/configs/base.py:21`). SR-11.
+- **Deletion is soft at the history layer but hard at the vector layer.**
+  `_delete_memory` issues `vector_store.delete(vector_id=memory_id)` with no
+  tombstone in the vector store; the `is_deleted=1` flag lives only in SQLite.
+  `delete_all` iterates and deletes one-by-one — not transactional; a mid-loop
+  failure leaves partial state. FR-13, PT-03.
+- **No export / portability primitive.** The only way to extract all memories is
+  to call `get_all` repeatedly (capped at `top_k`, default 20 —
+  `mem0/memory/main.py:1229`). No schema-stable dump. FR-12, ADR-0004.
+- **Per-call LLM dependency on the add path.** When `infer=True` (default),
+  every `add()` issues an LLM call (`mem0/memory/main.py:925-939`) and raises
+  `LLMError` on failure. FR-10 / FR-11.
+- **Provider lock-in via defaults and transitive deps.** Default
+  `provider="qdrant"`; `qdrant-client`, `openai`, and `posthog` are unconditional
+  runtime deps. The hosted `MemoryClient` is exported from the top-level package;
+  `mem0/proxy/main.py:16-24` will **auto-`pip install` `litellm` at import time**
+  if it is missing. ADR-0004, G-04.
+- **History SQLite DB defaults into the user's home directory.** `history_db_path`
+  default is `os.path.join(mem0_dir, "history.db")` where `mem0_dir = ~/.mem0`
+  (`mem0/configs/base.py:13, 42-45`). PT-03 (no unscoped host mutation).
+- **Notices system surfaces upsell content into the runtime.** `mem0/memory/
+  notices.py` (1582 lines) prints to stdout/stderr on `add`/`search`/`delete`
+  based on usage patterns. The notices are gated on PostHog feature flag
+  `mem0-oss-notices` — runtime behavior influenced by a remote feature flag.
+  SR-11/SR-12.
+- **`README.md` benchmark table is explicitly a platform claim.** "Scores
+  reflect Mem0's managed platform, which includes proprietary optimizations not
+  available in the open-source SDK" (README.md:38-46). `[README claim]`.
+- **Inconsistent return shape between `add` ({results}), `delete` ({message}),
+  `delete_all` ({message}), and `search` ({results}).** Adapter surface concern
+  (FR-10..13).
+
+### Reuse recommendation
+
+**Recommendation: Reject as a dependency; adapter / clean-room concept is viable
+only for the vector-store interface.**
+
+Blocking gaps (any one sufficient to reject for Koquetel's documentation-only,
+no-egress, no-host-mutation phase):
+
+1. Telemetry on by default with a hardcoded PostHog API key and shipment of
+   provider class names to a third party (`mem0/memory/telemetry.py:15-18,
+   206-216`). SR-11/SR-12/G-04.
+2. Auto-`pip install litellm` at import time inside `mem0/proxy/main.py:18-24`.
+   G-04.
+3. SQLite history DB defaults to `~/.mem0/history.db`. PT-03.
+4. No provenance field on writes; MD5 used for memory hash. FR-09.
+5. No export/portability primitive and partial/non-atomic deletion.
+   FR-12/FR-13/PT-03.
+6. No graph memory at this pin. ADR-0004 graph-memory expectation unmet.
+
+Reusable design concepts (for a clean-room Koquetel implementation, *not* an
+import):
+
+- The 11-method `VectorStoreBase` contract (`mem0/vector_stores/base.py:4-99`)
+  including its similarity-score normalization convention and opt-in
+  `keyword_search`/`search_batch` defaults.
+- The string-keyed factory pattern with `register_provider`
+  (`mem0/utils/factory.py:120-130, 222-234`).
+- The phased add pipeline with an explicit `infer=False` escape hatch
+  (`mem0/memory/main.py:850-884`).
+- The history-table shape (`mem0/memory/storage.py:39-72`: `memory_id`,
+  `old_memory`, `new_memory`, `event`, `created_at`, `updated_at`, `is_deleted`,
+  `actor_id`, `role`).
+
+No source code from Mem0 should be vendored. If Koquetel later wants a memory
+layer, the right move per ADR-0004 is a clean-room implementation that adopts
+the `VectorStoreBase` *signature* (re-licensed under Koquetel's own terms,
+written from scratch) and explicitly excludes: PostHog telemetry, auto-install
+behavior, MD5 hashing, default home-directory state, and any LLM-mandatory
+write path.
