@@ -5,8 +5,8 @@ Last reviewed: 2026-07-21
 
 | ID | Severity | Gap | Required closure evidence | Blocks |
 |---|---|---|---|---|
-| G-01 | critical | Q-01 through Q-05 are not owner-decided | accepted ADRs or signed decision record | implementation approval |
-| G-02 | critical | License matrix is pinned, but Koquetel license and component-level compatibility/attribution remain undecided | Q-02 plus per-reused-file/dependency review and accepted attribution plan | any code reuse |
+| G-01 | closed | Q-01 through Q-08 were owner-decided on 2026-07-21 in ADR-0006. Identifier retained for history. | ADR-0006 attached. | none |
+| G-02 | high (narrowed) | Koquetel license is now Apache-2.0 (ADR-0006 / Q-02). Component-level compatibility is compatible (ai-memory MIT; RTK/Letta/Mem0 Apache-2.0; MCP Apache-2.0/MIT transitory). Remaining: per-reused-file attribution plan, NOTICE format and SBOM/source-offer format are not yet written. | accepted attribution plan + NOTICE template + SBOM/source-offer spec | any code reuse |
 | G-03 | high | ai-memory (EA-01), RTK (EA-02) and MCP (EA-03) have equivalent structural audits; LiteLLM, OpenHands, Letta and Mem0 remain documentation-level | equivalent pinned structural audits (`EXTERNAL-AUDITS.md`) for each implementation selected as base | final dependency selection |
 | G-04 | high | ai-memory structural audit (EA-01) observed WAL/`synchronous=NORMAL` durability, single-writer-actor concurrency, a fail-closed schema-ahead guard and transcript-scoped export; runtime durability, cross-process concurrency, corruption recovery, envelope export and deletion-residue remain unproven | PT-03 fault-injection prototype and recovery report | memory backend acceptance |
 | G-05 | high | No sandbox prototype proves workspace performance and containment | PT-04 Podman/Docker prototype with escape and resource tests | autonomous execution |

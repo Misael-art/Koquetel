@@ -1,11 +1,17 @@
 # License, provenance and reuse policy
 
-Status: normative draft; license decision blocked by Q-02  
+Status: normative draft; Koquetel license selected (Apache-2.0, ADR-0006 / Q-02); attribution plan still open (G-02 narrowed)
 Last reviewed: 2026-07-21
 
 ## Operative block
 
-Until Q-02 and G-02 close, no source code, templates, distinctive configuration
+Koquetel's license is Apache-2.0 ([ADR-0006](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md),
+Q-02). The no-copy block below remains in force until the component-level
+attribution plan, NOTICE template and SBOM/source-offer format are written
+(`G-02` narrowed). Behavioral observation and independently written contracts are
+allowed at all times.
+
+Until G-02 closes, no source code, templates, distinctive configuration
 structures or documentation passages from research projects may be copied into
 Koquetel. Behavioral observation and independently written contracts are allowed.
 

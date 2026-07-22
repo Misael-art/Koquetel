@@ -53,8 +53,10 @@ Minimum traceability rules:
 `READY FOR IMPLEMENTATION` requires all of the following:
 
 - source inventory and capability matrix complete enough to support decisions;
-- product owner decisions Q-01 through Q-05 resolved;
-- license and clean-room reuse policy accepted;
+- product owner decisions Q-01 through Q-05 resolved
+  (**done 2026-07-21 — ADR-0006 records Q-01..Q-08**);
+- license and clean-room reuse policy accepted (Q-02 selected Apache-2.0;
+  attribution plan still open under G-02 narrowed);
 - architecture boundaries and transaction model accepted;
 - state, memory, permission, secrets, and event schemas versioned;
 - failure modes cover install, update, tool execution, memory and routing;

@@ -124,10 +124,11 @@ preclude this persona, but multi-user control plane is outside v1 under A-06.
 
 ## 4. v1 capability boundary
 
-Subject to Q-03 and Q-06, v1 targets one Linux user and these first-class clients:
-Codex CLI, Claude Code, OpenCode and VS Code. Podman rootless is the preferred
-sandbox; Docker is fallback. `ai-memory` is the first memory adapter. An
-OpenAI-compatible gateway is the first router adapter.
+Per [ADR-0006](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md) (Q-03 = Linux first
+then WSL; Q-06 = individual developer), v1 targets one Linux user and these
+first-class clients: Codex CLI, Claude Code, OpenCode and VS Code. Podman rootless
+is the preferred sandbox; Docker is fallback. `ai-memory` is the first memory
+adapter. An OpenAI-compatible gateway is the first router adapter.
 
 Cursor, Zed, Gemini CLI, Aider, Cline, Windsurf, Neovim, Hermes, OpenClaw, A2A,
 team administration and native UI remain adapter/roadmap work until independently

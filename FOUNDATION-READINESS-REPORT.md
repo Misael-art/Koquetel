@@ -1,7 +1,7 @@
 # Foundation readiness report
 
 Date: 2026-07-21  
-Classification: **NOT READY — FOUNDATION IN PROGRESS**
+Classification: **NOT READY — FOUNDATION IN PROGRESS (decisions closed)**
 
 ## Executive assessment
 
@@ -12,11 +12,16 @@ documents establish strong boundaries and prevent premature implementation. The
 local reference sources now also have pinned evidence, structural inventories,
 capability comparison, numerical robustness scoring and named anti-requirements.
 
+All eight owner decisions `Q-01..Q-08` are now closed in
+[`docs/adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md`](docs/adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md);
+`G-01` is closed and `G-02` is narrowed (license selected; attribution plan
+still open). `ADR-0003` is accepted via Q-04 = Balanced.
+
 This is not yet an implementation-ready foundation. The current work converts the
 idea into testable contracts; it does not complete the evidence-level external
-audits, owner decisions, prototype execution or independent review. The
-traceability matrix is now **structurally** complete (one row per requirement),
-but its rows are not yet **proven** with retained execution evidence.
+audits, prototype execution or independent review. The traceability matrix is
+**structurally** complete (one row per requirement), but its rows are not yet
+**proven** with retained execution evidence.
 
 ## What is established
 
@@ -52,16 +57,21 @@ but its rows are not yet **proven** with retained execution evidence.
 
 ## Blocking work
 
-1. Resolve Q-01 through Q-05 with the project owner (G-01, critical).
+1. ~~Resolve Q-01 through Q-05 with the project owner (G-01, critical).~~
+   **Done 2026-07-21 — ADR-0006 closes Q-01..Q-08; G-01 closed.**
 2. Complete the remaining implementation-level audits (`EXTERNAL-AUDITS.md`):
    ai-memory (`EA-01`), RTK (`EA-02`) and MCP (`EA-03`) are done; LiteLLM,
    OpenHands, Letta and Mem0 remain, and no observed remote HEAD is a release
-   pin.
-3. Complete license compatibility and attribution after Q-02; PhaseZero remains
-   behavior-research-only because it has no tracked root license (G-02, critical).
-4. Turn proposed ADRs into accepted decisions after their gates.
+   pin. Caveman identity/license must also be verified before it is treated as
+   a component.
+3. Complete the attribution plan now that Q-02 selected Apache-2.0 (NOTICE,
+   SBOM/source-offer format, per-file review); PhaseZero remains
+   behavior-research-only because it has no tracked root license (G-02 narrowed,
+   still open).
+4. Turn proposed ADRs into accepted decisions after their gates
+   (`ADR-0002/0004/0005/0010/0011` still proposed; `ADR-0003` accepted via Q-04).
 5. Schemas `SCH-01..SCH-20` are defined with examples; the `SC-01..SC-10`
-   golden/version/classification tests are now **executed** against a pinned
+   golden/version/classification tests are **executed** against a pinned
    Draft 2020-12 validator (`tools/schema_suite/run_suite.py`), isolated from
    the product runtime. All 12 checks pass (META, SC-01..SC-10, SEM).
 6. Traceability now carries one row per requirement; rows remain `specified` and

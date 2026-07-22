@@ -291,3 +291,44 @@ No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
   remains proposed.
 
 No `APPROVED_TO_IMPLEMENT` created. No production code, package or host change.
+
+## 2026-07-21 — M-00 owner decisions Q-01..Q-08 (ADR-0006)
+
+The project owner explicitly answered all eight open questions. No recommendation
+was auto-converted; each answer came from the owner via the decision packet.
+
+- **ADR-0006** created and marked *accepted by project owner*, recording:
+  - Q-01 = Koquetel (trademark/domain review still open under G-10);
+  - Q-02 = Apache-2.0 (component-level attribution plan still open, G-02
+    narrowed);
+  - Q-03 = Linux first, WSL next (Windows/macOS out of v1);
+  - Q-04 = Balanced (accepts ADR-0003; unblocks ADR-0010's session-start
+    confirmation question);
+  - Q-05 = local-first with cloud opt-in;
+  - Q-06 = individual developer v1 (no multi-user control plane);
+  - Q-07 = CLI first (local read-only dashboard may follow; native UI out);
+  - Q-08 = NFS unsupported in v1 (multi-host lease deferred to potential v2,
+    requires G-13).
+- **OPEN-QUESTIONS.md** rewritten to a "Decided" section (Q-01..Q-08 rows kept
+  for history with an "Option chosen" column) + an empty "Still open" section.
+  IDs preserved, no renumbering.
+- **KNOWN-GAPS.md**: G-01 → closed; G-02 → narrowed (license selected,
+  attribution plan open).
+- **ADR-0003** → accepted via Q-04 = Balanced.
+- **ADR-0010** status: Q-04 prerequisite closed; still proposed on prototype
+  evidence (PT-01/PT-02/PT-06).
+- **ADR-0011** status: Q-03/Q-08 prerequisites closed (local-fs scope
+  confirmed); still proposed on PT-01/PT-06/G-13.
+- **LICENSE-MATRIX.md / REUSE-POLICY.md**: updated to Apache-2.0 compatibility
+  view; SteamZero GPL-3.0 explicitly excluded from copying; PhaseZero still
+  no-license; no-copy block stays until G-02 attribution plan is written.
+- **PRD §4, DATA-MODEL, EXTERNAL-AUDITS, FOUNDATION-GOVERNANCE §5,
+  FOUNDATION-READINESS-REPORT, ROADMAP M-00**: made consistent with ADR-0006
+  (Q-xx references updated from "pending" to "closed" where applicable).
+- **Validation**: `foundation_lint.py` re-run → 0 error(s); `unittest` 8/8 OK;
+  schema suite 12/12 PASS (created the gitignored
+  `tools/schema_suite/.venv` with the pinned validator since it was absent;
+  only `RESULT.json` timestamp changed, summary stable).
+
+No `APPROVED_TO_IMPLEMENT` created. No production code, package, service or host
+change was made. Work is on branch `foundation/m00-closure`.

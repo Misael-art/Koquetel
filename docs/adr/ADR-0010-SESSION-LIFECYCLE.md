@@ -1,6 +1,6 @@
 # ADR-0010 — Session lifecycle
 
-Status: proposed — depends on prototype evidence and owner decision on Q-04  
+Status: proposed — owner decision Q-04 resolved (ADR-0006, Balanced); still depends on prototype evidence (PT-01, PT-02, PT-06)
 Date: 2026-07-21
 
 ## Context
@@ -108,9 +108,12 @@ RFC 9562 primary source: Section 5.7 (UUIDv7 layout).
 
 ## Prerequisites for acceptance
 
-- Q-04 (autonomy policy) resolved — affects whether session start requires user
-  confirmation. Q-06 (supported user profile) is **not** a prerequisite: session
-  lifecycle semantics are identical for individual and team deployments.
+- ~~Q-04 (autonomy policy) resolved~~ — **closed 2026-07-21 (ADR-0006, Balanced)**.
+  Balanced autonomy means session start does not require user confirmation for
+  observe/reversible-workspace activity; external/admin/destructive still follow
+  ADR-0003 plan-bound confirmation. Q-06 (supported user profile) is **not** a
+  prerequisite: session lifecycle semantics are identical for individual and team
+  deployments.
 - PT-01 proves the lock contract works for session-scoped state.
 - Prototype demonstrates timeout → recovery cycle with no lost mutations.
 

@@ -70,5 +70,7 @@ containing metadata, content selected by the user, digests and backend omissions
 - transaction/audit metadata: 180 days, configurable;
 - backups: last three known-good versions plus age ceiling.
 
-Defaults remain provisional until Q-05 is accepted.
+Defaults are governed by Q-05 = local-first with cloud opt-in
+([ADR-0006](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md)): all of the above are
+local by default; any cloud/sync path requires explicit per-backend opt-in.
 

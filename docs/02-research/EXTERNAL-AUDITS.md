@@ -10,7 +10,10 @@ rules: pinned commit, verified license, structural files read fully with digests
 and every claim carrying exact file and line references.
 
 No audit below authorizes reuse; reuse still passes [`../11-legal/REUSE-POLICY.md`](../11-legal/REUSE-POLICY.md)
-and Q-02. A README claim is never implementation evidence (governance MP-2).
+and the attribution plan (Q-02 selected Apache-2.0 in
+[`../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md`](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md);
+G-02 attribution plan still open). A README claim is never implementation
+evidence (governance MP-2).
 
 ## Audit template (each `EA-xx` must fill all fields)
 
@@ -130,7 +133,8 @@ lines 660–700), and the intent header of the concurrency stress test
 - **Adapter, not base or dependency of the core.** ai-memory is a strong first
   memory *content/search* backend behind Koquetel's `MemoryEnvelope` (SCH-09) and
   `AdapterDescriptor` (SCH-08). Its schema-ahead guard and single-writer actor are
-  patterns Koquetel independently mirrors; no code is copied pending Q-02.
+  patterns Koquetel independently mirrors; no code is copied pending the
+  attribution plan (Q-02 = Apache-2.0 in ADR-0006; G-02 narrowed).
 - **Blocking before acceptance:** PT-03 must prove concurrency, corruption
   recovery, export and removal residue with fault injection (G-04). License MIT is
   compatible with likely Koquetel licenses but per-file attribution is still

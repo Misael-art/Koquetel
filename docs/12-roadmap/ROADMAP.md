@@ -4,6 +4,8 @@ Status: normative draft
 Last reviewed: 2026-07-21
 
 Implementation phases remain inactive until M-00 exits and approval exists.
+Owner decisions `Q-01..Q-08` are closed
+([ADR-0006](../adr/ADR-0006-FOUNDATION-OWNER-DECISIONS.md)).
 
 ## M-00 — Foundation accepted
 
@@ -11,6 +13,11 @@ Deliver source audit, final capability/robustness/gap matrices, owner decisions,
 license plan, accepted architecture/security/data/API contracts, the
 `PT-01..PT-06` prototype gates (`docs/08-testing/PROTOTYPE-GATES.md`), complete
 traceability and independent review.
+
+Status: owner decisions closed; the remaining external audits (`LiteLLM`,
+`OpenHands`, `Letta`, `Mem0`) plus Caveman identity/license, the license
+attribution plan, prototype execution, ADR acceptance and independent review
+remain.
 
 Exit: every item in `FOUNDATION-GOVERNANCE.md §5` evidenced and readiness report
 states `READY FOR IMPLEMENTATION`.

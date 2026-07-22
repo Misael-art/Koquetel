@@ -1,6 +1,6 @@
 # ADR-0011 — Lease recovery and fencing
 
-Status: proposed — depends on prototype gates PT-01 and PT-06  
+Status: proposed — owner decisions Q-03/Q-08 resolved (ADR-0006); still depends on prototype gates PT-01, PT-06 and gap G-13
 Date: 2026-07-21
 
 ## Context
@@ -253,9 +253,11 @@ future ADR; this ADR records the gap.
 - G-13 resolved: either journal-scoped post-hoc isolation (concern 5) is proven
   sufficient, or a conditional atomic commit primitive (concern 4) is made
   available for the target filesystems.
-- Owner decisions on Q-03 (supported hosts) and Q-08 (NFS commit-level fence
-  requirement) — both affect whether NFS can become supported in a future
-  revision.
+- ~~Owner decisions on Q-03 (supported hosts) and Q-08 (NFS commit-level fence
+  requirement)~~ — **both closed 2026-07-21 (ADR-0006)**: Q-03 = Linux first,
+  WSL next; Q-08 = NFS unsupported in v1. The local-fs scope of this ADR is
+  therefore confirmed; any future NFS/multi-host support requires reopening
+  Q-08 and resolving G-13.
 
 ## References
 
