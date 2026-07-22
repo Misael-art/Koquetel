@@ -1,6 +1,6 @@
 # ADR-0011 — Lease recovery and fencing
 
-Status: proposed — owner decisions Q-03/Q-08 resolved (ADR-0006); still depends on prototype gates PT-01, PT-06 and gap G-13
+Status: proposed — owner decisions Q-03/Q-08 resolved (ADR-0006); PT-01 met (evidence in prototype-evidence/); still blocked on PT-06 and gap G-13
 Date: 2026-07-21
 
 ## Context

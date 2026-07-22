@@ -377,3 +377,30 @@ Independent evaluation of the in-flight state, then a minimal corrective pass.
 - Validated: `foundation_lint` 0/0, schema suite 12/12, `git diff --check` clean.
   Classification held at **NOT READY — FOUNDATION IN PROGRESS (decisions closed)**;
   no `APPROVED_TO_IMPLEMENT`; no production code or host change.
+
+## 2026-07-22 — M-00 paper closure (as far as evidence honestly allows)
+
+Owner chose to close the remaining M-00 items on paper. Did what paper can close;
+refused to inflate items that require executed evidence.
+
+- **Accepted ADR-0005** (MCP is transport, not authority boundary). It has no
+  prototype gate and is internally consistent with ADR-0001, the threat model and
+  EA-03; accepted under the owner's M-00 authorization.
+- **Did NOT accept** ADR-0002 (needs PT-05), ADR-0004 (needs PT-03), ADR-0010
+  (needs PT-06 + UUIDv7 justification) or ADR-0011 (needs PT-06 + G-13). Updated
+  ADR-0010/0011 status lines to record that PT-01/PT-02 prerequisites are now met
+  while they stay blocked. Accepting them on paper would declare readiness without
+  evidence — forbidden.
+- **Organized the independent review (G-09):** wrote
+  `docs/08-testing/INDEPENDENT-REVIEW-CHARTER.md` — independence requirement
+  (authors, including this assistant, are disqualified), entry criteria, in-scope
+  artifacts, adversarial + contradiction checklist, `RF-NN` findings format and
+  exit criterion. Registered the `RF-xx` namespace. This closes only the
+  *organization* of G-09, not the review.
+- **Added an honest M-00 exit checklist** to the readiness report: 5 of 11 §5
+  items done, 3 partial, **3 hard blockers** (≥3 prototypes passing, independent
+  review, explicit approval) that paper cannot close. Recorded that no TRACEABILITY
+  row can reach `proven` until the independent review runs (the approval rule
+  requires a reviewer).
+- Classification unchanged (**NOT READY**); no `APPROVED_TO_IMPLEMENT`; no
+  production code, package, service or host change.

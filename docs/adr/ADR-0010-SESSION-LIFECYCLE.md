@@ -1,6 +1,6 @@
 # ADR-0010 — Session lifecycle
 
-Status: proposed — owner decision Q-04 resolved (ADR-0006, Balanced); still depends on prototype evidence (PT-01, PT-02, PT-06)
+Status: proposed — owner decision Q-04 resolved (ADR-0006, Balanced); PT-01 and PT-02 met (evidence in prototype-evidence/); still blocked on PT-06 and the UUIDv7 benefit justification
 Date: 2026-07-21
 
 ## Context
