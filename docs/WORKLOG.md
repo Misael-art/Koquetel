@@ -404,3 +404,32 @@ refused to inflate items that require executed evidence.
   requires a reviewer).
 - Classification unchanged (**NOT READY**); no `APPROVED_TO_IMPLEMENT`; no
   production code, package, service or host change.
+
+## 2026-07-22 — Prototype campaign PT-03..PT-06 (disposable, executed)
+
+Ran the remaining disposable prototype gates in ephemeral `/tmp` dirs; retained
+only evidence files. No product code, no host mutation.
+
+- **PT-05 (Rust distribution) — PASS.** 2.2 MB glibc-only binary (no Rust runtime,
+  bundled SQLite), cold start 12 ms, idempotent migrations, `SO_PEERCRED`
+  owner-only rejection + socket mode 600, kill-9 before/after commit converging to
+  old/new with no silent mix.
+- **PT-06 (lease recovery/fencing) — PASS.** OFD `F_OFD_SETLK`: 20/20 dead leases
+  reclaimed (avg 4 ms, bound 1000 ms); exec+CLOEXEC releases, dup survives to last
+  close; 10,000 contended transactional increments exact; epoch classifier
+  preserves legit history / quarantines provably-stale / escalates ambiguous.
+- **PT-03 (ai-memory) — PASS.** ai-memory real store tests 180/180 at pin
+  `2a85950`; cross-process harness 10,000 ops 0 lost/torn 0 unhandled BUSY (with
+  `BEGIN IMMEDIATE`, the AC-CONC fix); corruption detected fail-closed; export
+  round-trip digest match. Source stayed read-only.
+- **PT-04 (rootless sandbox) — PARTIAL.** Rootless bwrap/userns: 7/7 escapes
+  denied, memory rlimit + process-tree kill, 12 ms overhead. Honest gaps: Podman
+  (primary) absent; Docker rootful (not used); network-allowlist untestable (no
+  slirp4netns/pasta). G-05 stays open.
+- **Reconciliation:** accepted **ADR-0004** (envelope decision; PT-03 gate met;
+  ai-memory adapter conditional on 3 requirements). ADR-0002 (Podman arm + config
+  projection), ADR-0010 (UUIDv7 justification), ADR-0011 (G-13) stay proposed.
+  Closed G-04 and G-11; G-05 stays open (PT-04 partial). Updated the readiness
+  §5 checklist: the "three high-risk prototypes pass" item is now met (5 pass);
+  **2 hard blockers remain** (independent review, explicit approval). Classification
+  held at **NOT READY**; no `APPROVED_TO_IMPLEMENT`.

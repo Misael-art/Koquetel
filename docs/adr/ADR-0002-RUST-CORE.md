@@ -1,7 +1,6 @@
 # ADR-0002 — Rust core, scripts limited to bootstrap shims
 
-Status: proposed; prototype required  
-Date: 2026-07-21
+Status: proposed (2026-07-21) — PT-05 cleared distribution/SQLite/peer-credential/kill-recovery; the Podman-invocation arm (PT-04, Podman absent) and atomic config projection remain unmet
 
 ## Context
 

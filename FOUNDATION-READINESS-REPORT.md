@@ -50,9 +50,10 @@ PT-02) but PT-03..PT-06 and the independent review remain. The traceability matr
   compatibility policy, and an `SC-01..SC-10` test family;
 - an implementation-level external audit of ai-memory (`EA-01`) with line-exact
   evidence at its pin, and an audit framework for the remaining candidates;
-- six disposable prototype gates `PT-01..PT-06` with measurable pass/fail, of
-  which PT-01 (mutual exclusion) and PT-02 (torn-journal recovery) are executed
-  with retained evidence in `docs/08-testing/prototype-evidence/` (both PASS);
+- six disposable prototype gates `PT-01..PT-06` executed with retained evidence in
+  `docs/08-testing/prototype-evidence/`: PT-01, PT-02, PT-03, PT-05, PT-06 **PASS**;
+  PT-04 **partial** (rootless containment shown via bwrap/userns, but the Podman
+  backend and network-allowlist arms are a coverage gap);
 - a one-row-per-requirement traceability matrix (every FR/NFR/SR/AC mapped to a
   verification family) guarded by a documentation linter that currently reports
   zero ID, reference, link, traceability or schema-well-formedness errors.
@@ -81,11 +82,10 @@ PT-02) but PT-03..PT-06 and the independent review remain. The traceability matr
    the product runtime. All 12 checks pass (META, SC-01..SC-10, SEM).
 6. Traceability now carries one row per requirement; rows remain `specified` and
    must reach `proven` with retained evidence under the approval rule.
-7. Prototype gates: PT-01 (mutual exclusion) and PT-02 (torn-journal recovery)
-   are executed and PASS, with retained evidence in
-   `docs/08-testing/prototype-evidence/`. PT-01's NFS arm is a recorded coverage
-   gap, out of v1 scope per Q-08. PT-03 (ai-memory), PT-04 (sandbox),
-   PT-05 (Rust distribution) and PT-06 (lease recovery/fencing) remain to run.
+7. ~~Prototype gates~~ **All six executed 2026-07-22.** PT-01, PT-02, PT-03,
+   PT-05, PT-06 PASS; PT-04 partial (rootless containment shown; Podman-backend and
+   network-allowlist arms are a coverage gap, so PT-04 and G-05 stay open). The §5
+   "three high-risk prototypes pass" requirement is met (five pass).
 8. Obtain an independent adversarial foundation review. The review is now
    **organized** (`docs/08-testing/INDEPENDENT-REVIEW-CHARTER.md`) but not
    performed; `G-09` closes only when the review report is attached.
@@ -105,18 +105,21 @@ paper; they are marked as blockers, not narrated as done.
 | failure modes cover install/update/tool/memory/routing | ✅ done | FM-01..FM-22 |
 | acceptance/failure-injection/rollback/security matrices complete | 🟡 specified | TRACEABILITY one row/req; rows `specified`, not `proven` (needs tests + G-09) |
 | installer + removal ownership rules specified | ✅ done | LIFECYCLE; ownership markers |
-| three high-risk prototypes pass their gates | ❌ **blocker** | 2 of 6 executed (PT-01, PT-02 PASS); PT-03/04/05/06 pending |
+| three high-risk prototypes pass their gates | ✅ done | PT-01/02/03/05/06 PASS (5/6); PT-04 partial (G-05 open). ≥3 high-risk gates pass |
 | independent review, no unresolved critical contradiction | ❌ **blocker** | charter written; review not run (G-09) |
 | explicit implementation approval exists | ❌ **blocker** | no `APPROVED_TO_IMPLEMENT` |
 
-ADR status: `ADR-0001/0003/0006` accepted; `ADR-0005` accepted this session (no
-prototype gate). `ADR-0002` (Rust core, needs PT-05), `ADR-0004` (memory envelope,
-needs PT-03), `ADR-0010` (session lifecycle, needs PT-06 + UUIDv7 justification)
-and `ADR-0011` (lease recovery, needs PT-06 + G-13) remain **proposed** — their
-gates require prototype evidence that paper cannot supply.
+ADR status: `ADR-0001/0003/0005/0006` accepted; **`ADR-0004` accepted 2026-07-22**
+(PT-03 met its prototype gate; envelope decision accepted, ai-memory adapter
+conditional on three requirements). Still **proposed**: `ADR-0002` (Rust core —
+PT-05 cleared distribution/SQLite/socket/recovery, but the Podman-invocation arm
+via PT-04 is unmet and atomic config projection is outstanding), `ADR-0010`
+(session lifecycle — PT-01/02/06 met; the UUIDv7-benefit justification remains) and
+`ADR-0011` (lease recovery — PT-01/06 met; **G-13** revocation-proof fence still open).
 
-**Conclusion:** 5 items done, 3 partial, 3 hard blockers. M-00 cannot exit on
-paper; the three blockers each require executed evidence. `NOT READY` stands.
+**Conclusion:** 6 items done, 3 partial, **2 hard blockers** — the independent
+review (organized, not run) and explicit implementation approval. Both require
+acts that paper cannot supply. `NOT READY` stands.
 
 ## Gate decision
 

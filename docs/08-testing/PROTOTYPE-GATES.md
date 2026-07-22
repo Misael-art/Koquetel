@@ -1,7 +1,9 @@
 # Disposable prototype gates
 
-Status: normative draft — gates specified; PT-01 and PT-02 executed (evidence in
-`prototype-evidence/`), PT-03..PT-06 pending
+Status: normative draft — gates specified and executed. PT-01, PT-02, PT-03,
+PT-05, PT-06 **PASS**; PT-04 **partial** (rootless bwrap/userns proxy passes, but
+the Podman-backed and network-allowlist arms are a coverage gap). Evidence in
+`prototype-evidence/`.
 Last reviewed: 2026-07-22
 
 Six high-risk assumptions must be proven by *disposable* prototypes before the
