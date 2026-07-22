@@ -22,6 +22,15 @@ remain.
 Exit: every item in `FOUNDATION-GOVERNANCE.md §5` evidenced and readiness report
 states `READY FOR IMPLEMENTATION`.
 
+### Owner-decision follow-ups (ADR-0006)
+
+- **Q-03 host scope — macOS is a named post-v1 target** (large developer share),
+  sequenced after WSL. Linux stays the sole v1 target; a macOS release claim
+  needs its own sandbox and peer-credential adapter evidence (rootless Podman and
+  Unix-socket peer credentials do not map unchanged to macOS).
+- **Q-01 name — trademark/domain availability check (`G-10`)** must close before
+  any public artifact bears the name.
+
 ## M-01 — Transactional core
 
 Implement typed domain, state DB, transaction journal, CLI/API, ownership,

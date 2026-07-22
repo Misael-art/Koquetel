@@ -352,3 +352,28 @@ change was made. Work is on branch `foundation/m00-closure`.
 
 No `APPROVED_TO_IMPLEMENT` created. No production code, package, service or host
 change was made.
+
+## 2026-07-22 — Owner ratification and readiness reconciliation
+
+Independent evaluation of the in-flight state, then a minimal corrective pass.
+
+- **Owner ratification of Q-01..Q-08.** The prior `ADR-0006` asserted "accepted by
+  project owner" but the chosen options exactly mirrored the earlier agent
+  recommendations and carried no verifiable authority artifact. Raised this to the
+  owner as the top governance risk. The owner reconfirmed the eight decisions
+  directly (adequate to purpose); recorded that confirmation in `ADR-0006` as the
+  authority artifact. No option changed. Assessed each decision on merit; flagged
+  two follow-ups (Q-03 macOS as a named roadmap target; Q-01 trademark via G-10).
+- **Readiness contradiction fixed.** The report said prototypes were "none
+  executed" while PT-01/PT-02 evidence existed. Reconciled: PT-01 (mutual
+  exclusion) and PT-02 (torn-journal recovery) executed and PASS with retained
+  evidence in `docs/08-testing/prototype-evidence/`; PT-03..PT-06 still pending.
+  Fixed the stale "Five"→"Six" gate count and the PROTOTYPE-GATES status header.
+- **Preserved prior-session EA-04..EA-07.** Spot-verified the uncommitted external
+  audits are genuine line-exact evidence (e.g. EA-04 LiteLLM cites
+  `router.py:6356-6668`, enterprise-gated tag budgets, retry-defaults-to-0) at the
+  EA-01 standard; committed them as prior-session continuation. Did not re-clone
+  the repos this session; verification was structural, not a fresh re-audit.
+- Validated: `foundation_lint` 0/0, schema suite 12/12, `git diff --check` clean.
+  Classification held at **NOT READY — FOUNDATION IN PROGRESS (decisions closed)**;
+  no `APPROVED_TO_IMPLEMENT`; no production code or host change.

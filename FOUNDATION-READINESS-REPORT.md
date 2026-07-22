@@ -18,8 +18,8 @@ All eight owner decisions `Q-01..Q-08` are now closed in
 still open). `ADR-0003` is accepted via Q-04 = Balanced.
 
 This is not yet an implementation-ready foundation. The current work converts the
-idea into testable contracts; it does not complete the evidence-level external
-audits, prototype execution or independent review. The traceability matrix is
+idea into testable contracts; two of six prototype gates are executed (PT-01,
+PT-02) but PT-03..PT-06 and the independent review remain. The traceability matrix is
 **structurally** complete (one row per requirement), but its rows are not yet
 **proven** with retained execution evidence.
 
@@ -50,7 +50,9 @@ audits, prototype execution or independent review. The traceability matrix is
   compatibility policy, and an `SC-01..SC-10` test family;
 - an implementation-level external audit of ai-memory (`EA-01`) with line-exact
   evidence at its pin, and an audit framework for the remaining candidates;
-- six disposable prototype gates `PT-01..PT-06` with measurable pass/fail;
+- six disposable prototype gates `PT-01..PT-06` with measurable pass/fail, of
+  which PT-01 (mutual exclusion) and PT-02 (torn-journal recovery) are executed
+  with retained evidence in `docs/08-testing/prototype-evidence/` (both PASS);
 - a one-row-per-requirement traceability matrix (every FR/NFR/SR/AC mapped to a
   verification family) guarded by a documentation linter that currently reports
   zero ID, reference, link, traceability or schema-well-formedness errors.
@@ -59,11 +61,13 @@ audits, prototype execution or independent review. The traceability matrix is
 
 1. ~~Resolve Q-01 through Q-05 with the project owner (G-01, critical).~~
    **Done 2026-07-21 — ADR-0006 closes Q-01..Q-08; G-01 closed.**
-2. Complete the remaining implementation-level audits (`EXTERNAL-AUDITS.md`):
+2. ~~Complete the remaining implementation-level audits (`EXTERNAL-AUDITS.md`):
    ai-memory (`EA-01`), RTK (`EA-02`) and MCP (`EA-03`) are done; LiteLLM,
    OpenHands, Letta and Mem0 remain, and no observed remote HEAD is a release
    pin. Caveman identity/license must also be verified before it is treated as
-   a component.
+   a component.~~ **Done 2026-07-21 — EA-04..EA-07 complete; G-03 closed;
+   Caveman identity confirmed (`JuliusBrussee/caveman`, claimed MIT); pin +
+   full EA for Caveman deferred to M-02 adapter work.**
 3. ~~Complete the attribution plan now that Q-02 selected Apache-2.0 (NOTICE,
    SBOM/source-offer format, per-file review)~~ — **Done 2026-07-21
    (`docs/11-legal/ATTRIBUTION-PLAN.md`)**; G-02 narrowed to "ledger/matrix
@@ -77,7 +81,11 @@ audits, prototype execution or independent review. The traceability matrix is
    the product runtime. All 12 checks pass (META, SC-01..SC-10, SEM).
 6. Traceability now carries one row per requirement; rows remain `specified` and
    must reach `proven` with retained evidence under the approval rule.
-7. Run the prototype gates `PT-01..PT-06`; all remain specified, none executed.
+7. Prototype gates: PT-01 (mutual exclusion) and PT-02 (torn-journal recovery)
+   are executed and PASS, with retained evidence in
+   `docs/08-testing/prototype-evidence/`. PT-01's NFS arm is a recorded coverage
+   gap, out of v1 scope per Q-08. PT-03 (ai-memory), PT-04 (sandbox),
+   PT-05 (Rust distribution) and PT-06 (lease recovery/fencing) remain to run.
 8. Obtain an independent adversarial foundation review.
 
 ## Gate decision

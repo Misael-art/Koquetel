@@ -44,6 +44,23 @@ audits, prototypes, independent review) and an explicit
 - Identifiers `Q-01..Q-08` are preserved (no renumbering); their state moves
   from open to decided.
 
+## Owner ratification (2026-07-22)
+
+The project owner reconfirmed these eight decisions directly in the decision
+thread, stating that the chosen options are adequate to the product's purpose.
+This statement is recorded here as the **authority artifact** for `Q-01..Q-08`:
+the "accepted by project owner" status is now backed by an explicit owner
+confirmation, not only by the earlier recommendation history. No option changed
+on ratification. Two decisions carry owner-noted follow-ups that do **not**
+reopen them:
+
+- **Q-03** — macOS is promoted to a *named* roadmap target (not merely "other
+  hosts possible"), because it is a large share of the developer audience; WSL
+  remains the immediate follow-on and Linux the sole v1 target. Recorded in
+  [`../12-roadmap/ROADMAP.md`](../12-roadmap/ROADMAP.md).
+- **Q-01** — a trademark/domain availability check must precede any public
+  artifact bearing the name; tracked as `G-10`.
+
 ## What this ADR does NOT do
 
 - It does not create `APPROVED_TO_IMPLEMENT`.

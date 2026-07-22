@@ -1,9 +1,10 @@
 # Disposable prototype gates
 
-Status: normative draft — gates specified, prototypes not yet run
-Last reviewed: 2026-07-21
+Status: normative draft — gates specified; PT-01 and PT-02 executed (evidence in
+`prototype-evidence/`), PT-03..PT-06 pending
+Last reviewed: 2026-07-22
 
-Five high-risk assumptions must be proven by *disposable* prototypes before the
+Six high-risk assumptions must be proven by *disposable* prototypes before the
 matching contracts can be accepted (`FOUNDATION-GOVERNANCE.md §5`). This file
 specifies each gate so a prototype can be built, measured and discarded. It does
 not implement any prototype and authorizes no product code.
