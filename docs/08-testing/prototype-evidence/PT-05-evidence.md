@@ -1,0 +1,110 @@
+# PT-05 evidence — Rust distribution: binary, SQLite, Unix socket, recovery after kill
+
+Gate: [`../PROTOTYPE-GATES.md`](../PROTOTYPE-GATES.md) PT-05
+Date executed: 2026-07-22
+Branch: `foundation/m00-closure`
+Prototype location: `/tmp/koquetel-prototypes/pt05/` (ephemeral, deleted after evidence capture)
+
+## Verdict
+
+**PASS** for the PT-05 gate as written (distribution binary, SQLite migration,
+Unix-socket peer credentials, recovery after kill). Note: ADR-0002's *own* gate
+lists two further arms — **Podman invocation** and **atomic config projection** —
+that PT-05 does not cover, so ADR-0002 is **not** fully accepted here (see below).
+
+## Environment
+
+| Item | Value |
+|---|---|
+| Kernel | Linux 6.18.38-1-MANJARO x86_64 |
+| Filesystem under test | `tmpfs` (`/tmp`) |
+| Rust (build only) | rustc 1.97.0 / cargo 1.97.0 |
+| SQLite | statically bundled via `rusqlite 0.31` + `libsqlite3-sys 0.28` (feature `bundled`) |
+| Binary SHA-256 | `41ea36e1678ce832d6dd3c8cd55d648ea158e112cb29298a21c0dfb6ab27fbf4` |
+| Binary size | 2,203,536 bytes (single file) |
+| Runtime deps (`ldd`) | `libgcc_s`, `libm`, `libc` (glibc) only — **no Rust runtime, no libsqlite3** |
+
+### Declared ceilings (fixed before running, per the gate)
+
+- **Cold-start ceiling:** 500 ms (launch → socket READY, including DB open +
+  migration). Also compared against NFR-05's 250 ms client-integration budget.
+- **Distribution-friction threshold (ADR-0002):** a single self-contained
+  executable that runs on any glibc Linux with **no runtime install** (no Rust
+  toolchain, no system SQLite). Exceeding this (e.g. needing a language runtime)
+  would reopen ADR-0002 toward the Python-with-runtime option.
+
+## Reproducible commands
+
+```bash
+cd /tmp/koquetel-prototypes/pt05
+cargo build --release            # 1m23s cold (build-time only needs Rust)
+ldd target/release/pt05_core     # self-containedness
+bash drive.sh                    # full matrix
+```
+
+## Results
+
+| Arm | Result | Verdict |
+|---|---|---|
+| Cold start (launch → READY) | **12 ms** (ceiling 500 ms) | **PASS** |
+| Self-contained binary | glibc-only; no Rust runtime, SQLite static | **PASS** |
+| Migration idempotency (2 serve runs, same DB) | `version_run1=1 version_run2=1`, no error | **PASS** |
+| Peer-cred owner-only rejection | connect uid=1000 to owner_uid=1001 → `DENIED peer_uid=1000 owner_uid=1001` | **PASS** |
+| Socket permission mode | `600` (owner-only, SR-13) | **PASS** |
+| Kill **before** commit → recover | `get foo = <absent>`, `jstate foo = rolled_back` (OLD state) | **PASS** |
+| Kill **after** commit → recover | `get foo = bar`, `jstate foo = committed` (NEW state) | **PASS** |
+
+Durability posture: the core store opens WAL with `synchronous=FULL` (governance
+grade), deliberately stronger than the memory backend's `synchronous=NORMAL`
+observed in EA-01 (`lib.rs:92`). The intent journal is persisted+fsynced as its
+own committed transaction **before** the mutation is staged (TRANSACTION-MODEL
+step 6), so a kill between staging and commit leaves a durable `staged` intent
+with no `committed` peer — recovery converges it to `rolled_back`.
+
+## Fault injection
+
+- `killbefore`: after staging the intent (durable) and opening `BEGIN IMMEDIATE`
+  with the row inserted but **not committed**, the server raises `SIGKILL` on
+  itself. SQLite discards the uncommitted WAL frames on restart; recovery marks
+  the orphan `staged` intent `rolled_back`. Converges to OLD.
+- `killafter`: the full mutation commits (kv row + `committed` journal, fsynced),
+  then the server raises `SIGKILL` before replying. Restart finds the durable
+  row. Converges to NEW.
+- Both are `kill -9` (SIGKILL) — uncatchable, the strongest kill fault.
+
+## Honest coverage notes
+
+- **"Clean host without a system Rust toolchain":** demonstrated via `ldd`
+  (only glibc; no Rust runtime, no libsqlite3) rather than by provisioning a
+  fresh container. The compiled binary needs no toolchain at runtime; the build
+  needs Rust once (the release pipeline). This proves the *distribution* claim.
+- **Non-owner rejection** is exercised by configuring `owner_uid = me+1` and
+  connecting as the real uid, so the `SO_PEERCRED` mismatch path runs. A literal
+  second OS user was not created (no privilege); the kernel `SO_PEERCRED` value
+  and the rejection code path are genuinely exercised. Socket mode `600` is the
+  kernel-enforced complement.
+- **Filesystem:** tmpfs (local-kernel). SQLite WAL + `synchronous=FULL` durability
+  semantics are identical on local filesystems (ext4/XFS/tmpfs); `/home` is btrfs.
+  No networked filesystem tested (out of v1 scope, Q-08).
+
+## Gaps found
+
+- **ADR-0002 residual:** ADR-0002's gate also requires **Podman invocation** and
+  **atomic config projection**. Podman is unavailable on this host (see PT-04),
+  and atomic config projection is an M-01/M-02 concern. PT-05 therefore satisfies
+  the *distribution / SQLite / socket / recovery* portion of ADR-0002's gate but
+  not the Podman-invocation arm.
+
+## Disposal
+
+Prototype source, `Cargo.lock`, target/ and `drive.sh` live only in
+`/tmp/koquetel-prototypes/pt05/` and are deleted after this evidence is committed.
+Only this file (with the binary SHA-256 and measured numbers) is retained.
+
+## ADRs affected
+
+- **ADR-0002 (Rust core):** distribution/SQLite/socket/recovery arms **satisfied**;
+  Podman-invocation and atomic-config-projection arms **outstanding**. ADR-0002
+  stays **proposed** until PT-04 (Podman) and the config-projection arm are shown.
+- **ADR-0010 (session lifecycle):** the peer-credential and recovery mechanics it
+  relies on are demonstrated feasible; still gated on PT-06 + UUIDv7 justification.
