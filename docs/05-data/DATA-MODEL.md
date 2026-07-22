@@ -5,7 +5,7 @@ Last reviewed: 2026-07-21
 
 ## Versioned schemas
 
-The normative record contracts (`SCH-01..SCH-20`) and their versioning,
+The normative record contracts (`SCH-01..SCH-21`) and their versioning,
 compatibility and sensitivity-classification rules live in
 [`schemas/SCHEMA-REGISTRY.md`](schemas/SCHEMA-REGISTRY.md), with machine-readable
 JSON Schema files and valid/invalid examples alongside it. Those schemas are the

@@ -509,3 +509,24 @@ all remain **awaiting independent validation**.
   `OWNER-RATIFICATION-PACKET` R-2 and the PT-06 evidence report aligned to the
   identical decision. ADR-0010 stays **ready for owner ratification**.
 - No RF closed by the author; both remain awaiting independent validation.
+
+### RF-04 — SCH-21 SessionHandle contract + SC-11
+
+- Added `docs/05-data/schemas/session.schema.json` (**SCH-21 SessionHandle**): a
+  versioned contract for the session lifecycle. `sessionId` is 128-bit CSPRNG, wire
+  form 32 lowercase hex (`^[0-9a-f]{32}$`), no timestamp, correlation-not-credential,
+  with explicit classification/retention/export. Conditional invariant `endedAt`
+  required when `state=ended`; semantic invariants (expiresAt>createdAt; no return
+  to active; immutable id; authority not derived from id) asserted by the suite.
+- Added one valid + five invalid examples (size, uppercase, state, missing
+  required, conditional endedAt); manifest `session` block; **SC-11** in the
+  registry (§2/§5/§6); schema-suite coverage (**13/13**, RESULT.json regenerated,
+  new schemaSha256); classification recursion covered.
+- Added the session API to `CONTRACTS.md` §Sessions (implicit/`session/start`,
+  `_meta["io.koquetel/sessionId"]` propagation, `session/end`, unknown/ended/expired
+  handling, stable errors `E-8001..E-8003`, version negotiation, stateless-when-
+  absent, Koquetel-vs-MCP relation).
+- Traceability: SC-11 added to FR-11, FR-15, FR-23, NFR-03, NFR-09, SR-01; SCH/SC
+  published ranges updated (SCH-01..SCH-21, SC-01..SC-11). ADR-0010 now cites
+  SCH-21/SC-11/CONTRACTS, so the "schema-fixed format" claim is true (RF-04). No
+  session runtime created.

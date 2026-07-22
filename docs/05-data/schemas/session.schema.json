@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:koquetel:schema:session:1",
+  "title": "Koquetel session handle (SCH-21)",
+  "description": "Realizes the ADR-0010 v1 session lifecycle + identifier contract (RF-04). Root validates a SessionHandle. sessionId is a 128-bit CSPRNG correlation identifier (32 lowercase hex), NOT a bearer credential — authority is revalidated per request and never derived from it.",
+  "$ref": "#/$defs/SessionHandle",
+  "$defs": {
+    "SessionHandle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "sessionId", "state", "createdAt", "lastActivityAt", "expiresAt", "actorRef", "taskRef"],
+      "properties": {
+        "schemaVersion": { "const": 1, "description": "strict-write: v1 pins the major; unknown major fails closed (SC-09).", "x-classification": "public" },
+        "sessionId": { "type": "string", "pattern": "^[0-9a-f]{32}$", "description": "128 bits from a CSPRNG, canonical wire form 32 lowercase hex. Correlation identifier, not a credential; immutable once created; authority is never derived from it.", "x-classification": "identifier", "x-retention": "session-30d", "x-exportable": "policy" },
+        "state": { "enum": ["active", "ending", "ended", "expired"], "x-classification": "metadata" },
+        "createdAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "lastActivityAt": { "type": "string", "format": "date-time", "x-classification": "metadata" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "MUST be later than createdAt (semantic invariant, checked by SC-11).", "x-classification": "metadata" },
+        "actorRef": { "type": "string", "description": "reference to the authenticated actor; authority is checked per request, never taken from this handle.", "x-classification": "sensitive", "x-retention": "session-30d", "x-exportable": "policy" },
+        "taskRef": { "type": "string", "x-classification": "identifier" },
+        "checkpointRef": { "type": "string", "description": "optional reference to an SCH-16 TaskCheckpoint.", "x-classification": "identifier" },
+        "endedAt": { "type": "string", "format": "date-time", "description": "required when state = ended (conditional invariant below).", "x-classification": "metadata" },
+        "endReason": { "enum": ["explicit", "inactivity-timeout", "expired", "superseded", "error"], "x-classification": "metadata" }
+      },
+      "allOf": [
+        {
+          "if": { "required": ["state"], "properties": { "state": { "const": "ended" } } },
+          "then": { "required": ["endedAt"] }
+        }
+      ]
+    }
+  }
+}

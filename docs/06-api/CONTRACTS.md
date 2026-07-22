@@ -70,6 +70,9 @@ semantics remain compatible within a major schema version.
 | E-7001 | artifact integrity or provenance failure |
 | E-7002 | transaction verification failed and rolled back |
 | E-7003 | automatic recovery unsafe; operator action required |
+| E-8001 | unknown session id |
+| E-8002 | session ended or expired |
+| E-8003 | session id format invalid (not 32 lowercase hex) |
 
 ## Local API
 
@@ -80,4 +83,40 @@ events with bounded replay cursors.
 
 No endpoint accepts arbitrary filesystem paths without a declared operation and
 policy-resolved root. The privileged helper uses a separate, smaller protocol.
+
+## Sessions
+
+The session contract realizes `ADR-0010` and is fixed by the versioned
+`SCH-21 SessionHandle` schema ([`../05-data/schemas/session.schema.json`](../05-data/schemas/session.schema.json));
+`SC-11` enforces it. This is a contract, not a runtime.
+
+- **Creation.** A session is created **implicitly** on the first authenticated
+  request from an `(actor, task)` pair, or **explicitly** via `session/start`.
+- **Identifier.** `sessionId` is a **128-bit CSPRNG** value, canonical wire form
+  **32 lowercase hex** (`^[0-9a-f]{32}$`), with **no embedded timestamp**. It is a
+  correlation identifier, **not a bearer credential**; authority is revalidated per
+  request and never derived from the id. It is **immutable** and **not reused after
+  expiry**.
+- **Propagation.** The core returns `sessionId` in the response
+  `_meta["io.koquetel/sessionId"]`; the client echoes it in the same `_meta` field
+  on subsequent requests. Comparison against a stored value uses constant time
+  where relevant.
+- **Termination.** `session/end` moves the session to `ended` (with `endedAt` and
+  `endReason`); inactivity past `expiresAt` moves it to `expired`. Neither returns
+  to `active`.
+- **Unknown / ended / expired handling.** A request bearing an unknown id → `E-8001`;
+  an `ended`/`expired` id → `E-8002`; a malformed id → `E-8003`. These are
+  fail-closed: no mutation proceeds on a bad session reference; the request may be
+  retried as a fresh (implicit) session where policy allows.
+- **Stateless when absent.** When no `sessionId` is present the request is handled
+  **statelessly** (all context inline); sessions are optional and never a
+  precondition for a single-shot request.
+- **Compatibility / version negotiation.** `SessionHandle.schemaVersion` is the
+  major; an unknown major fails closed (NFR-08, SC-09). Changing the id format is a
+  schema **version change** with compatibility rules — not an open runtime choice.
+- **Relation to MCP.** Modern MCP is a **stateless** transport that carries no
+  session concept and self-reports `clientInfo` (untrusted for security). The
+  Koquetel session lives **above** MCP transport in `_meta`; where a legacy MCP
+  `Mcp-Session-Id` exists it is treated as opaque client state, never as Koquetel
+  authority. MCP remains transport (ADR-0005), not a session or authority boundary.
 

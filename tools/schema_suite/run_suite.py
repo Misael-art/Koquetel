@@ -36,11 +36,12 @@ SCHEMA_FILES = [
     "profile-adapter.schema.json", "memory.schema.json",
     "tool-policy.schema.json", "delegation-task.schema.json",
     "event-support.schema.json", "model-routing.schema.json",
+    "session.schema.json",
 ]
 TOLERANT = "tolerant-read/event.tolerant.schema.json"
 NEEDS_RE = {"host-scoped", "sensitive", "secret-ref", "content"}
 ORDER = ["META", "SC-01", "SC-02", "SC-03", "SC-04", "SC-05", "SC-06", "SC-07",
-         "SC-08", "SC-09", "SC-10", "SEM"]
+         "SC-08", "SC-09", "SC-10", "SC-11", "SEM"]
 
 
 def load(p: Path):
@@ -148,6 +149,24 @@ def run(sdir: Path = SDIR) -> tuple[dict, list]:
         for dn, ds in doc.get("$defs", {}).items():
             sc10_walk(ds, doc.get("$defs", {}), f"{name}:{dn}", viol)
     rec("SC-10", not viol, f"{len(viol)} classification violation(s): {viol[:5]}")
+
+    # SC-11: session lifecycle/handle contract (SCH-21)
+    s = manifest["session"]
+    sv = Draft202012Validator(load(sdir / s["schema"]))
+    if list(sv.iter_errors(load(ex / s["valid"]))):
+        rec("SC-11", False, "session valid example rejected")
+    for inv in s["invalids"]:
+        errs = list(sv.iter_errors(load(ex / inv["file"])))
+        if not errs:
+            rec("SC-11", False, f"{inv['file']} ACCEPTED")
+            continue
+        want = (tuple(inv["rule"].get("path", [])), inv["rule"]["keyword"])
+        got = loci(errs)
+        if want not in got:
+            rec("SC-11", False, f"{inv['file']} violates {sorted(got)}, expected {want}")
+    sess = load(ex / s["valid"])
+    rec("SC-11", sess["expiresAt"] > sess["createdAt"], "session expiresAt must be after createdAt")
+    status.setdefault("SC-11", True)
 
     # semantic invariants
     plan = load(ex / manifest["semantic"]["planValid"])

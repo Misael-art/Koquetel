@@ -58,6 +58,7 @@ SCHEMA_FILES = ["plan-confirmation.schema.json", "transaction.schema.json",
                 "profile-adapter.schema.json", "memory.schema.json",
                 "tool-policy.schema.json", "delegation-task.schema.json",
                 "event-support.schema.json", "model-routing.schema.json",
+                "session.schema.json",
                 "tolerant-read/event.tolerant.schema.json"]
 # publication phrase -> ID prefix for readiness count reconciliation
 COUNT_CLAIMS = [(r"(\d+)\s+principles", "P"), (r"(\d+)\s+non-goals", "NG"),

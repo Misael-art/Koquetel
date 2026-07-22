@@ -69,8 +69,10 @@ proposed format is:
 - **Not reused after expiry.**
 
 This is the single format proposed to the owner. Its wire contract (field name,
-presence, lifecycle invariants, request/response placement) is **fixed by a
-versioned session schema** (`session.schema.json`, added in this RF remediation) —
+presence, lifecycle invariants, request/response placement) is **fixed by
+`SCH-21 SessionHandle`** ([`../05-data/schemas/session.schema.json`](../05-data/schemas/session.schema.json)),
+enforced by `SC-11`, with the request/response API in
+[`../06-api/CONTRACTS.md`](../06-api/CONTRACTS.md) §Sessions (RF-04 remediation) —
 so the format is not "vaguely substitutable"; changing it is a schema version
 change with explicit compatibility rules.
 

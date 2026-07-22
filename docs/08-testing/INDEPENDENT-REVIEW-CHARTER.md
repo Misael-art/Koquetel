@@ -42,7 +42,7 @@ The reviewer reads, at the pinned revision:
 - governance and gate: `AGENTS.md`, `FOUNDATION-GOVERNANCE.md`, `FOUNDATION-READINESS-REPORT.md`;
 - product intent: `VISION.md`, `PRD.md`, `ACCEPTANCE-CRITERIA.md`;
 - architecture and safety: `ARCHITECTURE.md`, `TRANSACTION-MODEL.md`, `FAILURE-MODES.md`, `THREAT-MODEL.md`;
-- data and contracts: `DATA-MODEL.md`, `schemas/` (SCH-01..SCH-20 + tolerant profile), `CONTRACTS.md`;
+- data and contracts: `DATA-MODEL.md`, `schemas/` (SCH-01..SCH-21 + tolerant profile), `CONTRACTS.md`;
 - decisions: `ADR-0001..ADR-0006`, `ADR-0010`, `ADR-0011` (note the ADR-0011
   Decision A / Decision B split and the `G-13` v2 reclassification);
 - evidence: `EXTERNAL-AUDITS.md` (**EA-01..EA-07**), all six reports in

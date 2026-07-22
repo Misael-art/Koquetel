@@ -56,9 +56,9 @@ ADRs are proposed. A ratification packet is prepared in
 - ten anti-requirements and ten cross-source synthesis gaps.
 - owner-confirmed complete operational independence from PhaseZero and SteamZero,
   specified by P-13/NFR-13/AC-17 and eight release-blocking independence tests.
-- twenty versioned record schemas `SCH-01..SCH-20` with classification, retention
+- twenty-one versioned record schemas `SCH-01..SCH-21` with classification, retention
   and export rules, valid/invalid examples, an explicit strict-write/tolerant-read
-  compatibility policy, and an `SC-01..SC-10` test family;
+  compatibility policy, and an `SC-01..SC-11` test family;
 - an implementation-level external audit of ai-memory (`EA-01`) with line-exact
   evidence at its pin, and an audit framework for the remaining candidates;
 - six disposable prototype gates `PT-01..PT-06` executed with retained evidence in
@@ -90,10 +90,10 @@ ADRs are proposed. A ratification packet is prepared in
    **prepared for ratification** in `docs/OWNER-RATIFICATION-PACKET.md`, **not**
    self-accepted. (`ADR-0001/0003/0004/0005/0006` already accepted.) `G-13` is
    reclassified to block only the v2 distributed/NFS path, not v1-local.
-5. Schemas `SCH-01..SCH-20` are defined with examples; the `SC-01..SC-10`
+5. Schemas `SCH-01..SCH-21` are defined with examples; the `SC-01..SC-11`
    golden/version/classification tests are **executed** against a pinned
    Draft 2020-12 validator (`tools/schema_suite/run_suite.py`), isolated from
-   the product runtime. All 12 checks pass (META, SC-01..SC-10, SEM).
+   the product runtime. All 13 checks pass (META, SC-01..SC-11, SEM).
 6. Traceability now carries one row per requirement; rows remain `specified` and
    must reach `proven` with retained evidence under the approval rule.
 7. ~~Prototype gates~~ **All six executed 2026-07-22.** PT-01, PT-02, PT-03,
@@ -115,7 +115,7 @@ paper; they are marked as blockers, not narrated as done.
 | owner decisions Q-01..Q-05 resolved | ✅ done | ADR-0006, owner-ratified 2026-07-22 |
 | license + clean-room reuse policy accepted | 🟡 partial | Apache-2.0 (Q-02); ATTRIBUTION-PLAN written; per-file ledger due on first reuse (G-02) |
 | architecture boundaries + transaction model accepted | 🟡 awaiting ratification | boundaries acceptable; the v1 transaction/lease model (ADR-0011 Decision A, local OFD) is proven (PT-01/PT-06) and **prepared for owner ratification** — G-13 reclassified to v2-only, so it no longer blocks v1 |
-| state/memory/permission/secrets/event schemas versioned | ✅ done | SCH-01..SCH-20; schema suite 12/12 |
+| state/memory/permission/secrets/event schemas versioned | ✅ done | SCH-01..SCH-21; schema suite 13/13 |
 | failure modes cover install/update/tool/memory/routing | ✅ done | FM-01..FM-23 |
 | acceptance/failure-injection/rollback/security matrices complete | 🟡 specified | TRACEABILITY one row/req; rows `specified`, not `proven` (needs tests + G-09) |
 | installer + removal ownership rules specified | ✅ done | LIFECYCLE; ownership markers |

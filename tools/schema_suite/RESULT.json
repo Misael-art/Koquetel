@@ -1,11 +1,11 @@
 {
   "passed": true,
-  "generatedAt": "2026-07-22T13:45:27+00:00",
+  "generatedAt": "2026-07-22T15:04:36+00:00",
   "validator": {
     "engine": "jsonschema",
     "draft": "2020-12"
   },
-  "schemaSha256": "acf63a9476a0d4401eb7557908e4b14d7d9e02d1d0b5de2391bb2868abcebbd1",
+  "schemaSha256": "74582ae2c147be1e7a7d9fbd5b80fd9ea705e74e907fb51edc07dcf47735590c",
   "checks": {
     "META": true,
     "SC-01": true,
@@ -18,6 +18,7 @@
     "SC-08": true,
     "SC-09": true,
     "SC-10": true,
+    "SC-11": true,
     "SEM": true
   },
   "exampleCount": 40,
