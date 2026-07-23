@@ -582,3 +582,11 @@ is remediated, awaiting reviewer validation**. No author marked any RF closed.
 Added a file-specific `blank-at-eof` exception for the hash-pinned PT-03
 `ai-memory-store-test.log` and documented byte-for-byte raw-log preservation.
 The bundle and its `SHA256SUMS` were not changed.
+
+## 2026-07-22 — Independent M-00 re-review R2
+
+Independent reviewer revalidated pin `f086ed7` on
+`review/m00-independent-r2`. Mechanical gates passed (lint 0/0, schema 13/13,
+unittest 8/8, digest/JSON/hashes/scans green), but the decision is **FAIL**:
+RF-01 and RF-02 closed; RF-03 and RF-04 remain open high; new RF-05 is open
+medium. No contract, prototype, owner decision or implementation gate was changed.
