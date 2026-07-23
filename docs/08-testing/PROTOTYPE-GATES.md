@@ -2,9 +2,12 @@
 
 Status: normative draft — gates specified and executed. PT-01, PT-02, PT-03,
 PT-05, PT-06 **PASS**; PT-04 **partial** (rootless bwrap/userns proxy passes, but
-the Podman-backed and network-allowlist arms are a coverage gap). Evidence in
-`prototype-evidence/`.
-Last reviewed: 2026-07-22
+the Podman-backed and network-allowlist arms are a coverage gap). After **RF-03**,
+each PT retains a policy-compliant, hash-pinned evidence bundle
+(`prototype-evidence/PT-NN/`, see `PROTOTYPE-EVIDENCE-POLICY.md`) from a
+"verification rerun after RF-03"; the verdicts above are **awaiting independent
+reviewer validation** (no author closes an RF).
+Last reviewed: 2026-07-23
 
 Six high-risk assumptions must be proven by *disposable* prototypes before the
 matching contracts can be accepted (`FOUNDATION-GOVERNANCE.md §5`). This file

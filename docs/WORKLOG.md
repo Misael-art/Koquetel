@@ -562,3 +562,17 @@ old artifacts. Each report now links its bundle + hashes.
 Verdict reconciliation: PT-01/02/03/05/06 remain PASS (bundles sustain the
 criteria); PT-04 remains PARTIAL; **G-05 not closed**; **G-09 stays open**; **RF-03
 is remediated, awaiting reviewer validation**. No author marked any RF closed.
+
+### RF remediation reconciliation (readiness / gates / gaps)
+
+- Updated the PROTOTYPE-GATES status header to record the RF-03 retained bundles
+  and that the verdicts await independent reviewer validation.
+- Updated `G-09` (KNOWN-GAPS) to record the FAIL at `5db0244`, the RF-01..04
+  remediation on this branch, and that a re-review is required — G-09 stays open.
+- Added an "Independent review status" section to the readiness report with the
+  RF-01..RF-04 table, each marked **remediated — awaiting independent validation**;
+  corrected the executive assessment and §5 checklist (the review ran and FAILED;
+  it is not "not run"). No finding closed by the author.
+- Verdict reconciliation stands: PT-01/02/03/05/06 PASS, PT-04 PARTIAL, G-05 open,
+  G-09 open. Classification held **NOT READY**; no `APPROVED_TO_IMPLEMENT`; no
+  product code; the reviewer's report and branch were not modified.

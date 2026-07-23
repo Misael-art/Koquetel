@@ -25,8 +25,11 @@ backend and the network-allowlist arm are a coverage gap, so **`G-05` stays open
 requirement), but its rows are not yet **proven** (the approval rule requires an
 independent reviewer).
 
-Remaining before `READY`: (1) the independent adversarial review (`G-09`,
-organized but not run); (2) explicit implementation approval; and (3) owner
+Remaining before `READY`: (1) a passing independent adversarial review — the first
+review (pin `5db0244`) returned **FAIL** with RF-01..RF-04 (all high); those are
+**remediated on this branch but awaiting independent re-validation** (`G-09` stays
+open — see "Independent review status" below); (2) explicit implementation approval;
+and (3) owner
 ratification of the still-**proposed** decisions `ADR-0002` (Rust core),
 `ADR-0010` (session lifecycle) and `ADR-0011` (local OFD lease) — the §5
 "architecture boundaries and transaction model accepted" item depends on that
@@ -120,7 +123,7 @@ paper; they are marked as blockers, not narrated as done.
 | acceptance/failure-injection/rollback/security matrices complete | 🟡 specified | TRACEABILITY one row/req; rows `specified`, not `proven` (needs tests + G-09) |
 | installer + removal ownership rules specified | ✅ done | LIFECYCLE; ownership markers |
 | three high-risk prototypes pass their gates | ✅ done | PT-01/02/03/05/06 PASS (5/6); PT-04 partial (G-05 open). ≥3 high-risk gates pass |
-| independent review, no unresolved critical contradiction | ❌ **blocker** | charter written; review not run (G-09) |
+| independent review, no unresolved critical contradiction | ❌ **blocker** | review ran at `5db0244` = **FAIL** (RF-01..04); remediated on this branch, **awaiting re-validation** (G-09) |
 | explicit implementation approval exists | ❌ **blocker** | no `APPROVED_TO_IMPLEMENT` |
 
 ADR status: `ADR-0001/0003/0004/0005/0006` **accepted**. `ADR-0002` (Rust core),
@@ -133,9 +136,28 @@ blocked by `G-13`).
 
 **Conclusion:** 6 §5 items done, 3 partial/awaiting-ratification. Remaining M-00
 work: (1) **owner ratification** of `ADR-0002/0010/0011` (packet prepared);
-(2) the **independent adversarial review** (`G-09`, organized, not run); and
+(2) a **passing independent adversarial review** (`G-09`) — the first returned FAIL
+(RF-01..04), now remediated and awaiting re-validation; and
 (3) **explicit implementation approval**. It is therefore **not** true that only
 two items remain while those ADRs are proposed. `NOT READY` stands.
+
+## Independent review status
+
+The first independent adversarial review (reviewer: Codex, branch
+`review/m00-independent`, pin `5db0244`) returned **FAIL** with four open high
+findings. Remediation is on `foundation/m00-closure`. **The author does not close
+any finding**; each remains *awaiting independent validation*, and a re-review of
+the remediated pin is required.
+
+| Finding | Class | Remediation (this branch) | Status |
+|---|---|---|---|
+| RF-01 | contradiction | ADR-0002 has one acceptance predicate (PT-05 = language + distribution); Podman=PT-04/M-04/G-05, atomic config projection=M-01 exit. Evidence reports corrected with struck-through history. | **remediated — awaiting independent validation** |
+| RF-02 | contradiction | ADR-0010 carries one v1 id format (random 128-bit, 32 lowercase hex `^[0-9a-f]{32}$`, no timestamp); UUIDv7 rejected for v1 (no benchmark). Owner packet R-2 aligned. | **remediated — awaiting independent validation** |
+| RF-03 | evidence-gap | `PROTOTYPE-EVIDENCE-POLICY.md` added; PT-01..PT-06 rerun with retained, hash-pinned bundles (`prototype-evidence/PT-NN/`). | **remediated — awaiting independent validation** |
+| RF-04 | traceability | `SCH-21 SessionHandle` + `SC-11` + `CONTRACTS.md` §Sessions + examples/manifest/traceability; the schema-fixed format claim is now backed. | **remediated — awaiting independent validation** |
+
+Neither this branch nor this report closes `G-09`; only a passing independent
+re-review does.
 
 ## Gate decision
 

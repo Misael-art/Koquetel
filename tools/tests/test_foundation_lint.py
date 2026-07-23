@@ -20,11 +20,12 @@ LINT = REPO / "tools/foundation_lint.py"
 SUITE = REPO / "tools/schema_suite"
 VENV_PY = Path(__import__("os").environ.get("SCHEMA_VENV_PY", str(SUITE / ".venv/bin/python")))
 
-SCHEMA_FILES = [
+SCHEMA_FILES = [   # must mirror tools/foundation_lint.py SCHEMA_FILES (order matters)
     "plan-confirmation.schema.json", "transaction.schema.json",
     "profile-adapter.schema.json", "memory.schema.json",
     "tool-policy.schema.json", "delegation-task.schema.json",
     "event-support.schema.json", "model-routing.schema.json",
+    "session.schema.json",
     "tolerant-read/event.tolerant.schema.json",
 ]
 
