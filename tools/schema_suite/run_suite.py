@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Foundation schema-contract suite (SC-01..SC-10) for Koquetel.
+"""Foundation schema-contract suite (SC-01..SC-11) for Koquetel.
 
 FOUNDATION-ONLY, isolated from the product runtime. It uses a pinned Draft
 2020-12 validator (`jsonschema`, see requirements.txt) that must NOT enter the
@@ -59,6 +59,40 @@ def loci(errors) -> set:
     """The distinct (property-path, keyword) locations an instance violates."""
     return {(tuple(p for p in e.absolute_path if isinstance(p, str)), e.validator)
             for e in errors}
+
+
+def parse_time(value: str) -> datetime:
+    """Parse the RFC 3339 examples into timezone-aware datetimes."""
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def session_time_order(session: dict) -> bool:
+    """SCH-21 temporal ordering, which JSON Schema cannot express."""
+    created = parse_time(session["createdAt"])
+    activity = parse_time(session["lastActivityAt"])
+    expires = parse_time(session["expiresAt"])
+    if not created <= activity <= expires:
+        return False
+    return "endedAt" not in session or parse_time(session["endedAt"]) >= activity
+
+
+def session_transition(before: dict, after: dict) -> tuple[bool, str]:
+    """Check the tested SCH-21 lifecycle/identity invariants only."""
+    if before["sessionId"] != after["sessionId"]:
+        return False, "sessionId changed"
+    if before["actorRef"] != after["actorRef"]:
+        return False, "actorRef changed"
+    allowed = {
+        "active": {"active", "ending", "ended", "expired"},
+        "ending": {"ending", "ended", "expired"},
+        "ended": {"ended"},
+        "expired": {"expired"},
+    }
+    if after["state"] not in allowed[before["state"]]:
+        return False, f"terminal/invalid transition {before['state']} -> {after['state']}"
+    if not session_time_order(before) or not session_time_order(after):
+        return False, "timestamp order invalid"
+    return True, ""
 
 
 def sc10_walk(node, defs, where, viol):
@@ -165,7 +199,34 @@ def run(sdir: Path = SDIR) -> tuple[dict, list]:
         if want not in got:
             rec("SC-11", False, f"{inv['file']} violates {sorted(got)}, expected {want}")
     sess = load(ex / s["valid"])
-    rec("SC-11", sess["expiresAt"] > sess["createdAt"], "session expiresAt must be after createdAt")
+    rec("SC-11", session_time_order(sess),
+        "session time order must be createdAt <= lastActivityAt <= expiresAt")
+
+    refv = sub_validator(load(sdir / s["schema"]), "/$defs/SessionRef")
+    rec("SC-11", refv.is_valid(load(ex / s["sessionRef"]["valid"])),
+        "valid SessionRef rejected")
+    for inv in s["sessionRef"]["invalids"]:
+        errs = list(refv.iter_errors(load(ex / inv["file"])))
+        want = (tuple(inv["rule"].get("path", [])), inv["rule"]["keyword"])
+        got = loci(errs)
+        rec("SC-11", want in got,
+            f"{inv['file']} violates {sorted(got)}, expected {want}")
+
+    rec("SC-11", not session_time_order(load(ex / s["timeOrderInvalid"])),
+        "out-of-order session timestamps accepted")
+    valid_transition = load(ex / s["transitionValid"])
+    ok, why = session_transition(valid_transition["before"], valid_transition["after"])
+    rec("SC-11", ok, f"valid transition rejected: {why}")
+    for key, expected in (
+        ("transitionInvalidTerminal", "terminal/invalid transition"),
+        ("transitionInvalidExpired", "terminal/invalid transition"),
+        ("transitionInvalidId", "sessionId changed"),
+        ("transitionInvalidActor", "actorRef changed"),
+    ):
+        transition = load(ex / s[key])
+        ok, why = session_transition(transition["before"], transition["after"])
+        rec("SC-11", (not ok) and expected in why,
+            f"{key} not rejected for {expected}: {why}")
     status.setdefault("SC-11", True)
 
     # semantic invariants
@@ -207,7 +268,7 @@ def main() -> int:
         "validator": {"engine": "jsonschema", "draft": "2020-12"},
         "schemaSha256": sha.hexdigest(),
         "checks": {k: bool(status.get(k, False)) for k in ORDER},
-        "exampleCount": 40,
+        "exampleCount": len(list((SDIR / "examples").glob("*.json"))) - 1,
         "failures": failures,
     }
     (Path(__file__).resolve().parent / "RESULT.json").write_text(

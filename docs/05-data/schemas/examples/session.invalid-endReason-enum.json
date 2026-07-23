@@ -7,5 +7,6 @@
   "expiresAt": "2026-07-22T18:30:00Z",
   "actorRef": "local:dev",
   "taskRef": "01J8Z0CNFNQH7VK3M2P9XR4T5S",
-  "endReason": "user-request"
+  "endedAt": "2026-07-22T18:06:00Z",
+  "endReason": "explicit"
 }

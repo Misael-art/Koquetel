@@ -22,3 +22,15 @@ they exercise cross-field and cross-record invariants rather than a single field
 The `x-classification` / `x-retention` / `x-exportable` annotations that appear in
 the schema files are custom keywords; a standard JSON Schema validator ignores
 them, while the `SC-10` test reads them directly for classification completeness.
+
+## SCH-21 / SC-11 session fixtures
+
+SC-11 uses the `session.*`, `session-ref.*`, and `session-transition.*` fixtures.
+They cover the valid handle; malformed, uppercase and unknown-state handles;
+missing required fields; each independently missing ended field; the closed
+end-reason enum; unknown/malformed SessionRef values; forbidden authority and
+capability fields; timestamp ordering; ended and expired terminal transitions;
+and immutable `sessionId`/`actorRef` across a transition.
+
+These fixtures test record shape and the documented lifecycle predicate. They do
+not simulate or claim runtime authentication or authorization.

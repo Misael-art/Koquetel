@@ -1,0 +1,22 @@
+{
+  "before": {
+    "schemaVersion": 1,
+    "sessionId": "0a1b2c3d4e5f60718293a4b5c6d7e8f9",
+    "state": "active",
+    "createdAt": "2026-07-22T18:00:00Z",
+    "lastActivityAt": "2026-07-22T18:05:00Z",
+    "expiresAt": "2026-07-22T18:30:00Z",
+    "actorRef": "local:dev",
+    "taskRef": "01J8Z0CNFNQH7VK3M2P9XR4T5S"
+  },
+  "after": {
+    "schemaVersion": 1,
+    "sessionId": "1a1b2c3d4e5f60718293a4b5c6d7e8f9",
+    "state": "ending",
+    "createdAt": "2026-07-22T18:00:00Z",
+    "lastActivityAt": "2026-07-22T18:06:00Z",
+    "expiresAt": "2026-07-22T18:30:00Z",
+    "actorRef": "local:dev",
+    "taskRef": "01J8Z0CNFNQH7VK3M2P9XR4T5S"
+  }
+}

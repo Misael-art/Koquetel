@@ -245,3 +245,53 @@ class TestFoundationLintNegative(unittest.TestCase):
             stdout = r.stdout
             self.assertIn("SC-10: False", stdout)
             self.assertNotEqual(r.returncode, 0)
+
+    def test_sc11_rejects_each_session_invariant_regression(self):
+        """Mutation tests prove every claimed SCH-21/SC-11 invariant is live."""
+        cases = [
+            ("endedAt required", "session.invalid-endedAt.json",
+             lambda d: d.update(endedAt="2026-07-22T18:06:00Z")),
+            ("endReason required", "session.invalid-endReason.json",
+             lambda d: d.update(endReason="user-request")),
+            ("endReason enum", "session.invalid-endReason-enum.json",
+             lambda d: d.update(endReason="user-request")),
+            ("unknown ref version", "session-ref.invalid-version.json",
+             lambda d: d.update(schemaVersion=1)),
+            ("ref authority forbidden", "session-ref.invalid-authority.json",
+             lambda d: d.pop("authority")),
+            ("ref capabilities forbidden", "session-ref.invalid-capabilities.json",
+             lambda d: d.pop("capabilities")),
+            ("time order", "session.invalid-time-order.json",
+             lambda d: d.update(createdAt="2026-07-22T18:00:00Z")),
+            ("terminal transition", "session-transition.invalid-terminal.json",
+             lambda d: d["after"].update(state="ended", endedAt="2026-07-22T18:07:00Z",
+                                          endReason="user-request")),
+            ("expired terminal transition", "session-transition.invalid-expired.json",
+             lambda d: d["after"].update(state="expired")),
+            ("session id immutable", "session-transition.invalid-id.json",
+             lambda d: d["after"].update(sessionId=d["before"]["sessionId"])),
+            ("actor immutable", "session-transition.invalid-actor.json",
+             lambda d: d["after"].update(actorRef=d["before"]["actorRef"])),
+        ]
+        for label, filename, mutate in cases:
+            with self.subTest(invariant=label), tempfile.TemporaryDirectory() as tmp:
+                sdir = Path(tmp) / "schemas"
+                shutil.copytree(REPO / "docs/05-data/schemas", sdir)
+                target = sdir / "examples" / filename
+                doc = json.loads(target.read_text())
+                mutate(doc)
+                target.write_text(json.dumps(doc, indent=2) + "\n")
+                wrapper = Path(tmp) / "check_sc11.py"
+                wrapper.write_text(
+                    'import sys; sys.path.insert(0, "' + str(SUITE) + '")\n'
+                    "from run_suite import run\n"
+                    's, f = run(sdir="' + str(sdir) + '")\n'
+                    "print('SC-11:', s.get('SC-11'))\n"
+                    "sys.exit(1 if f else 0)\n"
+                )
+                result = subprocess.run(
+                    [str(VENV_PY), str(wrapper)],
+                    capture_output=True, text=True, timeout=30,
+                )
+                self.assertIn("SC-11: False", result.stdout)
+                self.assertNotEqual(result.returncode, 0)

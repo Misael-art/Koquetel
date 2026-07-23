@@ -1,5 +1,5 @@
 {
-  "_comment": "Maps each SCH-01..SCH-20 entity (SCH-21 SessionHandle is validated by SC-11 via the `session` block) to its schema, JSON-pointer, valid/invalid examples and the single rule its invalid example violates (path=property chain, keyword=JSON Schema keyword). Consumed by tools/schema_suite/run_suite.py.",
+  "_comment": "Maps each SCH-01..SCH-20 entity (SCH-21 SessionHandle and SessionRef are validated by SC-11 via the `session` block) to its schema, JSON-pointer, valid/invalid examples and the single rule its invalid example violates (path=property chain, keyword=JSON Schema keyword). Consumed by tools/schema_suite/run_suite.py.",
   "entities": [
     { "sch": "SCH-01", "name": "Plan", "sc": "SC-01", "schema": "plan-confirmation.schema.json", "pointer": "", "valid": "plan-confirmation.valid.json", "invalid": "plan-confirmation.invalid.json", "rule": { "path": ["requiredConfirmationClass"], "keyword": "enum" } },
     { "sch": "SCH-02", "name": "Confirmation", "sc": "SC-01", "schema": "plan-confirmation.schema.json", "pointer": "/$defs/Confirmation", "valid": "confirmation.valid.json", "invalid": "confirmation.invalid.json", "rule": { "path": ["actor", "type"], "keyword": "const" } },
@@ -41,7 +41,24 @@
       { "file": "session.invalid-uppercase.json", "rule": { "path": ["sessionId"], "keyword": "pattern" } },
       { "file": "session.invalid-state.json", "rule": { "path": ["state"], "keyword": "enum" } },
       { "file": "session.invalid-required.json", "rule": { "path": [], "keyword": "required" } },
-      { "file": "session.invalid-endedAt.json", "rule": { "path": [], "keyword": "required" } }
-    ]
+      { "file": "session.invalid-endedAt.json", "rule": { "path": [], "keyword": "required" } },
+      { "file": "session.invalid-endReason.json", "rule": { "path": [], "keyword": "required" } },
+      { "file": "session.invalid-endReason-enum.json", "rule": { "path": ["endReason"], "keyword": "enum" } }
+    ],
+    "sessionRef": {
+      "valid": "session-ref.valid.json",
+      "invalids": [
+        { "file": "session-ref.invalid-version.json", "rule": { "path": ["schemaVersion"], "keyword": "const" } },
+        { "file": "session-ref.invalid-malformed.json", "rule": { "path": ["sessionId"], "keyword": "pattern" } },
+        { "file": "session-ref.invalid-authority.json", "rule": { "path": [], "keyword": "additionalProperties" } },
+        { "file": "session-ref.invalid-capabilities.json", "rule": { "path": [], "keyword": "additionalProperties" } }
+      ]
+    },
+    "timeOrderInvalid": "session.invalid-time-order.json",
+    "transitionValid": "session-transition.valid.json",
+    "transitionInvalidTerminal": "session-transition.invalid-terminal.json",
+    "transitionInvalidExpired": "session-transition.invalid-expired.json",
+    "transitionInvalidId": "session-transition.invalid-id.json",
+    "transitionInvalidActor": "session-transition.invalid-actor.json"
   }
 }

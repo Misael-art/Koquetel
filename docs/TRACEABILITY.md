@@ -29,11 +29,11 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 | FR-08 | R-05 | FM-04 | AC-15 | client fixture, FI-12 | specified |
 | FR-09 | R-02 | FM-05 | AC-05, AC-07 | retrieval property, SC-04 | specified |
 | FR-10 | R-02 | FM-06 | AC-05, AC-06 | SC-04, FI-04 | specified |
-| FR-11 | R-02 | FM-06 | AC-05 | SC-04, SC-11 session scope, scope property, SR-11 suite | specified |
+| FR-11 | R-02 | FM-06 | AC-05 | SC-04, SC-11 session shape/lifecycle, scope property, SR-11 suite | specified |
 | FR-12 | R-02 | FM-05 | AC-07 | budget property, golden, FI-05 | specified |
 | FR-13 | R-02 | FM-06 | AC-05, AC-06 | SC-04, RT-06 | specified |
 | FR-14 | R-04 | FM-07 | AC-08 | SC-08, corpus benchmark | specified |
-| FR-15 | R-12 | FM-08 | AC-09 | SC-06, SC-11 session budget, ceiling property | specified |
+| FR-15 | R-12 | FM-08 | AC-09 | SC-06, SC-11 session lifecycle shape, ceiling property | specified |
 | FR-16 | R-12 | FM-08 | AC-08, AC-14 | SC-08, golden | specified |
 | FR-17 | R-11 | FM-07 | AC-08 | adapter fixture, SC-08 | specified |
 | FR-18 | R-01 | FM-09, FM-17 | AC-10 | SC-05, manifest-swap suite | specified |
@@ -41,7 +41,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 | FR-20 | R-01, R-08 | FM-11, FM-12 | AC-11 | PT-04, FI-09, FI-10 | specified |
 | FR-21 | R-01 | FM-16 | AC-10 | SC-01 confirmation, SR-04 suite | specified |
 | FR-22 | R-09 | FM-14 | AC-13 | SC-07, seeded-secret canary | specified |
-| FR-23 | R-10 | FM-08 | AC-09, AC-14 | SC-06 checkpoint, SC-11 session/checkpoint, interrupted E2E suite | specified |
+| FR-23 | R-10 | FM-08 | AC-09, AC-14 | SC-06 checkpoint, SC-11 checkpoint reference shape, interrupted E2E suite | specified |
 | FR-24 | R-12 | FM-16 | AC-12 | SC-06 delegation, attenuation property | specified |
 | FR-25 | R-13 | FM-15 | AC-14 | SC-07, golden evidence chain | specified |
 | FR-26 | R-07 | FM-15 | AC-13 | SC-07, offline E2E suite | specified |
@@ -58,7 +58,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 | NFR-06 | R-09 | FM-14 | AC-13 | SC-08, redaction canary, default-off property | specified |
 | NFR-07 | R-11 | FM-20 | AC-04 | SC-10 classification, golden export round-trip | specified |
 | NFR-08 | R-03 | FM-04 | AC-16 | SC-09 version guard, SC-03, FI-12 | specified |
-| NFR-09 | R-13 | FM-15 | AC-14 | SC-07, SC-11 session correlation, correlation golden | specified |
+| NFR-09 | R-13 | FM-15 | AC-14 | SC-07, SC-11 session correlation shape, correlation golden | specified |
 | NFR-10 | R-05 | FM-13 | AC-01 (architecture) | boundary-lint suite, import property | specified |
 | NFR-11 | R-13 | FM-04 | AC-15 | accessibility fixture, keyboard property | specified |
 | NFR-12 | R-08 | FM-12 | AC-11 | PT-04 benchmark, FI-10 | specified |
@@ -68,7 +68,7 @@ rule at the bottom; today all rows are `specified` (foundation phase).
 
 | SR | Main risk | Failure mode | Acceptance | Verification | Status |
 |---|---|---|---|---|---|
-| SR-01 | R-01 | FM-16 | AC-10 | SC-05, SC-11 (authority not derived from sessionId), authority property, malicious-repo suite | specified |
+| SR-01 | R-01 | FM-16 | AC-10 | SC-05; SC-11 forbids authority/capability fields in SessionRef only; runtime authority property and malicious-repo suite remain M-04 | specified |
 | SR-02 | R-01 | FM-11 | AC-11 | least-privilege property, PT-04 | specified |
 | SR-03 | R-01 | FM-09, FM-17 | AC-10 | SC-05, manifest-swap suite | specified |
 | SR-04 | R-01 | FM-03 | AC-10 | SC-01, single-use property | specified |

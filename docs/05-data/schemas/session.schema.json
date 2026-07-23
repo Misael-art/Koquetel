@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:koquetel:schema:session:1",
   "title": "Koquetel session handle (SCH-21)",
-  "description": "Realizes the ADR-0010 v1 session lifecycle + identifier contract (RF-04). Root validates a SessionHandle. sessionId is a 128-bit CSPRNG correlation identifier (32 lowercase hex), NOT a bearer credential — authority is revalidated per request and never derived from it.",
+  "description": "Realizes the ADR-0010 v1 session lifecycle + identifier contract (RF-04). Root validates a SessionHandle. SessionRef is the versioned request/response reference. sessionId is a 128-bit CSPRNG correlation identifier (32 lowercase hex), NOT a bearer credential — runtime authority remains an SR-01/M-04 obligation and is never derived from this schema.",
   "$ref": "#/$defs/SessionHandle",
   "$defs": {
     "SessionHandle": {
@@ -20,14 +20,24 @@
         "taskRef": { "type": "string", "x-classification": "identifier" },
         "checkpointRef": { "type": "string", "description": "optional reference to an SCH-16 TaskCheckpoint.", "x-classification": "identifier" },
         "endedAt": { "type": "string", "format": "date-time", "description": "required when state = ended (conditional invariant below).", "x-classification": "metadata" },
-        "endReason": { "enum": ["explicit", "inactivity-timeout", "expired", "superseded", "error"], "x-classification": "metadata" }
+        "endReason": { "enum": ["user-request", "timeout", "error", "shutdown", "superseded"], "x-classification": "metadata" }
       },
       "allOf": [
         {
           "if": { "required": ["state"], "properties": { "state": { "const": "ended" } } },
-          "then": { "required": ["endedAt"] }
+          "then": { "required": ["endedAt", "endReason"] }
         }
       ]
+    },
+    "SessionRef": {
+      "type": "object",
+      "description": "Versioned session reference carried at _meta[\"io.koquetel/session\"]. It carries correlation only and MUST NOT carry actor, authority, capability, delegation or policy fields.",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "sessionId"],
+      "properties": {
+        "schemaVersion": { "const": 1, "description": "Unknown versions fail closed.", "x-classification": "public" },
+        "sessionId": { "type": "string", "pattern": "^[0-9a-f]{32}$", "description": "Opaque correlation identifier; never a bearer credential.", "x-classification": "identifier", "x-retention": "session-30d", "x-exportable": "policy" }
+      }
     }
   }
 }

@@ -35,7 +35,7 @@ entities are `$defs` referenced by `$ref`.
 | `delegation-task.schema.json` | SCH-14 Delegation (root), SCH-15 Budget, SCH-16 TaskCheckpoint |
 | `event-support.schema.json` | SCH-17 EventRecord (root), SCH-18 SupportBundleManifest |
 | `model-routing.schema.json` | SCH-19 ModelRoute (root), SCH-20 UsageRecord |
-| `session.schema.json` | SCH-21 SessionHandle (root) — added for RF-04 |
+| `session.schema.json` | SCH-21 SessionHandle (root), SessionRef (wire `$defs`) — added for RF-04 |
 
 ## 3. Versioning and compatibility
 
@@ -148,7 +148,7 @@ Invariants enforced by classification:
 | SCH-18 SupportBundleManifest | FR-26, FR-22, SR-06 | FM-14, R-09 | AC-13 | SC-07 |
 | SCH-19 ModelRoute | FR-14, SR-14 | FM-07, R-04 | AC-08 | SC-08 |
 | SCH-20 UsageRecord | FR-16, NFR-06 | FM-08, R-12 | AC-08, AC-14 | SC-08 |
-| SCH-21 SessionHandle | FR-11, FR-15, FR-23, NFR-03, NFR-09, SR-01 | FM-08, R-12 | AC-12, AC-14 | SC-11 |
+| SCH-21 SessionHandle + SessionRef | FR-11, FR-15, FR-23, NFR-03, NFR-09, SR-01 | FM-08, R-12 | AC-12, AC-14 | SC-11 |
 
 ## 6. Schema-contract tests (`SC-xx`)
 
@@ -172,14 +172,20 @@ validates and the invalid example is rejected for exactly its documented rule
 - **SC-07** `event-support.schema.json` — EventRecord (SCH-17), SupportBundleManifest
   (SCH-18).
 - **SC-08** `model-routing.schema.json` — ModelRoute (SCH-19), UsageRecord (SCH-20).
-- **SC-11** `session.schema.json` — SessionHandle (SCH-21, added for RF-04): the
-  valid example validates; **five invalids are rejected** — `sessionId` wrong
-  length (`pattern`), `sessionId` uppercase (`pattern`), bad `state` (`enum`),
-  missing required field (`required`), and `state=ended` without `endedAt`
-  (conditional `required`). Plus semantic invariants JSON Schema cannot express,
-  asserted by the suite: `expiresAt` is later than `createdAt`; `ended`/`expired`
-  never return to `active`; `sessionId` is immutable; authority is never derived
-  from `sessionId` (SR-01).
+- **SC-11** `session.schema.json` — SessionHandle and SessionRef (SCH-21, added
+  for RF-04): the valid handle validates; invalid handles reject wrong-size and
+  uppercase ids, bad state, missing base fields, each independently missing
+  `endedAt` or `endReason` when `state=ended`, and an `endReason` outside
+  `user-request|timeout|error|shutdown|superseded`. The versioned SessionRef
+  accepts only `{schemaVersion, sessionId}` and rejects an unknown major,
+  malformed id, `authority`, and `capabilities`. Transition fixtures exercise
+  `createdAt <= lastActivityAt <= expiresAt`, terminal `ended`/`expired` states,
+  immutable `sessionId`, and immutable `actorRef`.
+
+  These checks prove schema shape and the documented lifecycle transition
+  predicate only. They deliberately make no claim that runtime authentication,
+  authorization, policy revalidation, or constant-time comparison exists.
+  Those SR-01 obligations remain unimplemented M-04 work.
 
 - **SC-09 version guard (strict-write / tolerant-read, §3).** Five independent
   assertions:
