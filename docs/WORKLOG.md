@@ -576,3 +576,9 @@ is remediated, awaiting reviewer validation**. No author marked any RF closed.
 - Verdict reconciliation stands: PT-01/02/03/05/06 PASS, PT-04 PARTIAL, G-05 open,
   G-09 open. Classification held **NOT READY**; no `APPROVED_TO_IMPLEMENT`; no
   product code; the reviewer's report and branch were not modified.
+
+## 2026-07-22 — Preserve raw PT-03 log bytes
+
+Added a file-specific `blank-at-eof` exception for the hash-pinned PT-03
+`ai-memory-store-test.log` and documented byte-for-byte raw-log preservation.
+The bundle and its `SHA256SUMS` were not changed.

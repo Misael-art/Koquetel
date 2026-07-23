@@ -105,3 +105,11 @@ this policy** for the retained-bundle contents: the *ephemeral working directory
 non-binary evidence* enumerated in §1 is retained in-repo. The two are not in
 conflict: binaries/caches/DBs are disposed; logs/metrics/traces/harness-source are
 kept.
+
+## 7. Raw log byte preservation
+
+Raw logs are preserved byte-for-byte. Whitespace produced by the capturing tool
+is evidence and is not reformatted. Any `blank-at-eof` exception is specific to
+one file; it does not disable the other whitespace checks. The file-specific
+exception for PT-03 leaves `SHA256SUMS` valid because the raw log itself is
+unchanged.
