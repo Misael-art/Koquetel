@@ -1,5 +1,22 @@
 # PT-01 evidence — Exclusive cross-process mutual exclusion
 
+## Current canonical rerun
+
+The canonical R2 rerun is [`PT-01-R2/`](PT-01-R2/) with integrity index
+[`PT-01-R2/SHA256SUMS`](PT-01-R2/SHA256SUMS). Its machine-derived verdict is
+**PARTIAL**: the complete logs contain 10,000 main acquisitions plus 10,000
+under each fork variant, all with 100 processes and zero overlaps; tmpfs passed,
+while the mandatory ext4/XFS arm is **BLOCKED** because no such target was
+accessible without host mutation. These numbers come only from
+[`metrics.json`](PT-01-R2/metrics.json) and
+[`pass-fail.json`](PT-01-R2/pass-fail.json).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** Everything
+> below preserves the earlier narrative and must not be used to derive the
+> current PT-01 verdict.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-01/` — see [`PT-01/SHA256SUMS`](PT-01/SHA256SUMS), [`PT-01/manifest.json`](PT-01/manifest.json) and [`PT-01/pass-fail.json`](PT-01/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 

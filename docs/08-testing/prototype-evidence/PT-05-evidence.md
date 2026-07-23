@@ -1,5 +1,24 @@
 # PT-05 evidence — Rust distribution: binary, SQLite, Unix socket, recovery after kill
 
+## Current canonical rerun
+
+The canonical R2 rerun is [`PT-05-R2/`](PT-05-R2/) with integrity index
+[`PT-05-R2/SHA256SUMS`](PT-05-R2/SHA256SUMS). Its derived verdict is **PASS**:
+the host-built binary ran in a fresh Ubuntu 24.04 container with no rustc/cargo;
+migrations returned 1 then 1; the production socket was 0600; real uid 1002 was
+denied both by filesystem mode and, on a separate permissive test transport, by
+`SO_PEERCRED` against owner uid 1001; kill-before recovered
+`<absent>/rolled_back`; kill-after recovered `value/committed`; cold start was
+23 ms under 500 ms. These values come only from
+[`metrics.json`](PT-05-R2/metrics.json) and
+[`pass-fail.json`](PT-05-R2/pass-fail.json).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** Everything
+> below includes the earlier same-user peer simulation and is not current
+> evidence.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-05/` — see [`PT-05/SHA256SUMS`](PT-05/SHA256SUMS), [`PT-05/manifest.json`](PT-05/manifest.json) and [`PT-05/pass-fail.json`](PT-05/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 

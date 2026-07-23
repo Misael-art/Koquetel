@@ -122,12 +122,12 @@ alone.
 - One mutation lease per installation scope.
 - One workspace mutation lease per repository and worktree.
 - v1 implements the lease as a **local single-host cooperative OFD advisory lock**
-  (`ADR-0011` Decision A, proven by PT-01/PT-06); distributed/NFS/multi-host
-  fencing is deferred to v2 (`ADR-0011` Decision B, `G-13`). A stuck local holder
-  is a liveness stall (`FM-23`), not split-brain.
+  (`ADR-0011` Decision A). PT-06 recovery passes, but PT-01 remains partial until
+  its ext4/XFS arm runs (`G-11`); this is specified, not yet proven on the target
+  filesystem. Distributed/NFS/multi-host fencing is deferred to v2
+  (`ADR-0011` Decision B, `G-13`).
 - Read-only status and event streaming remain available during mutation.
 - Transaction steps are idempotent and journal their intent before side effect.
 - Memory candidates use immutable IDs; promotion uses optimistic version checks.
 - Shared mutable context uses compare-and-swap or append-only records, not
   last-write-wins blocks.
-

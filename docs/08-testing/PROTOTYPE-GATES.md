@@ -1,12 +1,12 @@
 # Disposable prototype gates
 
-Status: normative draft — gates specified and executed. PT-01, PT-02, PT-03,
-PT-05, PT-06 **PASS**; PT-04 **partial** (rootless bwrap/userns proxy passes, but
-the Podman-backed and network-allowlist arms are a coverage gap). After **RF-03**,
-each PT retains a policy-compliant, hash-pinned evidence bundle
-(`prototype-evidence/PT-NN/`, see `PROTOTYPE-EVIDENCE-POLICY.md`) from a
-"verification rerun after RF-03"; the verdicts above are **awaiting independent
-reviewer validation** (no author closes an RF).
+Status: normative draft — gates specified and executed. Canonical verdicts:
+PT-02, PT-03, PT-05 and PT-06 **PASS**; PT-01 **partial** (tmpfs and both
+contended fork variants pass; ext4/XFS is blocked); PT-04 **partial** (rootless
+bwrap/userns proxy passes, but Podman and network allowlisting are missing).
+The immutable original bundles remain at `prototype-evidence/PT-NN/`; R2
+correction runs are adjacent `PT-NN-R2/` bundles selected by each evidence
+report. Verdicts remain **awaiting independent R3 validation**.
 Last reviewed: 2026-07-23
 
 Six high-risk assumptions must be proven by *disposable* prototypes before the
@@ -24,7 +24,7 @@ not implement any prototype and authorizes no product code.
   (`IT-01..IT-04`). It is deleted after evidence capture.
 - Only the **evidence** is retained, and it MUST follow
   [`PROTOTYPE-EVIDENCE-POLICY.md`](PROTOTYPE-EVIDENCE-POLICY.md) (added for RF-03):
-  a per-`PT` bundle `prototype-evidence/PT-NN/` with `manifest.json`,
+  a per-run bundle `prototype-evidence/PT-NN[-Rk]/` with `manifest.json`,
   `environment.txt`, `commands.txt`, raw `stdout.log`/`stderr.log`, `metrics.*`,
   `pass-fail.json`, `SHA256SUMS` and the disposable `harness/` source. A summary
   Markdown report is **not** the gate-required artifact; "it worked" without the

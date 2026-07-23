@@ -1,5 +1,23 @@
 # PT-06 evidence — Lease recovery after holder death (and fencing)
 
+## Current canonical rerun
+
+The canonical R2 rerun is [`PT-06-R2/`](PT-06-R2/) with integrity index
+[`PT-06-R2/SHA256SUMS`](PT-06-R2/SHA256SUMS). Its machine-derived verdict is
+**PASS** for the v1 local model: 20/20 SIGKILL/OFD reclaims, maximum recovery
+7,581 µs, transactional counter=20 and epoch=20, and a physically persisted
+journal re-derived `Preserve=1`, `Quarantine=1`, `Escalate=1`, `Valid=1` with
+fail-closed ambiguity. Exec+CLOEXEC and dup survival passed. Distributed/NFS
+G-13 was not simulated and remains deferred. See
+[`metrics.json`](PT-06-R2/metrics.json) and
+[`pass-fail.json`](PT-06-R2/pass-fail.json).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** The earlier
+> in-memory classifier narrative and its timings below are preserved only for
+> history.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-06/` — see [`PT-06/SHA256SUMS`](PT-06/SHA256SUMS), [`PT-06/manifest.json`](PT-06/manifest.json) and [`PT-06/pass-fail.json`](PT-06/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 

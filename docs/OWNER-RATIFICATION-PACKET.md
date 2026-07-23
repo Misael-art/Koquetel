@@ -14,8 +14,8 @@ create `APPROVED_TO_IMPLEMENT` and does **not** exit M-00.
 | # | Decision | Author recommendation | Evidence | Owner: approve / modify / reject |
 |---|---|---|---|---|
 | R-1 | **ADR-0002** — core language | **Accept Rust** for the core, CLI and transaction engine | PT-05: 2.2 MB glibc-only static binary, bundled SQLite, idempotent migrations, `SO_PEERCRED` owner-only, kill-9 recovery | ☐ |
-| R-2 | **ADR-0010** — session lifecycle + id format | **Accept** the lightweight session token; **id = random 128-bit, wire form 32 lowercase hex (`^[0-9a-f]{32}$`), no timestamp**, fixed by the versioned session schema. **UUIDv7 is rejected for v1** (no benchmark blocker) | PT-01/PT-02/PT-06 (recovery with no lost mutations); the session schema contract; ADR-0010 §Identifier | ☐ |
-| R-3 | **ADR-0011** — lease model | **Accept Decision A only** (v1 local single-host cooperative OFD lease); **defer Decision B** (distributed/NFS/multi-host) to a potential v2 | PT-01 (0 overlaps/10k), PT-06 (20/20 reclaims); local-model analysis: dead holder cannot race | ☐ |
+| R-2 | **ADR-0010** — session lifecycle + id format | **Defer lifecycle ratification until G-11 closes**; keep the sole v1 id proposal as random 128-bit lowercase hex and UUIDv7 rejected | PT-02/PT-06 pass; PT-01 is partial because ext4/XFS is blocked; SCH-21/SC-11 fix the id/wire contract | ☐ |
+| R-3 | **ADR-0011** — lease model | **Defer Decision A until PT-01 runs on ext4/XFS**; continue to defer Decision B (distributed/NFS/multi-host) to v2 | PT-01 tmpfs/fork subset passes but target filesystem is blocked; PT-06 20/20 and persisted recovery pass | ☐ |
 | R-4 | **G-13** scope | **Defer to v2** (NFS/multi-host fencing); it does **not** block v1-local | ADR-0011 Decision A analysis; `FM-23` (liveness) is the only v1-local residual | ☐ |
 | R-5 | **G-05 / sandbox** | Acknowledge: **blocks M-04 and any sandbox-declared release**, **not** the start of M-01/M-02 under phased implementation; Podman is the primary backend, approved only after a real Podman test | PT-04 PARTIAL (rootless bwrap/userns passes; Podman absent, allowlist untested) | ☐ |
 | R-6 | Phasing | If implementation is later approved, release **milestone by milestone** (M-01 → M-07), each behind its own exit gate | ROADMAP M-00..M-07 | ☐ |
@@ -24,11 +24,11 @@ create `APPROVED_TO_IMPLEMENT` and does **not** exit M-00.
 
 - **R-1 (Rust):** lets M-01 be built in Rust. Does **not** prove Podman invocation
   (M-04/PT-04) or atomic config projection (M-01 exit) — those are separate gates.
-- **R-2 (session lifecycle):** fixes the session model and **one** id format
+- **R-2 (session lifecycle):** after G-11 closes, fixes the session model and **one** id format
   (random 128-bit, 32 lowercase hex, no timestamp) for v1, pinned by the versioned
   session schema. UUIDv7 is rejected for v1; any future change is a schema version
   change, not a re-selection — there is no open benchmark.
-- **R-3 + R-4 (local lease / G-13):** accepts the v1 transactional-lease model,
+- **R-3 + R-4 (local lease / G-13):** after G-11 closes, accepts the v1 transactional-lease model,
   which is the §5 "transaction model accepted" item for the **local** scope. It
   does **not** claim any distributed/NFS capability; that stays a v2 gap (G-13).
 - **R-5 (sandbox):** clarifies phasing. No release may declare a sandbox until
@@ -39,11 +39,12 @@ create `APPROVED_TO_IMPLEMENT` and does **not** exit M-00.
 
 Even with this packet approved, M-00 does **not** exit. Still required:
 
-1. the **independent adversarial review** (`G-09`, charter in
+1. PT-01 on ext4/XFS (`G-11`);
+2. the **independent adversarial review** (`G-09`, charter in
    `docs/08-testing/INDEPENDENT-REVIEW-CHARTER.md`) — run by a non-author;
-2. **explicit implementation approval** (`APPROVED_TO_IMPLEMENT`), which only the
-   owner may create, and only after (1);
-3. TRACEABILITY rows reaching `proven` (needs the reviewer from (1)).
+3. **explicit implementation approval** (`APPROVED_TO_IMPLEMENT`), which only the
+   owner may create, and only after the evidence/review prerequisites;
+4. TRACEABILITY rows reaching `proven` (needs the reviewer).
 
 ## Recording the decision
 

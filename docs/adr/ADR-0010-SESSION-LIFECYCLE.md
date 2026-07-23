@@ -1,6 +1,11 @@
 # ADR-0010 — Session lifecycle
 
-Status: proposed — ready for owner ratification. The **session-lifecycle decision** (lightweight session token) rests on PT-01, PT-02 and PT-06 — **all met** (PT-06 showed recovery with no lost mutations: 10,000 contended increments exact, 20/20 reclaims). The **identifier format is a single v1 selection** — a **random 128-bit id, wire form 32 lowercase hex (`^[0-9a-f]{32}$`)**, no timestamp — fixed by the versioned session schema; UUIDv7 is a rejected alternative (no benchmark blocker). Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
+Status: proposed — **ratification blocked by G-11**. The session-lifecycle
+decision rests on PT-01, PT-02 and PT-06: PT-02/PT-06 pass, while canonical
+PT-01 is partial because ext4/XFS was unavailable (tmpfs and both fork variants
+passed). The identifier format remains the single v1 selection — random 128-bit,
+32 lowercase hex (`^[0-9a-f]{32}$`), no timestamp; UUIDv7 remains rejected for
+v1. Not accepted by the author.
 Date: 2026-07-21
 
 ## Context
@@ -48,10 +53,11 @@ Option 2: lightweight session token.
 - A session is created implicitly on the first authenticated request from a given
   (actor, task identity) pair, or explicitly via `session/start` for long-running
   workflows.
-- The session token is an opaque correlation `sessionId` returned in the response
-  `_meta` under the key `io.koquetel/sessionId` (MCP extension namespace
-  convention) and carried by the client on subsequent requests. Its **format is a
-  detail** (see below) fixed by the versioned session schema; it
+- The session token is an opaque correlation `sessionId` carried inside the
+  versioned `SCH-21 SessionRef` response object at
+  `_meta["io.koquetel/session"]` (MCP extension namespace convention) and echoed
+  by the client on subsequent requests. Its **format is a detail** (see below)
+  fixed by the versioned session schema; it
   is a reference, not a credential — authority is re-evaluated per request.
 
 ### Identifier format — single v1 selection (RF-02 remediation)
@@ -142,14 +148,16 @@ RFC 9562 primary source: Section 5.7 (UUIDv7 layout).
   ADR-0003 plan-bound confirmation. Q-06 (supported user profile) is **not** a
   prerequisite: session lifecycle semantics are identical for individual and team
   deployments.
-- ~~PT-01 proves the lock contract works for session-scoped state~~ — **met**.
+- PT-01 proves the lock contract on ext4/XFS — **not met**. The canonical R2
+  run passes tmpfs and both contended fork variants, but target ext4/XFS is
+  blocked (`G-11`).
 - ~~Prototype demonstrates timeout → recovery cycle with no lost mutations~~ —
-  **met (PT-06:** 10,000 contended transactional increments exact; 20/20 lease
-  reclaims; classifier PASS). PT-02 (torn-journal recovery) also met.
+  **met (PT-06:** 20/20 lease reclaims, exact transactional counter, persisted
+  recovery classifications). PT-02 torn-journal recovery also met.
 - The identifier format is a **single v1 selection** (random 128-bit, 32 lowercase
   hex, `^[0-9a-f]{32}$`, no timestamp), fixed by the versioned session schema
   (`session.schema.json`, added in this RF remediation). UUIDv7 is rejected for v1.
-- Not accepted by the author; prepared for owner ratification.
+- Not accepted by the author; ratification waits for G-11.
 
 ## References
 

@@ -1,5 +1,20 @@
 # PT-02 evidence — Journal recovery with a truncated final write
 
+## Current canonical rerun
+
+R2 accepted the existing immutable bundle [`PT-02/`](PT-02/); it was not
+rerun. [`metrics.json`](PT-02/metrics.json) records 329 truncation offsets,
+999 earlier records recovered at every offset, idempotency in all cases, and a
+mid-file digest break halted at line 500. The derived verdict remains **PASS**
+in [`pass-fail.json`](PT-02/pass-fail.json); integrity is pinned by
+[`SHA256SUMS`](PT-02/SHA256SUMS).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** Everything
+> below is retained history; the short section above is the sole current
+> summary and is derived from the immutable bundle.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-02/` — see [`PT-02/SHA256SUMS`](PT-02/SHA256SUMS), [`PT-02/manifest.json`](PT-02/manifest.json) and [`PT-02/pass-fail.json`](PT-02/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 

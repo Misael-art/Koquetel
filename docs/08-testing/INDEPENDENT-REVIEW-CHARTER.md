@@ -27,13 +27,12 @@ The reviewer does not assume these — they **verify** each at the pinned commit
 (§8) before starting, running the gates on a temporary export of that revision:
 
 - `foundation_lint` reports 0 errors, 0 warnings;
-- the schema suite (`tools/schema_suite/run_suite.py`) reports all 12 checks pass;
+- the schema suite (`tools/schema_suite/run_suite.py`) reports all 13 checks pass;
 - the linter unit tests (`tools/tests/test_foundation_lint.py`) pass;
 - owner decisions `Q-01..Q-08` are ratified (`ADR-0006`);
 - the working tree at the pinned SHA is clean (**verified, not assumed**);
-- `ADR-0002`, `ADR-0010` and `ADR-0011` are **ready for owner ratification** and
-  **not** marked accepted by an author — the reviewer confirms no author
-  self-accepted them.
+- `ADR-0002`, `ADR-0010` and `ADR-0011` are not marked accepted by an author;
+  ADR-0010/0011 honestly expose their G-11 target-filesystem blocker.
 
 ## 3. Artifacts in scope
 
@@ -46,7 +45,7 @@ The reviewer reads, at the pinned revision:
 - decisions: `ADR-0001..ADR-0006`, `ADR-0010`, `ADR-0011` (note the ADR-0011
   Decision A / Decision B split and the `G-13` v2 reclassification);
 - evidence: `EXTERNAL-AUDITS.md` (**EA-01..EA-07**), all six reports in
-  `prototype-evidence/` (**PT-01..PT-06; PT-04 is PARTIAL**), `RESULT.json`,
+  `prototype-evidence/` (**PT-01/PT-04 are PARTIAL**), `RESULT.json`,
   `11-legal/ATTRIBUTION-PLAN.md`;
 - traceability and honesty: `TRACEABILITY.md`, `KNOWN-GAPS.md` (incl. the `G-13`
   reclassification), `OPEN-QUESTIONS.md`, `ASSUMPTIONS.md`, `WORKLOG.md`;
@@ -86,9 +85,9 @@ Foundation-integrity attacks (the reviewer hunts contradictions):
   canonical documents (cross-check with `foundation_lint`)?
 - **ID and reference integrity** — duplicate definitions, dangling references,
   broken anchors (cross-check with `foundation_lint`).
-- **ADR readiness & G-13 scope** — confirm `ADR-0002`, `ADR-0010` and `ADR-0011`
-  are prepared for owner ratification with explicit recommendations and **none
-  self-accepted**; confirm `G-13` blocks only the v2 distributed/NFS/multi-host
+- **ADR readiness & G-13 scope** — confirm none of `ADR-0002`, `ADR-0010` and
+  `ADR-0011` is self-accepted; confirm G-11 blocks v1 target-filesystem
+  ratification and `G-13` blocks only the v2 distributed/NFS/multi-host
   path (`ADR-0011` Decision B), not the v1 local OFD model (Decision A), and that
   the reclassification argument holds.
 

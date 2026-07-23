@@ -1,6 +1,9 @@
 # ADR-0011 — Lease recovery and fencing
 
-Status: proposed — two decisions separated. **Decision A (v1: local single-host cooperative OFD lease)** is ready for owner ratification (PT-01 and PT-06 pass; the analysis below shows G-13 is not required for the local model). **Decision B (distributed / NFS / multi-host fencing)** is deferred to a potential v2 and remains blocked by G-13. Not accepted by the author — see `OWNER-RATIFICATION-PACKET.md`.
+Status: proposed — two decisions separated. **Decision A (v1 local OFD)** is
+blocked by G-11 because PT-01's required ext4/XFS arm is not executed; tmpfs
+contention/fork and PT-06 recovery pass. **Decision B (distributed/NFS/
+multi-host)** remains deferred and blocked by G-13. Not accepted by the author.
 Date: 2026-07-21
 
 ## Context
@@ -288,12 +291,13 @@ future ADR; this ADR records the gap.
 
 ## Prerequisites for acceptance
 
-### Decision A (v1 local OFD) — met, ready for ratification
+### Decision A (v1 local OFD) — blocked by target-filesystem evidence
 
-- ~~PT-01 passes on ext4/XFS (cooperative OFD mutual exclusion, incl. fork arm)~~
-  — **met** (PT-01 evidence: 0 overlaps in 10,000 acquisitions; exec/dup arms).
+- PT-01 passes on ext4/XFS — **not met**. Canonical R2 has 0 overlaps on tmpfs
+  in the main and both contended fork variants, but ext4/XFS is BLOCKED (G-11).
 - ~~PT-06 passes with kill-fault injection (local OFD path only)~~ — **met**
-  (PT-06 evidence: 20/20 reclaims, avg 4 ms; classifier PASS).
+  (canonical R2: 20/20 reclaims; persisted journal classifications and
+  exec/CLOEXEC/dup arms pass).
 - ~~Owner decisions Q-03/Q-08~~ — **closed 2026-07-21 (ADR-0006)**: Q-03 = Linux
   first; Q-08 = NFS unsupported in v1. The local-fs scope is confirmed.
 - G-13 is **not** a prerequisite for Decision A (see the local-model analysis
@@ -307,9 +311,9 @@ future ADR; this ADR records the gap.
   for networked filesystems.
 - A proven distributed fencing protocol for a partitioned live old holder.
 
-**Author recommendation:** ratify **Decision A only** for v1. Do not accept
-Decision B; keep it as a v2 gap. The author does not accept either decision on the
-owner's behalf.
+**Author recommendation:** do not ratify Decision A until G-11 closes on
+ext4/XFS. Do not accept Decision B; keep it as a v2 gap. The author does not
+accept either decision on the owner's behalf.
 
 ## References
 

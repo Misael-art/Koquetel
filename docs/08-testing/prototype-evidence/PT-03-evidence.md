@@ -1,5 +1,25 @@
 # PT-03 evidence — ai-memory concurrency, corruption, export and removal
 
+## Current canonical rerun
+
+The canonical R2 rerun is [`PT-03-R2/`](PT-03-R2/) with integrity index
+[`PT-03-R2/SHA256SUMS`](PT-03-R2/SHA256SUMS). Its derived verdict is **PASS**.
+At ai-memory pin `2a85950`, real public Store APIs verified 10,000/10,000
+in-process and 10,000/10,000 cross-process bodies; cross-process operation used
+a declared 100-retry adapter budget (2,769 total, maximum 49, zero unhandled).
+The killed batch resumed to 1,000/1,000; separate main-DB and still-live-WAL
+faults failed closed; the 128-record SCH-10 round-trip digest matched; purge
+deleted 128 page rows with zero queryable residue and a complete physical
+inventory. These values come only from
+[`metrics.json`](PT-03-R2/metrics.json) and
+[`pass-fail.json`](PT-03-R2/pass-fail.json).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** Everything
+> below describes prior runs, including the Python SQLite substitute criticized
+> by R2, and must not be used for the current verdict.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-03/` — see [`PT-03/SHA256SUMS`](PT-03/SHA256SUMS), [`PT-03/manifest.json`](PT-03/manifest.json) and [`PT-03/pass-fail.json`](PT-03/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 

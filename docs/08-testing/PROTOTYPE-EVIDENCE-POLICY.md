@@ -31,6 +31,12 @@ docs/08-testing/prototype-evidence/PT-NN/
   README.md          # short human index pointing to the report and listing files
 ```
 
+When a correction would otherwise edit an immutable raw bundle, the new capture
+uses an adjacent run-qualified directory (`PT-NN-R2`, `PT-NN-R3`, …). The
+human report identifies exactly one current canonical run. Older directories
+remain byte-for-byte unchanged and are historical, never merged into the new
+verdict.
+
 The human-readable `PT-NN-evidence.md` report (one level up) MUST reference this
 bundle directory and cite its `SHA256SUMS` so a reviewer can verify integrity.
 

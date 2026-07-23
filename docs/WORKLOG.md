@@ -582,3 +582,36 @@ is remediated, awaiting reviewer validation**. No author marked any RF closed.
 Added a file-specific `blank-at-eof` exception for the hash-pinned PT-03
 `ai-memory-store-test.log` and documented byte-for-byte raw-log preservation.
 The bundle and its `SHA256SUMS` were not changed.
+
+## 2026-07-23 — R2 independent-review remediation
+
+Read independent report R2 at `30b0038` in full and remediated only on
+`foundation/m00-closure`, base `f086ed7`. RF-01/RF-02 remain closed by R2.
+Author dispositions for RF-03/RF-04/RF-05 are **awaiting R3 validation**.
+
+- SCH-21 now requires both `endedAt` and `endReason`, fixes the end-reason enum,
+  and defines a versioned, authority-free `SessionRef` at
+  `_meta["io.koquetel/session"]`. CONTRACTS defines v1/unknown/absent/malformed/
+  terminal/wrong-actor and modern/legacy MCP behavior.
+- SC-11 executes handle/ref schema cases, time ordering, terminal transitions,
+  immutable session/actor identity, and forbidden authority/capability fields.
+  Mutation unittests prove each semantic assertion fails when its negative
+  fixture is neutralized. Runtime SR-01 authorization remains M-04 work.
+- New immutable R2 bundles sit beside, rather than rewrite, the earlier raw
+  bundles. PT-01 is **PARTIAL**: tmpfs main + fork A/B each ran 10,000
+  acquisitions under 100-process contention with zero overlaps, but ext4/XFS is
+  blocked. PT-03 **PASS** uses real ai-memory Store APIs for 10,000 in-process +
+  10,000 cross-process operations, kill recovery, main/WAL faults, SCH-10
+  round-trip, purge and residue inventory. PT-05 **PASS** ran in a clean Docker
+  container without Rust with real UIDs 1001/1002 and SO_PEERCRED. PT-06
+  **PASS** uses a persisted journal/epoch/counter and derives
+  Preserve/Quarantine/Escalate/Valid plus exec/CLOEXEC/dup outcomes.
+- PT-02 remains the R2-accepted PASS bundle; PT-04 remains PARTIAL at 8 ms with
+  no fork-storm/cgroup claim. Every report now has one current canonical section
+  and an explicit superseded-history boundary.
+- Reopened G-11 because the literal ext4/XFS arm is missing. G-05 remains high
+  and explicitly blocks M-04 and every sandbox-declared release. Readiness and
+  ADR-0010/0011 no longer claim the transaction model is ready for ratification.
+- Added the criterion → harness line → raw artifact → assertion → verdict matrix.
+  No product code, service, release artifact, host mutation or
+  `APPROVED_TO_IMPLEMENT` was created.

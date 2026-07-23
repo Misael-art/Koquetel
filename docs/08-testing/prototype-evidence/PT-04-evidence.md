@@ -1,5 +1,22 @@
 # PT-04 evidence — Rootless sandbox containment (PARTIAL)
 
+## Current canonical rerun
+
+R2 accepted the immutable [`PT-04/`](PT-04/) bundle as **PARTIAL**.
+[`metrics.json`](PT-04/metrics.json) records 7/7 containment attempts denied,
+one memory-limit arm killed, a one-descendant process-tree kill, and **8 ms**
+median overhead (32 ms sandboxed minus 24 ms bare) below the 200 ms ceiling.
+Neither a fork storm nor cgroup `pids.max` was executed or claimed by the
+canonical bundle. Podman and the network-allowlist arm were not executed, so
+G-05 remains open. See [`pass-fail.json`](PT-04/pass-fail.json) and
+[`SHA256SUMS`](PT-04/SHA256SUMS).
+
+## Historical record
+
+> **HISTORICAL — SUPERSEDED; NOT CANONICAL FOR CURRENT VERDICT.** The prior
+> prose below includes drifted 12 ms and resource-language claims; only the
+> current section above represents the bundle.
+
 > **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-04/` — see [`PT-04/SHA256SUMS`](PT-04/SHA256SUMS), [`PT-04/manifest.json`](PT-04/manifest.json) and [`PT-04/pass-fail.json`](PT-04/pass-fail.json). Rerun verdict: **PARTIAL**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
 
 
