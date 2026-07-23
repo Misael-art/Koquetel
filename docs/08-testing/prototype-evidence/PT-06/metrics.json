@@ -1,0 +1,6 @@
+{ "fence_classifier": {"legit_prior_history":"Preserve","provably_stale":"Quarantine","ambiguous":"Escalate","current_epoch":"Valid","verdict":"PASS"},
+  "counter_equality": {"contended_ops":10000,"counter":10000,"epoch":10000,"expected":10000,"lost":0},
+  "recovery": {"reclaimed":"20/20","avg_ms":3,"max_ms":7,"bound_ms":1000,"csv":"recovery.csv"},
+  "ofd_exec_cloexec": "ACQUIRED (lock released on exec)",
+  "ofd_dup_survival": {"while_dup_held":"BLOCKED","after_last_close":"ACQUIRED"},
+  "binary_sha256": "a2cc4fc3de0156fe0be7afe6fdc3193265ba5d8834990bcb201dd965f54fcee2" }

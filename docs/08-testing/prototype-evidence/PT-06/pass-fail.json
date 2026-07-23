@@ -1,0 +1,8 @@
+{ "pt":"PT-06","overall":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:31:56Z",
+  "arms":[
+   {"name":"fence_classifier","verdict":"PASS","metricRef":"metrics.json#fence_classifier"},
+   {"name":"counter_equality","verdict":"PASS","metricRef":"metrics.json#counter_equality"},
+   {"name":"recovery_reclaim","verdict":"PASS","metricRef":"metrics.json#recovery"},
+   {"name":"ofd_exec_cloexec","verdict":"PASS","metricRef":"metrics.json#ofd_exec_cloexec"},
+   {"name":"ofd_dup_survival","verdict":"PASS","metricRef":"metrics.json#ofd_dup_survival"}],
+  "criteria":"stale lease reclaimed within bound + OFD lifecycle correct + classifier preserves/quarantines/escalates; G-13 stays out of the local model (v2 only)" }

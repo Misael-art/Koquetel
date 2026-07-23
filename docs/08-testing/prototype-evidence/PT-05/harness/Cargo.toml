@@ -1,0 +1,12 @@
+# PT-05 disposable harness — NON-PRODUCTION. Not part of the Koquetel build/release graph.
+[package]
+name = "pt05_core"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+rusqlite = { version = "0.31", features = ["bundled"] }
+libc = "0.2"
+
+[profile.release]
+opt-level = 2

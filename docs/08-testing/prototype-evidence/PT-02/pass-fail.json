@@ -1,0 +1,6 @@
+{ "pt":"PT-02","overall":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:37:27Z",
+  "arms":[
+   {"name":"truncation_sweep","verdict":"PASS","metricRef":"metrics.json (recovered 999 at every offset; earlier records always readable)"},
+   {"name":"idempotency","verdict":"PASS","metricRef":"metrics.json#idempotent_all"},
+   {"name":"mid_file_corruption_failclosed","verdict":"PASS","metricRef":"metrics.json#mid_file"}],
+  "criteria":"0 cases where a torn tail makes earlier records unreadable; 100% converge; repeated recovery is a no-op; a mid-file digest break halts with evidence (never silently accepted)" }

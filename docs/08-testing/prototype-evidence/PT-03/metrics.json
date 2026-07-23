@@ -1,0 +1,7 @@
+{ "ai_memory_pin":"2a85950ce8fa5c309fdc3adc481e98a02d824a9f",
+  "store_tests":{"passed":180,"failed":0,"detail":"173+5+2 across suites"},
+  "source_tracked_mods_before":0, "source_tracked_mods_after":0,
+  "concurrency":{"processes":8,"ops":10000,"count":10000,"torn_or_wrong":0,"retries":0},
+  "corruption":{"detected":true,"integrity_check":"Tree 2 page 4 cell 162: Extends off end of page"},
+  "export_roundtrip":{"src_digest":"92307125aa3530b5799ad96aad2b0f5624f57a6cceb6b0bb2c2dd7386bda0f0a","dst_digest":"92307125aa3530b5799ad96aad2b0f5624f57a6cceb6b0bb2c2dd7386bda0f0a","match":true},
+  "purge":{"before":10000,"after_queryable":0} }

@@ -1,5 +1,8 @@
 # PT-04 evidence — Rootless sandbox containment (PARTIAL)
 
+> **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-04/` — see [`PT-04/SHA256SUMS`](PT-04/SHA256SUMS), [`PT-04/manifest.json`](PT-04/manifest.json) and [`PT-04/pass-fail.json`](PT-04/pass-fail.json). Rerun verdict: **PARTIAL**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
+
+
 Gate: [`../PROTOTYPE-GATES.md`](../PROTOTYPE-GATES.md) PT-04
 Date executed: 2026-07-22
 Branch: `foundation/m00-closure`

@@ -1,0 +1,10 @@
+host_kernel=Linux 6.18.38-1-MANJARO
+arch=x86_64
+filesystem_under_test=tmpfs (/tmp)
+rustc=rustc 1.97.0 (2d8144b78 2026-07-07)
+cargo=cargo 1.97.0 (c980f4866 2026-06-30)
+cc=cc (GCC) 16.1.1 20260625
+sqlite=bundled via rusqlite 0.31 / libsqlite3-sys 0.28 (feature "bundled"); host sqlite3 3.53.3
+generated_at_utc=2026-07-23T00:27:33Z
+synthetic_data=true
+secrets=none

@@ -1,0 +1,9 @@
+{ "pt":"PT-05","overall":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:27:33Z",
+  "arms":[
+   {"name":"cold_start","verdict":"PASS","metricRef":"metrics.json#cold_start_ms"},
+   {"name":"self_contained_binary","verdict":"PASS","metricRef":"metrics.json#ldd_runtime_deps"},
+   {"name":"migration_idempotency","verdict":"PASS","metricRef":"metrics.json#migration_version_run2"},
+   {"name":"peercred_owner_only","verdict":"PASS","metricRef":"metrics.json#peercred_reject"},
+   {"name":"kill_before_commit","verdict":"PASS","metricRef":"metrics.json#kill_before_commit"},
+   {"name":"kill_after_commit","verdict":"PASS","metricRef":"metrics.json#kill_after_commit"}],
+  "criteria":"clean self-contained run + socket owner-only + post-kill convergence + friction within threshold" }

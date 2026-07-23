@@ -1,0 +1,9 @@
+{ "pt":"PT-03","overall":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:41:58Z",
+  "arms":[
+   {"name":"ai_memory_store_tests","verdict":"PASS","metricRef":"metrics.json#store_tests (180/0)"},
+   {"name":"cross_process_concurrency","verdict":"PASS","metricRef":"metrics.json#concurrency (0 lost)"},
+   {"name":"corruption_failclosed","verdict":"PASS","metricRef":"metrics.json#corruption"},
+   {"name":"export_roundtrip","verdict":"PASS","metricRef":"metrics.json#export_roundtrip"},
+   {"name":"purge_removal","verdict":"PASS","metricRef":"metrics.json#purge (0 residue)"},
+   {"name":"source_read_only","verdict":"PASS","metricRef":"metrics.json#source_tracked_mods_after (0)"}],
+  "criteria":"0 lost/torn records; corruption detected fail-closed; export digest match; purge 0 residue; ai-memory source unchanged" }

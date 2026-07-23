@@ -1,0 +1,18 @@
+## fence_classifier
+fence_case legit_prior_history got=Preserve want=Preserve PASS
+fence_case provably_stale got=Quarantine want=Quarantine PASS
+fence_case ambiguous got=Escalate want=Escalate PASS
+fence_case current_epoch got=Valid want=Valid PASS
+FENCE_CLASSIFY PASS
+naive_leaseEpoch_lt_current_would_DISCARD_legit_history seq=5 -> WRONG
+## counter_equality (8x1250=10000 contended, transactional)
+counter_result=counter=10000 epoch=10000  expected=n=10000 epoch=10000
+## recovery (20 kill/reclaim; CSV -> recovery.csv)
+recovery_reclaimed=20/20 avg_ms=3 max_ms=7 bound_ms=1000
+## ofd_exec_cloexec
+exec_then_try=ACQUIRED
+## ofd_dup_survival
+dup_holding_try=BLOCKED
+dup_released_try=ACQUIRED
+DONE
+binary_sha256=a2cc4fc3de0156fe0be7afe6fdc3193265ba5d8834990bcb201dd965f54fcee2

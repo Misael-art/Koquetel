@@ -1,0 +1,7 @@
+== build ==
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling pt01_lock v0.0.0 (/tmp/rf03/pt01)
+    Finished `release` profile [optimized] target(s) in 3.34s
+build_exit=0

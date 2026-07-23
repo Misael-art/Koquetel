@@ -1,0 +1,4 @@
+cargo build --release
+BIN=target/release/pt06_lease D=$WORK/run bash drive.sh
+# arms: fence classifier; counter equality (8x1250, pre-init schema); 20 kill/reclaim
+# cycles -> recovery.csv; ofd exec+CLOEXEC; ofd dup survival.

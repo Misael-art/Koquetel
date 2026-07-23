@@ -1,0 +1,7 @@
+## mutual_exclusion (100 holders x 100 = 10000 contended acquisitions)
+overlap_detector={"total_acquisitions": 10000, "distinct_holders": 100, "temporal_overlaps": 0, "pass": true}
+## fork_ofd_lifecycle (100 iterations)
+fork_arm iters=100 ok=100 violations=0
+DONE
+acquisition_log_lines=10000
+binary_sha256=b3e9565532d1f20d85274188dd8275604a8e5a0d899fef5555ef92e703b58f29

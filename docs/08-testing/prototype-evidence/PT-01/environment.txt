@@ -1,0 +1,9 @@
+host_kernel=Linux 6.18.38-1-MANJARO
+arch=x86_64
+filesystem_under_test=tmpfs (/tmp) — local-kernel OFD semantics (same class as ext4/XFS)
+lock_primitive=fcntl F_OFD_SETLKW, F_WRLCK, l_len=0 (whole file); acquire time recorded AFTER grant
+rustc=rustc 1.97.0 (2d8144b78 2026-07-07)
+python=Python 3.14.6
+generated_at_utc=2026-07-23T00:33:52Z
+synthetic_data=true
+secrets=none

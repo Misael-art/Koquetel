@@ -1,0 +1,9 @@
+{ "pt":"PT-03","title":"ai-memory concurrency, corruption, export and removal",
+  "verdict":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:41:58Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log","stderrRef":"stderr.log",
+  "metricsRef":"metrics.json","passFailRef":"pass-fail.json","aiMemoryTestLogRef":"ai-memory-store-test.log",
+  "externalPins":[{"project":"ai-memory","repo":"akitaonrails/ai-memory","commit":"2a85950ce8fa5c309fdc3adc481e98a02d824a9f","access":"read-only, cloned outside the repo"}],
+  "toolchain":{"rustc":"1.97.0","python":"3.14","sqlite":"3.53"}, "syntheticData":true, "secrets":"none",
+  "armsExecuted":["ai_memory_store_tests","cross_process_concurrency","corruption_failclosed","export_roundtrip","purge_removal","source_read_only"],
+  "armsNotExecuted":["power-loss durability of synchronous=NORMAL (AC-DUR; documented acceptance, not simulated)"],
+  "limitations":"Concurrency/corruption/export arms exercise SQLite under ai-memory's exact pragmas with BEGIN IMMEDIATE (the AC-CONC correction the adapter must enforce; ai-memory's own default is DEFERRED); ai-memory's REAL code is exercised via its 180 store tests. ai-memory clone is external/read-only and NOT committed; pin + test log retained. tmpfs." }

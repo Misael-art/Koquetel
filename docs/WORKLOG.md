@@ -530,3 +530,35 @@ all remain **awaiting independent validation**.
   published ranges updated (SCH-01..SCH-21, SC-01..SC-11). ADR-0010 now cites
   SCH-21/SC-11/CONTRACTS, so the "schema-fixed format" claim is true (RF-04). No
   session runtime created.
+
+### RF-03 — verification rerun of PT-01..PT-06 with retained bundles
+
+Committed the evidence policy first (above), then reran all six prototypes
+ephemerally in explicit temp dirs, retaining a policy-compliant bundle per PT under
+`prototype-evidence/PT-NN/` (manifest, environment, commands, raw stdout/stderr,
+metrics, pass-fail, SHA256SUMS, harness source; no binaries/DBs/venv/secrets;
+synthetic inputs). Labelled "verification rerun after RF-03"; not presented as the
+old artifacts. Each report now links its bundle + hashes.
+
+- **PT-01 PASS** — 10,000 acquisitions, 100 holders, 0 temporal overlaps; fork/OFD
+  arm 100/100, 0 violations.
+- **PT-02 PASS** — 329 truncation offsets, 999 recovered at every offset, idempotent,
+  mid-file digest break halts fail-closed. Two honest harness corrections recorded
+  in the bundle (an over-strict pass-predicate; sweep range had included the
+  untruncated record).
+- **PT-03 PASS** — ai-memory @ 2a85950 read-only (0 tracked mods before & after);
+  180/180 store tests; 10,000 cross-process ops 0 lost; corruption detected
+  fail-closed; export digest match; purge 0 residue.
+- **PT-04 PARTIAL** — rootless bwrap/userns: 7/7 containment denied, rlimit +
+  process-tree kill, 8 ms overhead. Raw probe shows **Podman ABSENT**; Docker
+  rootful, NOT used; no network allowlist (no slirp4netns/pasta). Not simulated.
+- **PT-05 PASS** — glibc-only 2.2 MB binary, cold start 6 ms, idempotent migrations,
+  peer-cred DENIED + socket 600, kill-before→old / kill-after→new.
+- **PT-06 PASS** — OFD: 20/20 reclaims (recovery.csv), exec+CLOEXEC/dup lifecycle,
+  10,000 transactional counter exact, classifier preserve/quarantine/escalate. One
+  honest harness correction recorded (a startup CREATE-TABLE race that lost a writer
+  in the first rerun; hardened to pre-init the schema; corrected rerun = 10,000).
+
+Verdict reconciliation: PT-01/02/03/05/06 remain PASS (bundles sustain the
+criteria); PT-04 remains PARTIAL; **G-05 not closed**; **G-09 stays open**; **RF-03
+is remediated, awaiting reviewer validation**. No author marked any RF closed.

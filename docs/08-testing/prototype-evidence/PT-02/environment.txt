@@ -1,0 +1,6 @@
+host_kernel=Linux 6.18.38-1-MANJARO
+arch=x86_64
+python=Python 3.14.6
+generated_at_utc=2026-07-23T00:37:27Z
+synthetic_data=true
+secrets=none

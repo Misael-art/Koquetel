@@ -1,0 +1,21 @@
+{
+  "offsets_tested": 329,
+  "sweep_all_ok": true,
+  "recovered_min": 999,
+  "recovered_max": 999,
+  "expected_recovered": 999,
+  "isolated_tail_values": [
+    0,
+    1
+  ],
+  "idempotent_all": true,
+  "mid_file_detected_failclosed": true,
+  "mid_file": {
+    "recovered": 500,
+    "isolated_tail": 0,
+    "halted": true,
+    "halt_reason": "digest mismatch mid-file line 500",
+    "terminal_state": "halted-for-operator"
+  },
+  "overall_pass": true
+}

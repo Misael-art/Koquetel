@@ -1,0 +1,9 @@
+{ "pt":"PT-05","title":"Rust distribution: binary, SQLite, Unix socket, recovery after kill",
+  "verdict":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:27:33Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log",
+  "stderrRef":"stderr.log","metricsRef":"metrics.json","passFailRef":"pass-fail.json",
+  "externalPins":[], "toolchain":{"rustc":"1.97.0","rusqlite":"0.31","libsqlite3-sys":"0.28","libc":"0.2"},
+  "syntheticData":true, "secrets":"none",
+  "armsExecuted":["cold_start","self_contained_binary","migration_idempotency","peercred_owner_only","kill_before_commit","kill_after_commit"],
+  "armsNotExecuted":["fresh-container clean host (simulated via ldd + minimal env)"],
+  "limitations":"clean-host verified via ldd (no Rust runtime / no libsqlite3), not a fresh container; non-owner tested via owner_uid=me+1 (SO_PEERCRED path exercised); filesystem tmpfs; ADR-0002 language predicate only (Podman=PT-04/M-04, atomic config projection=M-01)." }

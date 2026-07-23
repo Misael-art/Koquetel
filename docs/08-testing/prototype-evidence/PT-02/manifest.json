@@ -1,0 +1,7 @@
+{ "pt":"PT-02","title":"Journal recovery with a truncated final write",
+  "verdict":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:37:27Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log","stderrRef":"stderr.log",
+  "metricsRef":"metrics.json","passFailRef":"pass-fail.json","matrixRef":"truncation-matrix.csv",
+  "externalPins":[], "toolchain":{"python":"3.14"}, "syntheticData":true, "secrets":"none",
+  "armsExecuted":["truncation_sweep","idempotency","mid_file_corruption_failclosed"], "armsNotExecuted":[],
+  "limitations":"A first run's pass-predicate was too strict (required isolated_tail==1, wrong for offset 0 which leaves no partial bytes) and the sweep range included the untruncated record; both corrected (sweep = truncation offsets 0..full-minus-one). No binary (pure-Python harness). Synthetic inputs." }

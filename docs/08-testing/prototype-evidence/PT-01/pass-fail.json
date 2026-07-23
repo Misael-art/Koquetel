@@ -1,0 +1,5 @@
+{ "pt":"PT-01","overall":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:33:52Z",
+  "arms":[
+   {"name":"mutual_exclusion","verdict":"PASS","metricRef":"metrics.json#mutual_exclusion (0 temporal overlaps in 10000)"},
+   {"name":"fork_ofd_lifecycle","verdict":"PASS","metricRef":"metrics.json#fork_ofd_lifecycle (0 violations)"}],
+  "criteria":"at most one holder at any instant (no temporal overlap in the acquisition log); fork does not break exclusion" }

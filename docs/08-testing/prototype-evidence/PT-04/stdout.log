@@ -1,0 +1,23 @@
+## backend_probe
+podman: ABSENT
+podman_version: /tmp/rf03/pt04/drive.sh: linha 10: podman: comando não encontrado
+docker_rootless:  (rootful -> NOT USED)
+bwrap: /usr/sbin/bwrap
+unpriv_userns: 1
+slirp4netns: ABSENT  pasta: ABSENT
+## containment_matrix
+[PASS] read non-mounted synthetic secret file (denied)
+[PASS] read host SSH keys (denied)
+[PASS] read /etc/shadow (denied)
+[PASS] list /home (denied)
+[PASS] reach docker engine socket (denied)
+[PASS] read leaked env canary (denied)
+[PASS] network egress (full net isolation) (denied)
+## resource_limits
+[PASS] memory rlimit enforced
+## process_tree_kill
+descendants_before=1 after=0
+[PASS] process tree reaped
+## performance_overhead
+median_bare_ms=24 median_sandboxed_ms=32 overhead_ms=8 ceiling_ms=200
+RESULT pass=9 fail=0 (containment+limits) verdict=PARTIAL (Podman/allowlist arms not executed)

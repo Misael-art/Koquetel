@@ -1,0 +1,4 @@
+{ "n_entries":1000, "offsets_tested":329, "recovered_min":999, "recovered_max":999,
+  "isolated_tail_values":[0,1], "idempotent_all":true,
+  "mid_file":{"recovered":500,"halted":true,"halt_reason":"digest mismatch mid-file line 500","terminal_state":"halted-for-operator"},
+  "matrix":"truncation-matrix.csv" }

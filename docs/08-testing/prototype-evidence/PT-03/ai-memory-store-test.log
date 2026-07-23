@@ -1,0 +1,200 @@
+
+running 173 tests
+test decay::tests::ancient_page_with_no_access_decays_below_threshold ... ok
+test decay::tests::fresh_unused_page_starts_near_salience ... ok
+test decay::tests::recent_access_boosts_more_than_old_access ... ok
+test decay::tests::frequently_accessed_page_stays_above_threshold_even_old ... ok
+test decay::tests::score_increases_with_access_count_when_access_age_matches ... ok
+test decay::tests::score_decreases_as_age_increases_without_access ... ok
+test auto_improve::tests::pinned_refusal_spares_state_slots_but_not_invariant_slots ... ok
+test fts_query::tests::empty_yields_empty ... ok
+test fts_query::tests::boolean_operators_are_preserved ... ok
+test fts_query::tests::bare_multi_word_is_or_joined ... ok
+test fts_query::tests::colon_is_not_column_syntax ... ok
+test fts_query::tests::dotted_filename_token_is_quoted ... ok
+test fts_query::tests::explicit_and_operator_is_preserved ... ok
+test fts_query::tests::explicit_near_operator_is_preserved ... ok
+test fts_query::tests::explicit_not_operator_is_preserved ... ok
+test fts_query::tests::hyphenated_token_quotes_as_subtoken_phrase ... ok
+test fts_query::tests::known_columns_are_preserved ... ok
+test fts_query::tests::parenthesised_query_is_not_or_joined ... ok
+test fts_query::tests::portuguese_accented_terms_or_join_and_keep_accents ... ok
+test fts_query::tests::prefix_star_token_stays_bare ... ok
+test fts_query::tests::quote_emits_whole_and_subtoken_phrase ... ok
+test fts_query::tests::quoted_phrase_query_is_not_or_joined ... ok
+test fts_query::tests::single_word_has_no_or ... ok
+test migrations::tests::schema_ahead_message_is_actionable ... ok
+test ops::tests::audit_log_records_author_for_attributed_create_page ... ok
+test migrations::tests::v28_to_v29_preserves_existing_rows ... ok
+test ops::tests::audit_log_omits_rename_project_on_collision ... ok
+test ops::tests::accept_handoff_transitions_open_to_accepted ... ok
+test ops::tests::audit_log_records_delete_page_with_author_and_page_id ... ok
+test migrations::tests::data_ahead_of_binary_reports_schema_ahead_not_raw_refinery ... ok
+test ops::tests::audit_log_records_handoff_lifecycle_with_null_author ... ok
+test ops::tests::audit_log_omits_delete_page_noop ... ok
+test ops::tests::audit_log_records_null_author_for_anonymous_create_page ... ok
+test ops::tests::audit_log_records_rename_project_with_author ... ok
+test ops::tests::audit_log_supersede_records_new_authors_identity ... ok
+test ops::tests::audit_log_records_purge_project_with_author ... ok
+test ops::tests::begin_session_accepts_every_agent_kind ... ok
+test ops::tests::cancel_handoff_transitions_open_to_expired ... ok
+test ops::tests::delete_stale_page_embeddings_removes_mismatched_rows ... ok
+test ops::tests::begin_session_accepts_all_supported_agent_kinds ... ok
+test ops::tests::dotted_filename_search_matches_indexed_path ... ok
+test ops::tests::end_session_links_summary_page_when_provided ... ok
+test ops::tests::delete_workspace_empty_succeeds_without_force ... ok
+test ops::tests::ensure_project_with_id_does_not_warn_when_validation_fails ... ok
+test ops::tests::delete_workspace_refuses_non_empty_then_cascades_with_force ... ok
+test ops::tests::end_session_without_summary_page_id_leaves_null ... ok
+test ops::tests::ensure_project_with_id_rejects_existing_id_mismatch ... ok
+test ops::tests::ensure_project_with_id_warns_when_creating_homonym_across_workspaces ... ok
+test ops::tests::ensure_project_workspace_rejects_stale_pair_before_disk_write ... ok
+test ops::tests::fts_matches_page_by_path_slug_not_in_body ... ok
+test ops::tests::ensure_workspace_with_id_rejects_id_name_mismatch ... ok
+test ops::tests::heal_catch_all_repo_paths_nulls_home_and_root_only ... ok
+test ops::tests::get_or_create_project_warns_when_creating_homonym_across_workspaces ... ok
+test ops::tests::get_or_create_project_flags_homonym_across_workspaces ... ok
+test ops::tests::heal_catch_all_repo_paths_uses_filesystem_to_judge_catch_alls ... ok
+test ops::tests::path_search_text_indexes_slug_and_words ... ok
+test ops::tests::hyphenated_filename_search_matches_indexed_path ... ok
+test ops::tests::move_project_workspace_rolls_back_on_name_collision ... ok
+test ops::tests::insert_with_mismatched_workspace_is_rejected ... ok
+test ops::tests::insert_handoff_strips_trailing_separator_from_cwd ... ok
+test ops::tests::pages_fts_path_migration_preserves_accent_folding ... ok
+test ops::tests::rename_project_after_purge_returns_not_found ... ok
+test ops::tests::pages_fts_update_trigger_ignores_access_counter_updates ... ok
+test ops::tests::move_project_workspace_restamps_all_domain_rows ... ok
+test ops::tests::rename_project_of_live_project_succeeds ... ok
+test ops::tests::store_embeddings_batches_rows_in_one_call ... ok
+test ops::tests::store_embedding_replaces_existing_row ... ok
+test ops::tests::upsert_page_persists_and_resolves_links ... ok
+test ops::tests::rename_workspace_updates_name_and_rejects_collision ... ok
+test ops::tests::sweep_hollow_projects_deletes_only_old_dataless_rows ... ok
+test ops::tests::upsert_page_is_noop_when_body_unchanged ... ok
+test ops::tests::upsert_page_resolves_cross_project_link ... ok
+test ops::tests::upsert_page_supersedes_on_body_change ... ok
+test ops::tests::v18_migration_refuses_existing_split_brain_rows ... ok
+test ops::tests::v19_repairs_orphan_observation_attribution_and_purges_empty_projects ... ok
+test reader::tests::cwd_within_handles_windows_backslash_boundaries ... ok
+test reader::tests::cwd_within_respects_component_boundaries ... ok
+test reader::tests::handoff_auto_reaches_subdir ... ok
+test reader::tests::handoff_dangerous_prefix_never_matches ... ok
+test reader::tests::handoff_legacy_trailing_slash_does_not_beat_newer_equivalent_auto ... ok
+test reader::tests::handoff_lone_manual_is_delivered ... ok
+test reader::tests::handoff_manual_beats_auto_same_dir ... ok
+test ops::tests::v20_adds_grok_and_preserves_sessions_invariants_on_upgraded_db ... ok
+test reader::tests::handoff_manual_survives_from_subdir ... ok
+test reader::tests::handoff_manual_with_nonmatching_cwd_still_beats_auto ... ok
+test reader::tests::handoff_most_specific_ancestor_wins ... ok
+test reader::tests::handoff_newest_manual_wins_even_if_older_manual_has_cwd ... ok
+test reader::tests::handoff_none_filter_is_project_wide ... ok
+test reader::tests::handoff_parent_session_does_not_inherit_deep_handoff ... ok
+test reader::tests::handoff_sibling_subdirs_do_not_leak ... ok
+test reader::tests::handoff_tolerates_trailing_slash_in_session_cwd ... ok
+test reader::tests::handoff_wildcard_characters_are_literal_path_components ... ok
+test ops::tests::v25_adds_pi_and_preserves_sessions_invariants_on_upgraded_db ... ok
+test ops::tests::upsert_page_supersedes_on_frontmatter_change ... ok
+test ops::tests::v27_reattributes_nongit_fragments_and_preserves_reserved_projects ... ok
+test ops::tests::v19_is_idempotent ... ok
+test ops::tests::v19_preserves_scratch_with_standalone_handoffs ... ok
+test ops::tests::v28_adds_devin_and_preserves_sessions_invariants_on_upgraded_db ... ok
+test reader::tests::latest_open_handoff_preserves_workspace_project_isolation ... ok
+test reader::tests::prefix_match_handles_legacy_windows_backslash_repo_path ... ok
+test reader::tests::prefix_match_ignores_legacy_trailing_separator_repo_path ... ok
+test reader::tests::prefix_match_skips_home_dir_but_keeps_nested_repo ... ok
+test reader::tests::prefix_match_treats_percent_and_underscore_as_literal_path_bytes ... ok
+test scope::tests::global_scope_lookup_is_none_until_created_then_stable ... ok
+test scope::tests::multi_scope_resolution_deduplicates_and_validates ... ok
+test scope::tests::project_only_read_prefers_active_workspace_then_default ... ok
+test scope::tests::read_args_reject_partial_scope ... ok
+test scope::tests::write_args_create_project_in_active_workspace ... ok
+test tests::auto_improve_approval_rejects_mismatched_page_author ... ok
+test tests::approve_refuses_update_proposals_against_pinned_pages ... ok
+test tests::auto_improve_duplicate_pending_target_rolls_back_run ... ok
+test tests::auto_improve_approve_upserts_page_and_conflicts_are_sql_atomic ... ok
+test tests::auto_improve_fail_pending_only_records_event ... ok
+test tests::auto_improve_migration_and_stage_persist_reopen_list_detail_scope ... ok
+test tests::auto_improve_old_pending_proposal_survives_rejection_buffer_migration ... ok
+test tests::auto_improve_project_move_restamps_proposal_scope ... ok
+test tests::auto_improve_reject_pending_only_records_event ... ok
+test tests::auto_improve_scheduler_candidates_respect_watermark_age_and_runs ... ok
+test tests::auto_improve_scheduler_claim_is_unique_across_store_instances ... ok
+test tests::auto_improve_scheduler_claims_do_not_skip_same_ended_at_sessions ... ok
+test tests::auto_improve_scheduler_state_and_candidates_are_per_project ... ok
+test tests::auto_improve_stage_derives_snapshots_and_validates_sessions ... ok
+test tests::auto_improve_stage_persists_validator_rejections_with_scope_isolation ... ok
+test tests::auto_improve_stage_rejects_patch_base_hash_mismatch ... ok
+test tests::auto_improve_stage_rejects_patch_missing_base_hash_and_create ... ok
+test tests::automatic_run_prefers_newest_linked_available_harness ... ok
+test tests::cross_project_links_surface_in_graph_briefing_and_lint ... ok
+test tests::auto_improve_telemetry_aggregate_counts_learning_activity_only ... ok
+test tests::delete_stale_page_embeddings_removes_mismatched_rows ... ok
+test tests::get_or_create_is_idempotent ... ok
+test tests::get_or_create_project_initializes_scheduler_state_before_first_session ... ok
+test tests::hybrid_search_includes_linked_neighbors ... ok
+test tests::latest_completed_session_for_project_ignores_open_sessions ... ok
+test tests::list_pages_returns_latest_pages_for_project ... ok
+test tests::managed_adoption_stops_after_any_harness_links_the_workstream ... ok
+test tests::list_projects_with_stats_returns_aggregates ... ok
+test tests::maintenance_scheduler_state_round_trips_per_job ... ok
+test tests::managed_run_cancel_releases_the_lease_immediately ... ok
+test tests::managed_workstream_batches_are_idempotent_and_release_the_lease ... ok
+test tests::managed_workstreams_are_isolated_across_workspaces ... ok
+test tests::observation_fts_finds_raw_fallback_hits ... ok
+test tests::open_and_upsert_page ... ok
+test tests::page_meta_returns_metadata_for_existing_page ... ok
+test tests::reindex_target_status_tracks_clean_and_dirty_store ... ok
+test tests::recent_pages_returns_latest_only_in_order ... ok
+test tests::reader_page_kinds_follow_canonical_paths_across_surfaces ... ok
+test tests::search_boolean_or_still_works ... ok
+test tests::search_colon_tokens_do_not_error ... ok
+test tests::search_finds_inserted_page_and_counts_reflect_supersession ... ok
+test users::tests::constant_time_eq_matches_plain_eq ... ok
+test tests::search_is_accent_insensitive ... ok
+test tests::serialises_parallel_writes ... ok
+test tests::search_quotes_hyphenated_tokens_for_fts5 ... ok
+test users::tests::generate_token_emits_url_safe_base64_of_expected_length ... ok
+test users::tests::generate_token_is_unique_per_call ... ok
+test users::tests::hash_token_is_deterministic_and_isolates_pepper ... ok
+test users::tests::hash_token_separator_blocks_ambiguous_concatenation ... ok
+test tests::session_brief_pages_selects_core_pages_and_isolates_projects ... ok
+test tests::session_agent_kind_migrations_preserve_observations ... ok
+test tests::status_counts_zero_on_fresh_db ... ok
+test tests::v103_schema_upgrades_to_current_without_backlog_or_integrity_breaks ... ok
+test users::tests::expire_is_idempotent_preserving_original_timestamp ... ok
+test users::tests::find_active_user_by_token_hash_returns_only_active ... ok
+test users::tests::insert_rejects_duplicate_email_case_insensitive ... ok
+test users::tests::find_user_by_id_returns_even_expired_users ... ok
+test users::tests::insert_rejects_duplicate_username ... ok
+test users::tests::insert_then_find_by_username_round_trip ... ok
+test users::tests::list_users_orders_by_created_at_ascending ... ok
+test users::tests::revive_clears_expiration ... ok
+test users::tests::rotate_returns_false_for_unknown_user ... ok
+test users::tests::rotate_token_issues_new_hash_and_revives ... ok
+test users::tests::touch_last_seen_records_timestamp ... ok
+test users::tests::users_exist_counts_expired_rows ... ok
+
+test result: ok. 173 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.13s
+
+
+running 5 tests
+test audit_prefix_paths_treat_percent_and_underscore_literally ... ok
+test audit_flags_wrong_bucket_session_but_not_cross_project_observation ... ok
+test audit_clean_db_returns_no_findings ... ok
+test audit_scope_restricts_to_landed_bucket ... ok
+test audit_ignores_home_repo_path_when_home_is_provided ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+
+running 2 tests
+test returns_none_when_session_has_no_observations ... ok
+test resolves_majority_observation_scope_over_stale_session_row ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

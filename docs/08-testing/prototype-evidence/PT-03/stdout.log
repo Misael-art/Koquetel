@@ -1,0 +1,16 @@
+== clone ai-memory read-only at pin (outside repo) ==
+ai_memory_HEAD=2a85950ce8fa5c309fdc3adc481e98a02d824a9f
+source_status_before=[0 tracked mods]
+== cargo test -p ai-memory-store (180 tests) ==
+test result: ok. 173 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.13s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+source_status_after=[0 tracked mods] (untracked target/ excluded)
+== fault harness (ai-memory pragmas) ==
+count=10000 torn_or_wrong_digest_rows=0
+integrity_check='*** in database main ***\nTree 2 page 4 cell 162: Extends off end of pa'
+CORRUPTION_DETECTED
+src_rows=10000 src_digest=92307125aa3530b5799ad96aad2b0f5624f57a6cceb6b0bb2c2dd7386bda0f0a dst_rows=10000 dst_digest=92307125aa3530b5799ad96aad2b0f5624f57a6cceb6b0bb2c2dd7386bda0f0a
+EXPORT_ROUNDTRIP_MATCH
+purge_before=10000 purge_after_queryable=0

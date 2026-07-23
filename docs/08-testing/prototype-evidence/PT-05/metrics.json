@@ -1,0 +1,8 @@
+{ "cold_start_ms": 6, "cold_start_ceiling_ms": 500,
+  "migration_version_run1": 1, "migration_version_run2": 1,
+  "peercred_reject": "DENIED peer_uid=1000 owner_uid=1001", "socket_mode": "600",
+  "kill_before_commit": {"get":"<absent>","jstate":"rolled_back"},
+  "kill_after_commit": {"get":"bar","jstate":"committed"},
+  "binary_sha256": "56a0ad2a40790f4a073cd56edb27540e5f7d8e47a5e6f6eb33cb9fc40d66e2c8",
+  "binary_size_bytes": 2203552,
+  "ldd_runtime_deps": ["libgcc_s","libm","libc"], "rust_runtime_dep": false, "libsqlite3_dep": false }

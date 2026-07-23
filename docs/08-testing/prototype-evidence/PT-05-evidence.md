@@ -1,5 +1,8 @@
 # PT-05 evidence — Rust distribution: binary, SQLite, Unix socket, recovery after kill
 
+> **Verification rerun after RF-03 (2026-07-23).** A fresh ephemeral rerun with a retained, hash-pinned evidence bundle is in `PT-05/` — see [`PT-05/SHA256SUMS`](PT-05/SHA256SUMS), [`PT-05/manifest.json`](PT-05/manifest.json) and [`PT-05/pass-fail.json`](PT-05/pass-fail.json). Rerun verdict: **PASS**. The bundle (raw logs, metrics, per-arm pass/fail, harness source) is the gate-required evidence per [`../PROTOTYPE-EVIDENCE-POLICY.md`](../PROTOTYPE-EVIDENCE-POLICY.md); the summary below is retained.
+
+
 Gate: [`../PROTOTYPE-GATES.md`](../PROTOTYPE-GATES.md) PT-05
 Date executed: 2026-07-22
 Branch: `foundation/m00-closure`

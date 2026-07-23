@@ -1,0 +1,9 @@
+{ "pt":"PT-04","overall":"PARTIAL","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:38:48Z",
+  "arms":[
+   {"name":"containment_matrix","verdict":"PASS","metricRef":"metrics.json#containment_matrix (7/7 denied)"},
+   {"name":"resource_limits","verdict":"PASS","metricRef":"metrics.json#resource_limits"},
+   {"name":"process_tree_kill","verdict":"PASS","metricRef":"metrics.json#process_tree_kill"},
+   {"name":"performance_overhead","verdict":"PASS","metricRef":"metrics.json#performance (8ms < 200ms)"},
+   {"name":"podman_backed_run","verdict":"NOT_EXECUTED","metricRef":"metrics.json#backend (podman ABSENT)"},
+   {"name":"network_allowlist","verdict":"NOT_EXECUTED","metricRef":"metrics.json#backend (no slirp4netns/pasta)"}],
+  "criteria":"0 containment escapes AND overhead within ceiling — met via rootless bwrap/userns proxy; but Podman backend and network-allowlist arms are NOT executed, so the gate is PARTIAL and G-05 stays open" }

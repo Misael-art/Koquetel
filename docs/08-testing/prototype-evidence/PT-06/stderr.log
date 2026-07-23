@@ -1,0 +1,30 @@
+== build ==
+    Updating crates.io index
+     Locking 24 packages to latest compatible versions
+      Adding rusqlite v0.31.0 (available: v0.40.1)
+   Compiling version_check v0.9.5
+   Compiling zerocopy v0.8.55
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.9
+   Compiling once_cell v1.21.4
+   Compiling vcpkg v0.2.15
+   Compiling cfg-if v1.0.4
+   Compiling pkg-config v0.3.33
+   Compiling libc v0.2.189
+   Compiling bitflags v2.13.1
+   Compiling cc v1.3.0
+   Compiling fallible-iterator v0.3.0
+   Compiling ahash v0.8.12
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling smallvec v1.15.2
+   Compiling libsqlite3-sys v0.28.0
+   Compiling hashbrown v0.14.5
+   Compiling hashlink v0.9.1
+   Compiling rusqlite v0.31.0
+   Compiling pt06_lease v0.0.0 (/tmp/rf03/pt06)
+    Finished `release` profile [optimized] target(s) in 1m 18s
+build_exit=0
+
+thread 'main' (660393) panicked at src/main.rs:21:51:
+called `Result::unwrap()` on an `Err` value: SqliteFailure(Error { code: DatabaseBusy, extended_code: 5 }, Some("database is locked"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

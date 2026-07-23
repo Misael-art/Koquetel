@@ -1,0 +1,5 @@
+cargo build --release
+BIN=target/release/pt01_lock ANALYZE=analyze.py D=$WORK/run bash drive.sh
+# 100 holders x 100 acquisitions = 10000; per-holder logs -> analyze.py overlap detector;
+# fork-arm 100 iterations (parent holds, child closes inherited fd, contender must be BLOCKED).
+python3 analyze.py $WORK/run   # overlap detector JSON

@@ -1,0 +1,9 @@
+# PT-01 disposable harness — NON-PRODUCTION. Not part of the Koquetel build/release graph.
+[package]
+name = "pt01_lock"
+version = "0.0.0"
+edition = "2021"
+[dependencies]
+libc = "0.2"
+[profile.release]
+opt-level = 2

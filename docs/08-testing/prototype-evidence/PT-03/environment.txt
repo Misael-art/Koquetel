@@ -1,0 +1,9 @@
+host_kernel=Linux 6.18.38-1-MANJARO
+arch=x86_64
+ai_memory_pin=2a85950ce8fa5c309fdc3adc481e98a02d824a9f (akitaonrails/ai-memory)
+ai_memory_store_pragmas=WAL, synchronous=NORMAL, busy_timeout=5000 (EA-01 lib.rs:91-93)
+rustc=rustc 1.97.0 (2d8144b78 2026-07-07)
+python=Python 3.14.6  sqlite=3.53.3
+generated_at_utc=2026-07-23T00:41:58Z
+synthetic_data=true
+secrets=none

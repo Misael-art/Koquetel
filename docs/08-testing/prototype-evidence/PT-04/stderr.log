@@ -1,0 +1,3 @@
+== run ==
+/tmp/rf03/pt04/drive.sh, linha 41: 682575 Morto                      $SB /usr/bin/sh -c 'while true; do :; done'
+exit=0

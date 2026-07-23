@@ -1,0 +1,5 @@
+git clone https://github.com/akitaonrails/ai-memory $W/ai-memory   # read-only, outside repo
+git -C $W/ai-memory checkout 2a85950ce8fa5c309fdc3adc481e98a02d824a9f
+cargo test -p ai-memory-store                                      # 180 tests
+python3 harness/harness.py setup/writer(8x1250)/count/corrupt/export/purge
+git -C $W/ai-memory status --porcelain                            # 0 tracked mods before & after

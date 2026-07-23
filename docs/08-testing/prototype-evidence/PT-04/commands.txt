@@ -1,0 +1,4 @@
+D=$WORK/run bash drive.sh
+# raw backend probe (podman absent); bwrap --unshare-all --die-with-parent --clearenv
+# containment matrix (7 attempts, all must be denied); RLIMIT_AS memory cap; process
+# tree kill; sha256 overhead bare vs sandboxed (median of 11).

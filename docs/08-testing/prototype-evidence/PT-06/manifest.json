@@ -1,0 +1,9 @@
+{ "pt":"PT-06","title":"Lease recovery after holder death (and fencing)",
+  "verdict":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:31:56Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log",
+  "stderrRef":"stderr.log","metricsRef":"metrics.json","passFailRef":"pass-fail.json","recoveryCsvRef":"recovery.csv",
+  "externalPins":[], "toolchain":{"rustc":"1.97.0","rusqlite":"0.31","libc":"0.2"},
+  "syntheticData":true, "secrets":"none",
+  "armsExecuted":["fence_classifier","counter_equality","recovery_reclaim","ofd_exec_cloexec","ofd_dup_survival"],
+  "armsNotExecuted":["distributed/NFS fencing (G-13, v2 scope; excluded by Q-08)"],
+  "limitations":"An initial counter-equality rerun returned 8750/10000 because one writer died to a concurrent CREATE-TABLE-IF-NOT-EXISTS race at startup (a harness bug, NOT a mutual-exclusion failure). The harness was hardened to pre-initialize the schema once before spawning writers; the corrected rerun reached 10000/10000. Filesystem tmpfs (local-kernel OFD). G-13 (revocation-proof fence) remains a v2-only gap; the classifier arm proves the decision logic, not an atomic distributed primitive." }

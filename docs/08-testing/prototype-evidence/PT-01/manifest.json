@@ -1,0 +1,9 @@
+{ "pt":"PT-01","title":"Exclusive cross-process mutual exclusion",
+  "verdict":"PASS","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:33:52Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log",
+  "stderrRef":"stderr.log","metricsRef":"metrics.json","passFailRef":"pass-fail.json","acquisitionLogSampleRef":"acquisition-log.sample.txt",
+  "externalPins":[], "toolchain":{"rustc":"1.97.0","libc":"0.2","python":"3.14"},
+  "syntheticData":true, "secrets":"none",
+  "armsExecuted":["mutual_exclusion","fork_ofd_lifecycle"],
+  "armsNotExecuted":["NFS arm (Q-08: NFS unsupported in v1)"],
+  "limitations":"tmpfs (local-kernel OFD; identical lock-manager semantics to ext4/XFS). NFS arm not run (out of v1 scope, Q-08). The full 10000-line acquisition log is not committed (large); a 200-line merged sample is retained plus the machine-readable overlap-detector JSON in stdout.log." }

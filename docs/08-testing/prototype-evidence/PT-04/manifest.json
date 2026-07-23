@@ -1,0 +1,8 @@
+{ "pt":"PT-04","title":"Rootless sandbox containment",
+  "verdict":"PARTIAL","runKind":"verification rerun after RF-03","generatedAtUtc":"2026-07-23T00:38:48Z",
+  "environmentRef":"environment.txt","commandsRef":"commands.txt","stdoutRef":"stdout.log","stderrRef":"stderr.log",
+  "metricsRef":"metrics.json","passFailRef":"pass-fail.json",
+  "externalPins":[], "toolchain":{"bwrap":"present","python":"3.14"}, "syntheticData":true, "secrets":"none",
+  "armsExecuted":["containment_matrix","resource_limits","process_tree_kill","performance_overhead"],
+  "armsNotExecuted":["podman_backed_run (Podman ABSENT)","network_allowlist (no slirp4netns/pasta)","cgroup pids.max (rlimit used instead)"],
+  "limitations":"Podman (gate primary) is absent; Docker is rootful and NOT used (would need root-equivalent privilege). Containment shown via rootless bubblewrap/userns as a proxy. Only full network isolation is testable, NOT an allowlist. Podman/allowlist NOT simulated. Verdict remains PARTIAL; G-05 stays open (high); blocks M-04 and any sandbox-declared release, not the start of M-01/M-02." }

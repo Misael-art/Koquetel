@@ -1,0 +1,6 @@
+# from a clean temp dir (ephemeral; target/ NOT retained):
+cp harness/{Cargo.toml,main.rs,drive.sh} $WORK/ ; cp harness/main.rs $WORK/src/main.rs
+cargo build --release
+ldd target/release/pt05_core            # self-containedness
+BIN=target/release/pt05_core D=$WORK/run bash drive.sh
+sha256sum target/release/pt05_core      # digest recorded, binary NOT committed

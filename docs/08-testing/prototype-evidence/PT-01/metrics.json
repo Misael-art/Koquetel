@@ -1,0 +1,4 @@
+{ "mutual_exclusion": {"total_acquisitions":10000,"distinct_holders":100,"temporal_overlaps":0,"pass":true},
+  "fork_ofd_lifecycle": {"iterations":100,"ok":100,"violations":0},
+  "acquisition_log_lines":10000,
+  "binary_sha256":"b3e9565532d1f20d85274188dd8275604a8e5a0d899fef5555ef92e703b58f29" }

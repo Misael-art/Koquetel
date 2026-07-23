@@ -1,0 +1,6 @@
+{ "backend": {"podman":"ABSENT","docker":"rootful-not-used","bwrap":"present","unpriv_userns":1,"slirp4netns":"ABSENT","pasta":"ABSENT"},
+  "containment_matrix": {"attempts":7,"denied":7,"escaped":0,
+    "checks":["non-mounted secret file","host SSH keys","/etc/shadow","/home","docker engine socket","leaked env canary","network egress (full isolation)"]},
+  "resource_limits": {"memory_rlimit_500MB_under_200MB_cap":"killed"},
+  "process_tree_kill": {"descendants_before":1,"after":0,"reaped":true},
+  "performance": {"median_bare_ms":24,"median_sandboxed_ms":32,"overhead_ms":8,"ceiling_ms":200} }
