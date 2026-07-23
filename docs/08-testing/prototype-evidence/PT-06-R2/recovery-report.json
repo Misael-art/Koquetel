@@ -1,0 +1,37 @@
+{
+  "currentEpoch": 20,
+  "recordCount": 5,
+  "classifications": [
+    {
+      "sequence": 1,
+      "epoch": 19,
+      "payload": "committed-before-revocation",
+      "classification": "Preserve"
+    },
+    {
+      "sequence": 3,
+      "epoch": 19,
+      "payload": "stale-after-revocation",
+      "classification": "Quarantine"
+    },
+    {
+      "sequence": 4,
+      "epoch": 18,
+      "payload": "ambiguous-cross-domain-order",
+      "classification": "Escalate"
+    },
+    {
+      "sequence": 5,
+      "epoch": 20,
+      "payload": "current-epoch-valid",
+      "classification": "Valid"
+    }
+  ],
+  "counts": {
+    "Preserve": 1,
+    "Quarantine": 1,
+    "Escalate": 1,
+    "Valid": 1
+  },
+  "recoveryDisposition": "FAIL_CLOSED"
+}

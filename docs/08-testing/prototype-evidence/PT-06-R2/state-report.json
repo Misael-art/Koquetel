@@ -1,0 +1,7 @@
+{
+  "currentEpoch": 20,
+  "transactionalCounter": 20,
+  "expectedCounter": 20,
+  "databaseJournalMode": "wal",
+  "databaseSynchronous": "FULL"
+}

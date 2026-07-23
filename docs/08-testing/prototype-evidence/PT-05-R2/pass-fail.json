@@ -1,0 +1,49 @@
+{
+  "pt": "PT-05",
+  "overall": "PASS",
+  "arms": [
+    {
+      "name": "clean-container-no-rust",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#rustcPresent"
+    },
+    {
+      "name": "migration-idempotency",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#migrationVersions"
+    },
+    {
+      "name": "socket-0600-owner",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#socketMode"
+    },
+    {
+      "name": "real-second-user-peercred",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#peercredOutsider"
+    },
+    {
+      "name": "kill-before-recovery",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#killBefore"
+    },
+    {
+      "name": "kill-after-recovery",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#killAfter"
+    },
+    {
+      "name": "cold-start",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#coldStartMs"
+    }
+  ],
+  "criteria": [
+    "host-built artifact runs in a fresh Ubuntu container with no rustc/cargo",
+    "bundled SQLite migration is idempotent",
+    "production socket mode is 0600 and non-owner connection fails",
+    "distinct uid=1002 reaches a permissive test socket and is denied by SO_PEERCRED",
+    "SIGKILL before/after commit converges to old/completed state",
+    "cold start remains below the 500 ms ADR threshold"
+  ]
+}

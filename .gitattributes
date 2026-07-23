@@ -1,1 +1,5 @@
 docs/08-testing/prototype-evidence/PT-03/ai-memory-store-test.log whitespace=-blank-at-eof
+docs/08-testing/prototype-evidence/PT-05-R2/stdout.log whitespace=-blank-at-eol
+docs/08-testing/prototype-evidence/PT-05-R2/stderr.log whitespace=-blank-at-eof
+docs/08-testing/prototype-evidence/PT-05-R2/attempts/attempt-1-derivation/stdout.log whitespace=-blank-at-eol
+docs/08-testing/prototype-evidence/PT-06-R2/kill-reclaim.csv whitespace=-blank-at-eol

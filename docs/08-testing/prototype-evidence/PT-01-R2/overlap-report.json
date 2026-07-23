@@ -1,0 +1,13 @@
+{
+  "source": "acquisition-log.csv",
+  "variant": "main",
+  "rows": 10000,
+  "distinctHolders": 100,
+  "distinctHolderSequences": 10000,
+  "leasePaths": [
+    "/tmp/koquetel-pt01-r2-run.t9iZJW/work/main.lease"
+  ],
+  "temporalOverlaps": 0,
+  "invalidIntervals": 0,
+  "pass": true
+}

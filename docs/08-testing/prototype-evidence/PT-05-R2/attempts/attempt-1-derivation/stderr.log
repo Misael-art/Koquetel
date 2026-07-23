@@ -1,0 +1,30 @@
+   Compiling zerocopy v0.8.55
+   Compiling version_check v0.9.5
+   Compiling find-msvc-tools v0.1.9
+   Compiling shlex v2.0.1
+   Compiling once_cell v1.21.4
+   Compiling pkg-config v0.3.33
+   Compiling cfg-if v1.0.4
+   Compiling vcpkg v0.2.15
+   Compiling libc v0.2.189
+   Compiling cc v1.3.0
+   Compiling smallvec v1.15.2
+   Compiling bitflags v2.13.1
+   Compiling ahash v0.8.12
+   Compiling fallible-iterator v0.3.0
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling libsqlite3-sys v0.28.0
+   Compiling hashbrown v0.14.5
+   Compiling hashlink v0.9.1
+   Compiling rusqlite v0.31.0
+   Compiling pt05_core_r2 v0.0.0 (/tmp/koquetel-pt05-r2-run.dSYQ9q/build)
+    Finished `release` profile [optimized] target(s) in 1m 15s
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Traceback (most recent call last):
+  File "/home/misael/Documentos/Koquetel/docs/08-testing/prototype-evidence/PT-05-R2/harness/derive.py", line 10, in <module>
+    key, value = line.split("=", 1)
+    ^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)

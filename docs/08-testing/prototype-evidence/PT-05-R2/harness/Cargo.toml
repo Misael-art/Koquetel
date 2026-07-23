@@ -1,0 +1,12 @@
+[package]
+name = "pt05_core_r2"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+rusqlite = { version = "0.31", features = ["bundled"] }
+libc = "0.2"
+
+[profile.release]
+opt-level = 2

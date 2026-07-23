@@ -1,0 +1,10 @@
+generatedAtUtc=2026-07-23T03:21:52Z
+Linux misael-jupiter 6.18.38-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sat, 04 Jul 2026 20:51:33 +0000 x86_64 GNU/Linux
+TARGET SOURCE FSTYPE OPTIONS
+/tmp   tmpfs  tmpfs  rw,noatime,inode64
+/tmp type=tmpfs
+TARGET SOURCE                 FSTYPE OPTIONS
+/home  /dev/nvme0n1p2[/@home] btrfs  rw,noatime,compress-force=zstd:3,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home
+. type=btrfs
+TARGET_EXT4_XFS=BLOCKED
+reason=no_accessible_ext4_or_xfs_without_host_mutation

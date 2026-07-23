@@ -1,0 +1,18 @@
+# Executed from the Koquetel repository root.
+CLONE_ROOT=$(mktemp -d /tmp/koquetel-rf03-ai-memory.XXXXXX)
+git clone https://github.com/akitaonrails/ai-memory "$CLONE_ROOT/ai-memory"
+git -C "$CLONE_ROOT/ai-memory" checkout 2a85950ce8fa5c309fdc3adc481e98a02d824a9f
+test "$(git -C "$CLONE_ROOT/ai-memory" rev-parse HEAD)" = 2a85950ce8fa5c309fdc3adc481e98a02d824a9f
+test -z "$(git -C "$CLONE_ROOT/ai-memory" status --short)"
+RUN=$(mktemp -d /tmp/koquetel-pt03-r2-run.XXXXXX)
+OUT=$(mktemp -d /tmp/koquetel-pt03-r2-out.XXXXXX)
+docs/08-testing/prototype-evidence/PT-03-R2/harness/drive.sh \
+  "$CLONE_ROOT/ai-memory" "$OUT" "$RUN" \
+  tools/schema_suite/.venv/bin/python \
+  docs/05-data/schemas/memory.schema.json \
+  > "$OUT/stdout.log" 2> "$OUT/stderr.log"
+test "$(git -C "$CLONE_ROOT/ai-memory" rev-parse HEAD)" = 2a85950ce8fa5c309fdc3adc481e98a02d824a9f
+test -z "$(git -C "$CLONE_ROOT/ai-memory" status --short)"
+python3 docs/08-testing/prototype-evidence/PT-03-R2/harness/derive.py "$OUT"
+# The driver contains the complete executable commands for each real Store API
+# arm, SIGKILL, DB/WAL fault, SCH-10 validation/import, purge and inventory.

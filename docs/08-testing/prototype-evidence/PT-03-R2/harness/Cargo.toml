@@ -1,0 +1,14 @@
+[package]
+name = "pt03_real_ai_memory"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+ai-memory-core = { path = "@AI_MEMORY@/crates/ai-memory-core" }
+ai-memory-store = { path = "@AI_MEMORY@/crates/ai-memory-store" }
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tokio = { version = "1", features = ["full"] }

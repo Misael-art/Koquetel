@@ -1,0 +1,49 @@
+{
+  "pt": "PT-03",
+  "overall": "PASS",
+  "arms": [
+    {
+      "name": "real-in-process-10000",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#inProcess"
+    },
+    {
+      "name": "real-cross-process-10000",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#crossProcess"
+    },
+    {
+      "name": "kill-write-batch-recovery",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#killRecovery"
+    },
+    {
+      "name": "main-db-corruption",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#mainCorruption"
+    },
+    {
+      "name": "live-wal-corruption",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#walCorruption"
+    },
+    {
+      "name": "sch10-export-import",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#export"
+    },
+    {
+      "name": "purge-and-residue-inventory",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#purge"
+    }
+  ],
+  "criteria": [
+    "all writes/reads use ai-memory-store public APIs at pin 2a85950",
+    "8 in-process clients and 8 OS processes each complete 10,000 verified writes",
+    "SIGKILL batch is recovered and idempotently resumed without torn bodies",
+    "main DB and still-live WAL faults are independently detected fail closed",
+    "SCH-10 envelope digest survives public-API export/import",
+    "purge leaves zero queryable rows and reports shared/export physical residue"
+  ]
+}

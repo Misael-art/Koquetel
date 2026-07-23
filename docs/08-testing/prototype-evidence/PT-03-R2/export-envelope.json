@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "exportId": "01J8Z0CNFHQH7VK3M2P9XR4T5N",
+  "createdAt": "2026-07-23T03:44:26Z",
+  "exportFormatVersion": 1,
+  "scope": "project",
+  "selectedKinds": [
+    "semantic"
+  ],
+  "recordCount": 128,
+  "includedContent": true,
+  "backendOmissions": [],
+  "integrityDigest": "4477319edb1a30c07d87b6110faf5329a30f68dd9398223d4642066bde517466"
+}

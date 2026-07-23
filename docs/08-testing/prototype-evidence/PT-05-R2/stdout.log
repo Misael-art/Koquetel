@@ -1,0 +1,48 @@
+Sending build context to Docker daemon  2.215MB
+Step 1/5 : FROM ubuntu:24.04
+24.04: Pulling from library/ubuntu
+Digest: sha256:4fbb8e6a8395de5a7550b33509421a2bafbc0aab6c06ba2cef9ebffbc7092d90
+Status: Image is up to date for ubuntu:24.04
+ ---> 4fbb8e6a8395
+Step 2/5 : COPY pt05_core_r2 /usr/local/bin/pt05_core_r2
+ ---> 40b1dada8988
+Step 3/5 : COPY container-run.sh /usr/local/bin/container-run.sh
+ ---> 442ecebab99b
+Step 4/5 : RUN chmod 0755 /usr/local/bin/pt05_core_r2 /usr/local/bin/container-run.sh     && groupadd --gid 1001 owner     && useradd --uid 1001 --gid 1001 --no-create-home owner     && groupadd --gid 1002 outsider     && useradd --uid 1002 --gid 1002 --no-create-home outsider
+ ---> Running in 723074e86ffb
+ ---> Removed intermediate container 723074e86ffb
+ ---> ca16e633d2b1
+Step 5/5 : ENTRYPOINT ["/usr/local/bin/container-run.sh"]
+ ---> Running in 39582f31cfa9
+ ---> Removed intermediate container 39582f31cfa9
+ ---> 6ba52994facd
+Successfully built 6ba52994facd
+Successfully tagged koquetel-pt05-r2:20260723033229-1145742
+rustc_present=no
+cargo_present=no
+owner_uid=1001
+outsider_uid=1002
+	linux-vdso.so.1 (0x00007f98a91ee000)
+	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f98a8fd2000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f98a8ee9000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f98a8cd7000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f98a91f0000)
+cold_start_ms=23
+socket_mode=600
+owner_client=OK peer_uid=1001
+outsider_0600_rc=101
+outsider_0600_output=|thread 'main' (48) panicked at src/main.rs:126:50:|called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: "Permission denied" }|note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+peercred_outsider=DENIED peer_uid=1002 owner_uid=1001
+migration_version_1=1
+migration_version_2=1
+kill_before_get=<absent>
+kill_before_state=rolled_back
+kill_after_get=value
+kill_after_state=committed
+DONE
+{"arms": [{"metricRef": "metrics.json#rustcPresent", "name": "clean-container-no-rust", "verdict": "PASS"}, {"metricRef": "metrics.json#migrationVersions", "name": "migration-idempotency", "verdict": "PASS"}, {"metricRef": "metrics.json#socketMode", "name": "socket-0600-owner", "verdict": "PASS"}, {"metricRef": "metrics.json#peercredOutsider", "name": "real-second-user-peercred", "verdict": "PASS"}, {"metricRef": "metrics.json#killBefore", "name": "kill-before-recovery", "verdict": "PASS"}, {"metricRef": "metrics.json#killAfter", "name": "kill-after-recovery", "verdict": "PASS"}, {"metricRef": "metrics.json#coldStartMs", "name": "cold-start", "verdict": "PASS"}], "criteria": ["host-built artifact runs in a fresh Ubuntu container with no rustc/cargo", "bundled SQLite migration is idempotent", "production socket mode is 0600 and non-owner connection fails", "distinct uid=1002 reaches a permissive test socket and is denied by SO_PEERCRED", "SIGKILL before/after commit converges to old/completed state", "cold start remains below the 500 ms ADR threshold"], "overall": "PASS", "pt": "PT-05"}
+Untagged: koquetel-pt05-r2:20260723033229-1145742
+Deleted: sha256:6ba52994facd25dbc1f97a48706d718374865ed8956a7d4433a9bfafdefde654
+Deleted: sha256:ca16e633d2b14b0ee97f96f75ca5baaaa92bee54bd75e9ffab97672c04f3373c
+Deleted: sha256:442ecebab99b05a88ee6a4dcc0ba4c4d8b3197a2f5c9625ced5cbd2edd43b32b
+Deleted: sha256:40b1dada89887569e3b065453585df503712f840eadf6731cf0437906992bce2

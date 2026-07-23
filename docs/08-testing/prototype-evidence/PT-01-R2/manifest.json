@@ -1,0 +1,30 @@
+{
+  "pt": "PT-01",
+  "title": "Literal OFD contention and fork variants",
+  "verdict": "PARTIAL",
+  "runKind": "R2 remediation canonical rerun",
+  "generatedAtUtc": "2026-07-23T03:46:47Z",
+  "environmentRef": "environment.txt",
+  "commandsRef": "commands.txt",
+  "stdoutRef": "stdout.log",
+  "stderrRef": "stderr.log",
+  "metricsRef": "metrics.json",
+  "passFailRef": "pass-fail.json",
+  "externalPins": [],
+  "toolchain": {
+    "rustc": "1.97.0",
+    "python": "3.14.6",
+    "libcCrate": "0.2.189"
+  },
+  "syntheticData": true,
+  "secrets": "none",
+  "armsExecuted": [
+    "tmpfs 100 processes x 100 acquisitions",
+    "fork A 100 processes x 100 acquisitions",
+    "fork B 100 processes x 100 acquisitions"
+  ],
+  "armsNotExecuted": [
+    "ext4 or XFS"
+  ],
+  "limitations": "No ext4/XFS path was accessible without mutating the host; that mandatory filesystem arm is BLOCKED, so the gate is PARTIAL."
+}

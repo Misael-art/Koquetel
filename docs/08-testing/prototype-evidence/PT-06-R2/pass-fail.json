@@ -1,0 +1,39 @@
+{
+  "pt": "PT-06",
+  "overall": "PASS",
+  "arms": [
+    {
+      "name": "kill-reclaim-20",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#killReclaimCycles"
+    },
+    {
+      "name": "transactional-counter",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#transactionalCounter"
+    },
+    {
+      "name": "persisted-journal-recovery",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#classifications"
+    },
+    {
+      "name": "exec-cloexec",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#ofdLifecycle"
+    },
+    {
+      "name": "dup-survival",
+      "verdict": "PASS",
+      "metricRef": "metrics.json#ofdLifecycle"
+    }
+  ],
+  "criteria": [
+    "20 SIGKILL holder deaths followed by bounded kernel-OFD reclaim",
+    "epoch and counter persist transactionally in SQLite FULL",
+    "real journal recovery yields Preserve, Quarantine, Escalate, and Valid",
+    "ambiguous ordering makes recovery fail closed",
+    "FD_CLOEXEC releases on exec and dup retains the OFD until last close",
+    "distributed/NFS G-13 is outside v1 and was not simulated"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "committedLedgerRowsBeforeKill": 100,
+  "resumedRows": 1000,
+  "queryablePagesAfterResume": 1000,
+  "wrongDigestAfterResume": 0,
+  "pass": true
+}

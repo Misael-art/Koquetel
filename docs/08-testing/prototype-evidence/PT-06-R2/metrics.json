@@ -1,0 +1,25 @@
+{
+  "killReclaimCycles": 20,
+  "maxRecoveryUs": 7581,
+  "transactionalCounter": 20,
+  "expectedCounter": 20,
+  "classifications": {
+    "Preserve": 1,
+    "Quarantine": 1,
+    "Escalate": 1,
+    "Valid": 1
+  },
+  "recoveryDisposition": "FAIL_CLOSED",
+  "ofdLifecycle": {
+    "cloexec": {
+      "probe": "ACQUIRED",
+      "exitCode": 0,
+      "pass": true
+    },
+    "dup": {
+      "whileDuplicateOpen": "BLOCKED",
+      "afterDuplicateClose": "ACQUIRED",
+      "pass": true
+    }
+  }
+}

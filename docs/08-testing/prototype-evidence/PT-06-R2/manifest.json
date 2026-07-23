@@ -1,0 +1,33 @@
+{
+  "pt": "PT-06",
+  "title": "Persisted journal fencing and OFD recovery",
+  "verdict": "PASS",
+  "runKind": "R2 remediation canonical rerun",
+  "generatedAtUtc": "2026-07-23T03:46:47Z",
+  "environmentRef": "environment.txt",
+  "commandsRef": "commands.txt",
+  "stdoutRef": "stdout.log",
+  "stderrRef": "stderr.log",
+  "metricsRef": "metrics.json",
+  "passFailRef": "pass-fail.json",
+  "externalPins": [],
+  "toolchain": {
+    "python": "3.14.6",
+    "sqlite": "stdlib sqlite3"
+  },
+  "syntheticData": true,
+  "secrets": "none",
+  "armsExecuted": [
+    "20 SIGKILL/OFD reclaim cycles",
+    "transactional persisted epoch and counter",
+    "revocation before physical stale write",
+    "ambiguous ordering fail-closed",
+    "real journal Preserve/Quarantine/Escalate/Valid",
+    "exec with CLOEXEC",
+    "dup survival"
+  ],
+  "armsNotExecuted": [
+    "distributed/NFS"
+  ],
+  "limitations": "Distributed/NFS G-13 remains deferred outside the v1 local model and was not simulated."
+}

@@ -1,0 +1,12 @@
+{
+  "cloexec": {
+    "probe": "ACQUIRED",
+    "exitCode": 0,
+    "pass": true
+  },
+  "dup": {
+    "whileDuplicateOpen": "BLOCKED",
+    "afterDuplicateClose": "ACQUIRED",
+    "pass": true
+  }
+}

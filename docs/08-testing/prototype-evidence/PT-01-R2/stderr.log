@@ -1,0 +1,5 @@
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+   Compiling libc v0.2.189
+   Compiling pt01_r2 v0.0.0 (/tmp/koquetel-pt01-r2-run.t9iZJW/build)
+    Finished `release` profile [optimized] target(s) in 4.16s

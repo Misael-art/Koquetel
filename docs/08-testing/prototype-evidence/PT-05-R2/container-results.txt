@@ -1,0 +1,16 @@
+rustc_present=no
+cargo_present=no
+owner_uid=1001
+outsider_uid=1002
+cold_start_ms=23
+socket_mode=600
+owner_client=OK peer_uid=1001
+outsider_0600_rc=101
+outsider_0600_output=|thread 'main' (48) panicked at src/main.rs:126:50:|called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: "Permission denied" }|note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+peercred_outsider=DENIED peer_uid=1002 owner_uid=1001
+migration_version_1=1
+migration_version_2=1
+kill_before_get=<absent>
+kill_before_state=rolled_back
+kill_after_get=value
+kill_after_state=committed

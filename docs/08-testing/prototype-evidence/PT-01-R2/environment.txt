@@ -1,0 +1,10 @@
+generatedAtUtc=2026-07-23T03:46:47Z
+kernel=Linux 6.18.38-1-MANJARO x86_64
+rustc=rustc 1.97.0 (2d8144b78 2026-07-07)
+cargo=cargo 1.97.0 (c980f4866 2026-06-30)
+python=Python 3.14.6
+tmpfs=/tmp
+workspace_fs=btrfs
+ext4_xfs_accessible_without_host_mutation=no
+synthetic_data=true
+secrets=none

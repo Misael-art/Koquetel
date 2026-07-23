@@ -1,0 +1,38 @@
+{
+  "pt": "PT-05",
+  "title": "Clean-container Rust distribution and real peer credentials",
+  "verdict": "PASS",
+  "runKind": "R2 remediation canonical rerun",
+  "generatedAtUtc": "2026-07-23T03:46:47Z",
+  "environmentRef": "environment.txt",
+  "commandsRef": "commands.txt",
+  "stdoutRef": "stdout.log",
+  "stderrRef": "stderr.log",
+  "metricsRef": "metrics.json",
+  "passFailRef": "pass-fail.json",
+  "externalPins": [
+    {
+      "image": "ubuntu:24.04",
+      "digest": "sha256:4fbb8e6a8395de5a7550b33509421a2bafbc0aab6c06ba2cef9ebffbc7092d90"
+    }
+  ],
+  "toolchain": {
+    "hostRustc": "1.97.0",
+    "docker": "29.6.1",
+    "rusqlite": "0.31.0"
+  },
+  "syntheticData": true,
+  "secrets": "none",
+  "armsExecuted": [
+    "fresh runtime container without rustc/cargo",
+    "host build copied into clean image",
+    "migration idempotency",
+    "socket mode 0600",
+    "real uid 1001 owner and uid 1002 outsider",
+    "SO_PEERCRED denial",
+    "SIGKILL before and after commit",
+    "cold start"
+  ],
+  "armsNotExecuted": [],
+  "limitations": "The runtime binary is dynamically linked to glibc/libgcc_s/libm; Ubuntu 24.04 supplied those system libraries. The permissive 0666 socket exists only as a disposable test arm to reach SO_PEERCRED; the canonical service socket was separately proven 0600."
+}

@@ -1,0 +1,9 @@
+# Executed from the Koquetel repository root.
+RUN=$(mktemp -d /tmp/koquetel-pt06-r2-run.XXXXXX)
+OUT=$(mktemp -d /tmp/koquetel-pt06-r2-out.XXXXXX)
+docs/08-testing/prototype-evidence/PT-06-R2/harness/drive.sh "$OUT" "$RUN" \
+  > "$OUT/stdout.log" 2> "$OUT/stderr.log"
+python3 docs/08-testing/prototype-evidence/PT-06-R2/harness/derive.py "$OUT"
+# pt06.py contains the complete 20-cycle SIGKILL/reclaim sequence, persisted
+# SQLite epoch/counter, fsync-backed JSONL journal, recovery reader, exec+CLOEXEC
+# and dup probes.

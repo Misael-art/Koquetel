@@ -1,0 +1,5 @@
+Error: sqlite: database is locked
+
+Caused by:
+    0: database is locked
+    1: Error code 517: Cannot promote read transaction to write transaction because of writes by another connection

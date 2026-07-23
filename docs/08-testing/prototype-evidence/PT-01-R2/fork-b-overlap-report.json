@@ -1,0 +1,13 @@
+{
+  "source": "fork-b.csv",
+  "variant": "fork-b",
+  "rows": 10000,
+  "distinctHolders": 100,
+  "distinctHolderSequences": 10000,
+  "leasePaths": [
+    "/tmp/koquetel-pt01-r2-run.t9iZJW/work/fork-b.lease"
+  ],
+  "temporalOverlaps": 0,
+  "invalidIntervals": 0,
+  "pass": true
+}

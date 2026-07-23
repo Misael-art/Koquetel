@@ -1,0 +1,27 @@
+{
+  "rustcPresent": false,
+  "cargoPresent": false,
+  "ownerUid": 1001,
+  "outsiderUid": 1002,
+  "coldStartMs": 23,
+  "coldStartCeilingMs": 500,
+  "socketMode": "600",
+  "ownerClient": "OK peer_uid=1001",
+  "outsider0600ExitCode": 101,
+  "outsider0600Output": "|thread 'main' (48) panicked at src/main.rs:126:50:|called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: \"Permission denied\" }|note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+  "peercredOutsider": "DENIED peer_uid=1002 owner_uid=1001",
+  "migrationVersions": [
+    1,
+    1
+  ],
+  "killBefore": {
+    "get": "<absent>",
+    "journalState": "rolled_back"
+  },
+  "killAfter": {
+    "get": "value",
+    "journalState": "committed"
+  },
+  "binarySha256": "166cfcc12bd0c0e45ba7596863304cf76b946e0e245706af3d976aa1dd924c12",
+  "containerImage": "koquetel-pt05-r2:20260723033229-1145742"
+}

@@ -1,0 +1,46 @@
+{
+  "main": {
+    "source": "acquisition-log.csv",
+    "variant": "main",
+    "rows": 10000,
+    "distinctHolders": 100,
+    "distinctHolderSequences": 10000,
+    "leasePaths": [
+      "/tmp/koquetel-pt01-r2-run.t9iZJW/work/main.lease"
+    ],
+    "temporalOverlaps": 0,
+    "invalidIntervals": 0,
+    "pass": true
+  },
+  "forkA": {
+    "source": "fork-a.csv",
+    "variant": "fork-a",
+    "rows": 10000,
+    "distinctHolders": 100,
+    "distinctHolderSequences": 10000,
+    "leasePaths": [
+      "/tmp/koquetel-pt01-r2-run.t9iZJW/work/fork-a.lease"
+    ],
+    "temporalOverlaps": 0,
+    "invalidIntervals": 0,
+    "pass": true
+  },
+  "forkB": {
+    "source": "fork-b.csv",
+    "variant": "fork-b",
+    "rows": 10000,
+    "distinctHolders": 100,
+    "distinctHolderSequences": 10000,
+    "leasePaths": [
+      "/tmp/koquetel-pt01-r2-run.t9iZJW/work/fork-b.lease"
+    ],
+    "temporalOverlaps": 0,
+    "invalidIntervals": 0,
+    "pass": true
+  },
+  "filesystems": {
+    "tmpfsExecuted": true,
+    "ext4OrXfsExecuted": false,
+    "ext4OrXfsStatus": "BLOCKED"
+  }
+}

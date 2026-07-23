@@ -1,0 +1,6 @@
+/tmp/koquetel-pt05-r2-run.4bf9m4/build/target/release/pt05_core_r2: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 4.4.0, BuildID[sha1]=65a4432fa18580db22b6d2c5227e95dd68d35233, not stripped
+	linux-vdso.so.1 (0x00007f4519e79000)
+	libgcc_s.so.1 => /usr/lib/libgcc_s.so.1 (0x00007f4519c20000)
+	libm.so.6 => /usr/lib/libm.so.6 (0x00007f4519aed000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007f4519800000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007f4519e7b000)

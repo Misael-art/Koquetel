@@ -1,0 +1,11 @@
+generatedAtUtc=2026-07-23T03:46:47Z
+host_kernel=Linux 6.18.38-1-MANJARO x86_64
+host_rustc=rustc 1.97.0 (2d8144b78 2026-07-07)
+docker=client 29.6.1 server 29.6.1
+runtime_base=ubuntu:24.04@sha256:4fbb8e6a8395de5a7550b33509421a2bafbc0aab6c06ba2cef9ebffbc7092d90
+runtime_rustc=absent
+runtime_cargo=absent
+runtime_owner_uid=1001
+runtime_outsider_uid=1002
+synthetic_data=true
+secrets=none

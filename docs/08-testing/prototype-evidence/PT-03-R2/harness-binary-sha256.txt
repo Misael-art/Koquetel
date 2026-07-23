@@ -1,0 +1,1 @@
+cf81fef42022c1398366bd669191c603406b7acf602c08e5bf902e4b1e6d16b4  /tmp/koquetel-pt03-r2-run.GYJUXU/build/target/release/pt03_real_ai_memory

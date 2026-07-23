@@ -1,0 +1,37 @@
+{
+  "pt": "PT-03",
+  "title": "Real ai-memory concurrency, faults, SCH-10 round-trip and purge",
+  "verdict": "PASS",
+  "runKind": "R2 remediation canonical rerun",
+  "generatedAtUtc": "2026-07-23T03:46:47Z",
+  "environmentRef": "environment.txt",
+  "commandsRef": "commands.txt",
+  "stdoutRef": "stdout.log",
+  "stderrRef": "stderr.log",
+  "metricsRef": "metrics.json",
+  "passFailRef": "pass-fail.json",
+  "externalPins": [
+    {
+      "repository": "https://github.com/akitaonrails/ai-memory",
+      "commit": "2a85950ce8fa5c309fdc3adc481e98a02d824a9f"
+    }
+  ],
+  "toolchain": {
+    "rustc": "1.97.0",
+    "aiMemoryStore": "1.17.1",
+    "python": "3.14.6"
+  },
+  "syntheticData": true,
+  "secrets": "none",
+  "armsExecuted": [
+    "8 real in-process clients / 10000 operations",
+    "8 real OS processes / 10000 operations with bounded client retry",
+    "SIGKILL during real Store write batch and resume",
+    "main DB corruption",
+    "live WAL corruption before checkpoint",
+    "SCH-10 adapter envelope export/import/digest",
+    "real purge plus physical residue inventory"
+  ],
+  "armsNotExecuted": [],
+  "limitations": "ai-memory serializes only within one Store process; the adapter/client needed bounded retries across Store processes (2769 retries, max 49 of 100). Shared DB/WAL/SHM and the governed export remain physical files after project purge and are explicitly inventoried."
+}
